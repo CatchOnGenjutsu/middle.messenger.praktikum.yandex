@@ -1,0 +1,13 @@
+@import "../../../styles.scss";
+
+.input {
+  width: 100%;
+  border-bottom: 1px solid $--color-primary;
+  font-size: 13px;
+  line-height: 2;
+  margin-bottom: 8px;
+
+  &::placeholder {
+    color: $--color-light-grey;
+  }
+}

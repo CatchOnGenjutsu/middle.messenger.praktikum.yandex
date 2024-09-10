@@ -1,0 +1,7 @@
+<div class="form-field">
+  {{> Label labelName=option.labelName}}
+  {{> Input option=option}}
+  {{#if option.errorText}}
+  {{> Error errorText=option.errorText}}
+  {{/if}}
+</div>
