@@ -1,0 +1,15 @@
+<div class="current-chat-header">
+  <div class="current-chat-header__avatar">
+    {{#if currentChat.avatar}}
+      <img class="current-chat-header__avatar__avatar-img" src="{{currentChat.avatar}}" alt="avatar">
+    {{else}}
+      <div class="current-chat-header__avatar__avatar-placeholder">{{currentChat.initials}}</div>
+    {{/if}}
+  </div>
+  <div class="current-chat-header__info">
+    <div class="current-chat-header__info__chat-name">{{currentChat.chatName}}</div>
+  </div>
+  <div class="current-chat-header__settings">
+    <div class="current-chat-header__settings__burger-icon"></div>
+  </div>
+</div>

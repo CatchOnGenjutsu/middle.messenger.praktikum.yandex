@@ -11,7 +11,7 @@ import {
   registrationPageSettings,
   registrationButtonOptions,
 } from "./constants";
-import { chatsData } from "./pages/chatPage/mockData";
+import { chatsData, chatTestData } from "./pages/chatPage/mockData";
 
 for (let component in components) {
   Handlebars.registerPartial(component, components[component]);
@@ -44,6 +44,7 @@ function renderChatPage() {
   const chatPage = Handlebars.compile(ChatPage);
   app.innerHTML = chatPage({
     chatList: chatsData,
+    currentChat: chatTestData,
   });
 }
 function handleRoute() {

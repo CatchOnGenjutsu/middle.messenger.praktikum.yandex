@@ -1,9 +1,10 @@
 <div class="chat-page" id="chat-page">
   <aside class="chat-page__aside">
     <a href="#" class="chat-page__aside__profile-link">
-      Профиль <img class="chat-page__aside__profile-link__icon" src="../../../static/icons/profile_icon.png" alt="profile icon"/>
+      Профиль <img class="chat-page__aside__profile-link__icon" src="static/icons/profile_icon.png" alt="profile icon"/>
     </a>
     {{> SearchInput }}
     {{> ChatList chatList=chatList }}
     </aside>
+    {{> CurrentChat currentChat=currentChat }}
 </div>

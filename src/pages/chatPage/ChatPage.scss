@@ -10,7 +10,8 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: 310px;
+    width: 25vw;
+    min-width: 310px;
     height: 100%;
     padding: 0px;
     border-right: 1px solid $--color-dividing-line;

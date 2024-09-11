@@ -1,4 +1,4 @@
-<div class="chat-item">
+<div class="chat-item {{#if chat.active}}chat-item_active{{/if}}">
   <div class="chat-item__avatar">
     {{#if avatar}}
       <img class="chat-item__avatar__avatar-img" src="{{chat.avatar}}" alt="avatar">
