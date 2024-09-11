@@ -1,0 +1,30 @@
+@import "../../../../../styles.scss";
+.action-button {
+  padding: 15px;
+  font-size: 14px;
+  line-height: 18px;
+  color: $--color-text-primary;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: white;
+
+  &:hover {
+    background-color: $--hover-color;
+    transition: 0.3s;
+  }
+  &__icon {
+    margin-right: 15px;
+    width: 24px;
+    height: 24px;
+  }
+
+  &:first-of-type {
+    border-radius: 12px 12px 0 0;
+  }
+
+  &:last-of-type {
+    border-radius: 0 0 12px 12px;
+  }
+}

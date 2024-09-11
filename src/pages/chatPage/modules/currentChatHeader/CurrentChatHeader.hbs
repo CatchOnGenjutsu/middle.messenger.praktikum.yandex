@@ -10,6 +10,7 @@
     <div class="current-chat-header__info__chat-name">{{currentChat.chatName}}</div>
   </div>
   <div class="current-chat-header__settings">
-    <div class="current-chat-header__settings__burger-icon"></div>
+    {{> BurgerButton isActive=true}}
   </div>
+  {{> ButtonsPopup buttons=burgerButtons isActive=true isTopRight=true}}
 </div>

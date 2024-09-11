@@ -1,0 +1,10 @@
+@import "../../../../../styles.scss";
+.write-message-input {
+  flex-grow: 1;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border-radius: 30px;
+  background-color: $--color-input-avatar-grey;
+}

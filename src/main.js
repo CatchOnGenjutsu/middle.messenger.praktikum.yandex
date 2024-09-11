@@ -12,6 +12,11 @@ import {
   registrationButtonOptions,
 } from "./constants";
 import { chatsData, chatTestData } from "./pages/chatPage/mockData";
+import {
+  burgerActionButtonsSettings,
+  addAppsActionButtonsSettings,
+  modalWindowSettings,
+} from "./pages/chatPage/pageSettings";
 
 for (let component in components) {
   Handlebars.registerPartial(component, components[component]);
@@ -45,10 +50,18 @@ function renderChatPage() {
   app.innerHTML = chatPage({
     chatList: chatsData,
     currentChat: chatTestData,
+    burgerButtons: burgerActionButtonsSettings,
+    addAppsButtons: addAppsActionButtonsSettings,
+    modalWindowSettings: modalWindowSettings,
   });
 }
 function handleRoute() {
   const hash = window.location.hash;
+
+  if (!hash || hash === "#") {
+    window.location.href = "index.html";
+    return;
+  }
 
   switch (hash) {
     case "#login":

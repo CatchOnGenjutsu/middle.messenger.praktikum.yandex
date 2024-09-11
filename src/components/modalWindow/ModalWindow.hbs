@@ -1,0 +1,14 @@
+{{#if modalActive}}
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal" id="modal">
+  <div class="modal__content">
+    <h2 class="modal__title">{{modalWindowSettings.title}}</h2>
+    <form>
+      <div class="modal__content__modal-input">
+        {{> FormField option=modalWindowSettings.inputOptions}}
+      </div> 
+      {{> Button option=modalWindowSettings.buttonOptions}}
+    </form>
+  </div>
+</div>
+{{/if}}

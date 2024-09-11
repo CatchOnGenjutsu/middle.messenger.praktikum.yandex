@@ -1,5 +1,8 @@
 <div class="current-chat-footer">
-  {{> AddAppsButton}}
-  {{> WriteMessageInput}}
-  {{> ArrowButton rightBtn=true}}
+  <form>
+    {{> AddAppsButton isActive=true}}
+    {{> WriteMessageInput}}
+    {{> ArrowButton rightBtn=true}}
+    {{> ButtonsPopup buttons=addAppsButtons isActive=true isBottomLeft=true}}
+  </form>
 </div>

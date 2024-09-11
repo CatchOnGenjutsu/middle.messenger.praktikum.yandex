@@ -1,5 +1,6 @@
 <div class="current-chat-container">
-  <header>{{> CurrentChatHeader currentChat=currentChat }}</header>
+  <header>{{> CurrentChatHeader currentChat=currentChat burgerButtons=burgerButtons }}</header>
   <main>{{> MessagesBlock currentChat=currentChat }}</main>
-  <footer>{{> CurrentChatFooter currentChat=currentChat }}</footer>
+  <footer>{{> CurrentChatFooter currentChat=currentChat addAppsButtons=addAppsButtons }}</footer>
+  {{> ModalWindow modalWindowSettings=modalWindowSettings modalActive=true}}
 </div>
