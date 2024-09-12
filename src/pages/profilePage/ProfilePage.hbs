@@ -1,0 +1,15 @@
+<div id="profile-page" class="profile-page">
+  <aside class="profile-page__aside">
+    {{> BackButtonBlock }}
+  </aside>
+  <div class="profile-page__main-content">
+    <div class="profile-page__main-content__avatar-wrapper">
+      {{> Avatar inputsSettings=inputsSettings}}
+      {{#if inputsSettings.isEditData}}
+      {{else}}
+        <h1 class="profile-page__main-content__name">{{inputsSettings.inputOptions.first_name.value}}</h1>
+      {{/if}}
+    </div>
+    {{> ProfileFormBlock inputsSettings=inputsSettings buttonOptions=buttonOptions}}
+  </div>
+</div>

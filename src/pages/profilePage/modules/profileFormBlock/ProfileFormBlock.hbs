@@ -1,0 +1,13 @@
+<div class="profile-form-block">
+  <form class="profile-form-block__form" action="submit">
+    {{#each inputsSettings.inputOptions}}
+      <div class="input-group-wrapper">
+        {{> InputGroup option=this isEdit=../inputsSettings.isEditData}}
+        <hr class="input-group-wrapper__hr {{#if this.isLast}}input-group-wrapper__hr_last{{/if}}">
+      </div>
+    {{/each}}
+    <div class="profile-form-block__form__buttons">
+      {{#if inputsSettings.isEditData}}{{> Button option=buttonOptions}}{{/if}}
+    </div>
+  </form>
+</div>

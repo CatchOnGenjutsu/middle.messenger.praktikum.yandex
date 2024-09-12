@@ -330,3 +330,67 @@ export const chatPageOpenModalSettings = {
   popupsOpen: false,
   modalOpen: true,
 };
+
+export const profilePageMainDataSettings = {
+  isEditData: false,
+  avatarUrl: "",
+  inputOptions: {
+    email: {
+      labelName: "Почта",
+      id: "email",
+      name: "email",
+      type: "email",
+      placeholder: "Введите почту",
+      value: "E7R5v@example.com",
+    },
+    login: {
+      labelName: "Логин",
+      id: "login",
+      name: "login",
+      type: "text",
+      placeholder: "Введите логин",
+      value: "login123",
+    },
+    first_name: {
+      labelName: "Имя",
+      id: "first_name",
+      name: "first_name",
+      type: "text",
+      placeholder: "Введите имя",
+      value: "Иван",
+    },
+    second_name: {
+      labelName: "Фамилия",
+      id: "second_name",
+      name: "second_name",
+      type: "text",
+      placeholder: "Введите фамилию",
+      value: "Иванов",
+    },
+    display_name: {
+      labelName: "Имя в чате",
+      id: "display_name",
+      name: "display_name",
+      type: "text",
+      placeholder: "Введите имя в чате",
+      value: "Иван",
+    },
+    phone: {
+      labelName: "Телефон",
+      id: "phone",
+      name: "phone",
+      type: "text",
+      placeholder: "Введите телефон",
+      value: "+7 999 999 99 99",
+      isLast: true,
+    },
+  },
+};
+
+export const saveButtonOptions = {
+  value: "Сохранить",
+  type: "submit",
+  class: "submit-button",
+  id: "submit-btn",
+  name: "submit-btn",
+};

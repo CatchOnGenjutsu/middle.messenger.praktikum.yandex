@@ -1,0 +1,42 @@
+@import "../../../styles.scss";
+
+.profile-page {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100vh;
+
+  &__aside {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 5vw;
+    min-width: 70px;
+    height: 100%;
+    padding: 0px;
+    background-color: #FBFBFB;
+    border-right: 1px solid $--color-dividing-line;
+  }
+
+  &__main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 95vw;
+    height: 100vh;
+
+    &__avatar-wrapper:not(:has(.profile-page__main-content__name)) {
+      margin-bottom: 100px;
+    }
+
+    &__name {
+      font-size: 18px;
+      font-weight: 550;
+      color: $--color-text-primary;
+      margin: 20px 0 60px;
+      text-align: center;
+    }
+  }
+}
