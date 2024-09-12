@@ -2,12 +2,12 @@
 
 .input-group {
   display: flex;
-  flex-direction: column; /* Меняем направление на колонку */
+  flex-direction: column;
   width: 100%;
 
   &__input-row {
     display: flex;
-    flex-direction: row; /* Меняем направление на строку */
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }

@@ -6,3 +6,4 @@ export { ProfileInput } from "./partials/profileInput/profileInput";
 export { ProfileLabel } from "./partials/profileLabel/profileLabel";
 export { DisplayValue } from "./partials/displayValue/displayValue";
 export { Avatar } from "./partials/avatar/avatar";
+export { ProfileActionButton } from "./partials/profileActionButton/profileActionButton";

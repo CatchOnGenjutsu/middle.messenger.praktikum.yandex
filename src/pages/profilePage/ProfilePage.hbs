@@ -11,5 +11,12 @@
       {{/if}}
     </div>
     {{> ProfileFormBlock inputsSettings=inputsSettings buttonOptions=buttonOptions}}
+    {{#unless inputsSettings.isEditData}}
+      {{#each actionsButtons}}
+        {{> ProfileActionButton button=this}}
+        <hr class="divider-line {{#if this.isLast}}divider-line_last{{/if}}">
+      {{/each}}
+    {{/unless}}
   </div>
+  {{> ModalWindow modalWindowSettings=modalWindowSettings modalActive=modalActive}}
 </div>

@@ -1,30 +1,30 @@
 export const burgerActionButtonsSettings = [
   {
     label: "Добавить пользователя",
-    icon: "/static/icons/add_user_icon.png",
+    icon: "/icons/add_user_icon.png",
   },
   {
     label: "Удалить пользователя",
-    icon: "/static/icons/delete_user_icon.png",
+    icon: "/icons/delete_user_icon.png",
   },
   {
     label: "Удалить чат",
-    icon: "/static/icons/trashcan_icon.png",
+    icon: "/icons/trashcan_icon.png",
   },
 ];
 
 export const addAppsActionButtonsSettings = [
   {
     label: "Фото или Видео",
-    icon: "/static/icons/add_image_icon.png",
+    icon: "/icons/add_image_icon.png",
   },
   {
     label: "Файл",
-    icon: "/static/icons/add_file_icon.png",
+    icon: "/icons/add_file_icon.png",
   },
   {
     label: "Локация",
-    icon: "/static/icons/add_location_icon.png",
+    icon: "/icons/add_location_icon.png",
   },
 ];
 

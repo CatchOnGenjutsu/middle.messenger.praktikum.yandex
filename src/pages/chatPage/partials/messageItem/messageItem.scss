@@ -33,7 +33,7 @@
     display: block;
     width: 12px;
     height: 12px;
-    background: url('static/icons/message_read_icon.svg') no-repeat center center;
+    background: url('/icons/message_read_icon.svg') no-repeat center center;
   }
   &:has(.message-item__image) {
     .message-time {

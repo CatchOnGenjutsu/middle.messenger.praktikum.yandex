@@ -125,7 +125,7 @@ export const chatPageOpenSettings = {
         },
         {
           id: 2,
-          content: "static/assets/image_example.png",
+          content: "/assets/image_example.png",
           incoming: true,
           type: "image",
           isImage: true,
@@ -207,7 +207,7 @@ export const chatPageOpenPopupsSettings = {
         },
         {
           id: 2,
-          content: "static/assets/image_example.png",
+          content: "/assets/image_example.png",
           incoming: true,
           type: "image",
           isImage: true,
@@ -289,7 +289,7 @@ export const chatPageOpenModalSettings = {
         },
         {
           id: 2,
-          content: "static/assets/image_example.png",
+          content: "/assets/image_example.png",
           incoming: true,
           type: "image",
           isImage: true,
@@ -331,7 +331,7 @@ export const chatPageOpenModalSettings = {
   modalOpen: true,
 };
 
-export const profilePageMainDataSettings = {
+export const profilePageViewModeMainDataSettings = {
   isEditData: false,
   avatarUrl: "",
   inputOptions: {
@@ -393,4 +393,77 @@ export const saveButtonOptions = {
   class: "submit-button",
   id: "submit-btn",
   name: "submit-btn",
+};
+
+export const profileActionsButtonsSettings = {
+  editData: {
+    text: "Изменить данные",
+    modifierClass: "button--primary",
+  },
+  editPassword: {
+    text: "Изменить пароль",
+    modifierClass: "button--primary",
+  },
+  exit: {
+    text: "Выйти",
+    modifierClass: "button--danger",
+    isLast: true,
+  },
+};
+
+export const profilePageEditModeMainDataSettings = {
+  ...profilePageViewModeMainDataSettings,
+  isEditData: true,
+};
+
+export const profilePageEditPasswordDataSettings = {
+  ...profilePageViewModeMainDataSettings,
+  isEditData: true,
+  inputOptions: {
+    oldPassword: {
+      labelName: "Старый пароль",
+      id: "oldPassword",
+      name: "oldPassword",
+      type: "password",
+      placeholder: "Старый пароль",
+      value: "12345678",
+    },
+    newPassword: {
+      labelName: "Новый пароль",
+      id: "newPassword",
+      name: "newPassword",
+      type: "password",
+      placeholder: "Новый пароль",
+      value: "12345678",
+    },
+    newPasswordRepeat: {
+      labelName: "Повторите новый пароль",
+      id: "newPasswordRepeat",
+      name: "newPasswordRepeat",
+      type: "password",
+      placeholder: "Повторите новый пароль",
+      value: "12345678",
+      isLast: true,
+    },
+  },
+};
+
+export const modalWindowAddAvatarSettings = {
+  title: "Загрузите файл",
+  inputOptions: {
+    labelName: "Выбрать файл на компьютере",
+    id: "avatar",
+    name: "avatar",
+    type: "file",
+    placeholder: "Выберите аватар",
+    errorText: "",
+    isFile: true,
+  },
+  buttonOptions: {
+    value: "Поменять",
+    type: "submit",
+    class: "submit-button",
+    id: "submit-btn",
+    name: "submit-btn",
+  },
 };

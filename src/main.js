@@ -16,8 +16,12 @@ import {
   chatPageOpenSettings,
   chatPageOpenPopupsSettings,
   chatPageOpenModalSettings,
-  profilePageMainDataSettings,
   saveButtonOptions,
+  profileActionsButtonsSettings,
+  profilePageViewModeMainDataSettings,
+  profilePageEditModeMainDataSettings,
+  profilePageEditPasswordDataSettings,
+  modalWindowAddAvatarSettings,
 } from "./constants";
 import { chatsData, emptyChatsData } from "./pages/chatPage/mockData";
 import {
@@ -102,12 +106,44 @@ function renderEmptyChatPage() {
   });
 }
 
-function renderProfilePage() {
+function renderProfilePageViewMode() {
   const app = document.querySelector("#app");
   const profilePage = Handlebars.compile(ProfilePage);
   app.innerHTML = profilePage({
-    inputsSettings: profilePageMainDataSettings,
+    inputsSettings: profilePageViewModeMainDataSettings,
     buttonOptions: saveButtonOptions,
+    actionsButtons: profileActionsButtonsSettings,
+  });
+}
+
+function renderProfilePageEditMode() {
+  const app = document.querySelector("#app");
+  const profilePage = Handlebars.compile(ProfilePage);
+  app.innerHTML = profilePage({
+    inputsSettings: profilePageEditModeMainDataSettings,
+    buttonOptions: saveButtonOptions,
+    actionsButtons: profileActionsButtonsSettings,
+  });
+}
+function renderProfilePageEditPasswordMode() {
+  const app = document.querySelector("#app");
+  const profilePage = Handlebars.compile(ProfilePage);
+  app.innerHTML = profilePage({
+    inputsSettings: profilePageEditPasswordDataSettings,
+    buttonOptions: saveButtonOptions,
+    actionsButtons: profileActionsButtonsSettings,
+  });
+}
+
+function renderProfilePageChangeAvatarMode() {
+  const app = document.querySelector("#app");
+  const profilePage = Handlebars.compile(ProfilePage);
+  app.innerHTML = profilePage({
+    inputsSettings: profilePageViewModeMainDataSettings,
+    buttonOptions: saveButtonOptions,
+    actionsButtons: profileActionsButtonsSettings,
+    modalWindowSettings: modalWindowAddAvatarSettings,
+    modalActive: true,
   });
 }
 
@@ -159,8 +195,17 @@ function handleRoute() {
     case "#emptyChatPage":
       renderEmptyChatPage();
       break;
-    case "#profilePage":
-      renderProfilePage();
+    case "#profilePageViewMode":
+      renderProfilePageViewMode();
+      break;
+    case "#profilePageEditMode":
+      renderProfilePageEditMode();
+      break;
+    case "#profilePageEditPasswordMode":
+      renderProfilePageEditPasswordMode();
+      break;
+    case "#profilePageChangeAvatarMode":
+      renderProfilePageChangeAvatarMode();
       break;
     case "#errorPage404":
       renderErrorPage404();

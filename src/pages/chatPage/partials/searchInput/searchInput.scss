@@ -8,41 +8,14 @@
   font-size: 14px;
   line-height: 16px;
 
-  background-color: $--color-input-avatar-grey; /* Заливка фона */
-  background-image: url('static/icons/search_icon.svg'); /* Значок лупы */
-  background-repeat: no-repeat; /* Не повторять фоновое изображение */
-  background-position: 10px center; /* Позиция значка лупы */
-  background-size: 16px 16px; /* Размер значка лупы */
-  box-sizing: border-box; /* Учитываем отступы в ширину поля */
+  background-color: $--color-input-avatar-grey;
+  background-image: url('/icons/search_icon.svg');
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 16px 16px;
+  box-sizing: border-box;
 
   &::placeholder {
-    // text-align: center;
     color: $--color-light-grey;
   }
 }
-
-// .search-container {
-//   position: relative;
-
-//   .search-input {
-//     padding-left: 30px; /* Отступ для значка */
-//     text-align: center; /* Центрирование текста внутри поля */
-//     background-color: $--color-input-avatar-grey; /* Фоновый цвет */
-//     border: 1px solid #ccc; /* Добавьте рамку, если требуется */
-//     box-sizing: border-box; /* Учитываем отступы и границы в ширину */
-//     height: 40px; /* Устанавливаем высоту поля ввода */
-    
-//     // Псевдоэлемент для значка
-//     &::before {
-//       content: '';
-//       position: absolute;
-//       left: 10px; /* Расстояние от левого края */
-//       top: 50%;
-//       transform: translateY(-50%); /* Центрируем значок по вертикали */
-//       width: 16px;
-//       height: 16px;
-//       background: url('static/icons/search_icon.svg') no-repeat center center;
-//       background-size: contain; /* Размер значка */
-//     }
-//   }
-// }

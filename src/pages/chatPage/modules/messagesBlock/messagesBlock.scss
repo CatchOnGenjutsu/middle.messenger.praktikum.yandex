@@ -2,7 +2,6 @@
 .messages-block-container {
   overflow-y: scroll;
   height: calc(100vh - 120px);
-  // scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
@@ -15,7 +14,7 @@
     margin-bottom: 30px;
   }
   &::-webkit-scrollbar-button {
-    display: none; /* Убирает стрелки прокрутки */
+    display: none;
   }
   &::-webkit-scrollbar {
     width: 8px;
