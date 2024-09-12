@@ -10,8 +10,11 @@ import {
   loginButtonOptions,
   registrationPageSettings,
   registrationButtonOptions,
+  chatPageOpenSettings,
+  chatPageOpenPopupsSettings,
+  chatPageOpenModalSettings,
 } from "./constants";
-import { chatsData, chatTestData } from "./pages/chatPage/mockData";
+import { chatsData, chatTestData, emptyChatsData } from "./pages/chatPage/mockData";
 import {
   burgerActionButtonsSettings,
   addAppsActionButtonsSettings,
@@ -44,12 +47,46 @@ function renderRegistration() {
   });
 }
 
-function renderChatPage() {
+function renderChatActivePage() {
   const app = document.querySelector("#app");
   const chatPage = Handlebars.compile(ChatPage);
   app.innerHTML = chatPage({
     chatList: chatsData,
-    currentChat: chatTestData,
+    currentChat: chatPageOpenSettings,
+    burgerButtons: burgerActionButtonsSettings,
+    addAppsButtons: addAppsActionButtonsSettings,
+    modalWindowSettings: modalWindowSettings,
+  });
+}
+
+function renderPopupsChatPage() {
+  const app = document.querySelector("#app");
+  const chatPage = Handlebars.compile(ChatPage);
+  app.innerHTML = chatPage({
+    chatList: chatsData,
+    currentChat: chatPageOpenPopupsSettings,
+    burgerButtons: burgerActionButtonsSettings,
+    addAppsButtons: addAppsActionButtonsSettings,
+    modalWindowSettings: modalWindowSettings,
+  });
+}
+function renderModalChatPage() {
+  const app = document.querySelector("#app");
+  const chatPage = Handlebars.compile(ChatPage);
+  app.innerHTML = chatPage({
+    chatList: chatsData,
+    currentChat: chatPageOpenModalSettings,
+    burgerButtons: burgerActionButtonsSettings,
+    addAppsButtons: addAppsActionButtonsSettings,
+    modalWindowSettings: modalWindowSettings,
+  });
+}
+function renderEmptyChatPage() {
+  const app = document.querySelector("#app");
+  const chatPage = Handlebars.compile(ChatPage);
+  app.innerHTML = chatPage({
+    chatList: emptyChatsData,
+    currentChat: { isEmpty: true },
     burgerButtons: burgerActionButtonsSettings,
     addAppsButtons: addAppsActionButtonsSettings,
     modalWindowSettings: modalWindowSettings,
@@ -70,8 +107,17 @@ function handleRoute() {
     case "#registration":
       renderRegistration();
       break;
-    case "#chatPage":
-      renderChatPage();
+    case "#activeChatPage":
+      renderChatActivePage();
+      break;
+    case "#popupsChatPage":
+      renderPopupsChatPage();
+      break;
+    case "#modalChatPage":
+      renderModalChatPage();
+      break;
+    case "#emptyChatPage":
+      renderEmptyChatPage();
       break;
     default:
       break;
