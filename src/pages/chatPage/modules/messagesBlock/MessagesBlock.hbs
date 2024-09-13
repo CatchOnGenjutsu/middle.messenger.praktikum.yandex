@@ -1,0 +1,8 @@
+<div class="messages-block-container">
+  {{#each currentChat.allMessages}}
+    <time class="messages-block-container__datetime-block">{{this.date}}</time>
+    {{#each this.messages}}
+      {{> MessageItem message=this }}
+    {{/each}}
+  {{/each}}
+</div>

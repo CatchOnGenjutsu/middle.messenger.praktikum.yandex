@@ -1,0 +1,15 @@
+@import "../../../styles.scss";
+
+.arrow-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: $--color-blue-primary;
+  &_left {
+    transform: rotate(180deg);
+  }
+}

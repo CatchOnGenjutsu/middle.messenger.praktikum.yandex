@@ -1,0 +1,26 @@
+{{#if message.incoming}}
+  <div class="message-item message-item_incoming">
+    {{#if message.isImage}}
+      <img class="message-item__image" src="{{message.content}}" alt="image">
+      {{else}}
+      <div class="message-item__text">{{message.content}}</div>
+    {{/if}}
+    <div class="message-info">
+      <span class="message-time">{{message.messageTime}}</span>
+    </div>
+  </div>
+{{else}}
+  <div class="message-item message-item_outgoing {{#if message.isRead}}message-item_outgoing_read{{/if}}">
+    {{#if message.isImage}}
+      <img class="message-item__image" src="{{message.content}}" alt="image">
+      {{else}}
+      <div class="message-item__text">{{message.content}}</div>
+    {{/if}}
+    <div class="message-info">
+        {{#if message.isRead}}
+          <span class="message-status"></span>
+        {{/if}}
+        <span class="message-time">{{message.messageTime}}</span>
+    </div>
+  </div>
+{{/if}}

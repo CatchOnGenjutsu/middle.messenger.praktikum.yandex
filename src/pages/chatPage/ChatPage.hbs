@@ -1,0 +1,12 @@
+<div class="chat-page" id="chat-page">
+  <aside class="chat-page__aside">
+    <a href="#" class="chat-page__aside__profile-link">
+      Профиль <img class="chat-page__aside__profile-link__icon" src="/icons/profile_icon.png" alt="profile icon"/>
+    </a>
+    {{> SearchInput }}
+    {{> ChatList chatList=chatList }}
+  </aside>
+  <main>
+    {{> CurrentChat currentChat=currentChat burgerButtons=burgerButtons addAppsButtons=addAppsButtons modalWindowSettings=modalWindowSettings }}
+  </main>
+</div>

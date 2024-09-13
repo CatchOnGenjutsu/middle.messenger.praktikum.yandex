@@ -1,0 +1,10 @@
+<div class="current-chat-container">
+  {{#if currentChat.isEmpty}}
+    <p class="current-chat_empty">Выберите чат чтобы отправить сообщение</p></p>
+  {{else}}
+    <header>{{> CurrentChatHeader currentChat=currentChat burgerButtons=burgerButtons }}</header>
+    <main>{{> MessagesBlock currentChat=currentChat }}</main>
+    <footer>{{> CurrentChatFooter currentChat=currentChat addAppsButtons=addAppsButtons }}</footer>
+    {{> ModalWindow modalWindowSettings=modalWindowSettings modalActive=currentChat.modalOpen}}
+  {{/if}}
+</div>

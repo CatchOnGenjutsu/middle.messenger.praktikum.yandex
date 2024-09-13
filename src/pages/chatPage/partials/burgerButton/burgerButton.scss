@@ -1,0 +1,15 @@
+.burger-button {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: url('/icons/burger_menu_icon.svg') no-repeat center center;
+  &:hover {
+    background: url('/icons/burger_menu_active_icon.svg') no-repeat center center;
+    background-color: #F5F5F5;
+    cursor: pointer;
+  }
+  &_active {
+    background: url('/icons/burger_menu_active_icon.svg') no-repeat center center;
+    background-color: #F5F5F5;
+  }
+}

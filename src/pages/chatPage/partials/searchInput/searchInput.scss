@@ -1,0 +1,21 @@
+@import "../../../../../styles.scss";
+
+.search-input {
+  height: 46px;
+  margin: 0 10px;
+  padding: 0 10px 0 30px;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 16px;
+
+  background-color: $--color-input-avatar-grey;
+  background-image: url('/icons/search_icon.svg');
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 16px 16px;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: $--color-light-grey;
+  }
+}

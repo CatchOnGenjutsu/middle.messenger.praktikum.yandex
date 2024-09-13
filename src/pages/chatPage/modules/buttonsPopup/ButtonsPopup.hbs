@@ -1,0 +1,5 @@
+<div class="buttons-popup {{#if isActive}}buttons-popup_active{{/if}} {{#if isTopRight}}buttons-popup_top-right{{/if}} {{#if isBottomLeft}}buttons-popup_bottom-left{{/if}}">
+  {{#each buttons}}
+    {{> ActionButton button=this}}
+  {{/each}}
+</div>
