@@ -2,7 +2,7 @@
   <aside class="profile-page__aside">
     {{> BackButtonBlock }}
   </aside>
-  <div class="profile-page__main-content">
+  <main class="profile-page__main-content">
     <div class="profile-page__main-content__avatar-wrapper">
       {{> Avatar inputsSettings=inputsSettings}}
       {{#if inputsSettings.isEditData}}
@@ -17,6 +17,6 @@
         <hr class="divider-line {{#if this.isLast}}divider-line_last{{/if}}">
       {{/each}}
     {{/unless}}
-  </div>
+  </main>
   {{> ModalWindow modalWindowSettings=modalWindowSettings modalActive=modalActive}}
 </div>
