@@ -1,2 +1,2 @@
-export { default as CurrentChatFooter } from "./currentChatFooter.hbs?raw";
+export { default as CurrentChatFooter } from "./CurrentChatFooter.hbs?raw";
 import "./currentChatFooter.scss";

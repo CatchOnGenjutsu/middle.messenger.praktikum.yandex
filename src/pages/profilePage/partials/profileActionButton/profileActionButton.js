@@ -1,2 +1,2 @@
-export { default as ProfileActionButton } from "./profileActionButton.hbs?raw";
+export { default as ProfileActionButton } from "./ProfileActionButton.hbs?raw";
 import "./profileActionButton.scss";

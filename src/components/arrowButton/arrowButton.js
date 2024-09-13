@@ -1,2 +1,2 @@
-export { default as ArrowButton } from "./arrowButton.hbs?raw";
+export { default as ArrowButton } from "./ArrowButton.hbs?raw";
 import "./arrowButton.scss";

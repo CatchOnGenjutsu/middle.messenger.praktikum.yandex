@@ -1,2 +1,2 @@
-export { default as ProfileFormBlock } from "./profileFormBlock.hbs?raw";
+export { default as ProfileFormBlock } from "./ProfileFormBlock.hbs?raw";
 import "./profileFormBlock.scss";

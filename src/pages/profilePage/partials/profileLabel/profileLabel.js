@@ -1,2 +1,2 @@
-export { default as ProfileLabel } from "./profileLabel.hbs?raw";
+export { default as ProfileLabel } from "./ProfileLabel.hbs?raw";
 import "./profileLabel.scss";

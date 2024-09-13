@@ -1,2 +1,2 @@
-export { default as ButtonsPopup } from "./buttonsPopup.hbs?raw";
+export { default as ButtonsPopup } from "./ButtonsPopup.hbs?raw";
 import "./buttonsPopup.scss";

@@ -1,2 +1,2 @@
-export { default as WriteMessageInput } from "./writeMessageInput.hbs?raw";
+export { default as WriteMessageInput } from "./WriteMessageInput.hbs?raw";
 import "./writeMessageInput.scss";

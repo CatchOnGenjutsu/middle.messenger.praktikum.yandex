@@ -1,2 +1,2 @@
-export { default as ModalWindow } from "./modalWindow.hbs?raw";
+export { default as ModalWindow } from "./ModalWindow.hbs?raw";
 import "./modalWindow.scss";
