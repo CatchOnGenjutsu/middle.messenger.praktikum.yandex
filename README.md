@@ -14,6 +14,10 @@
 - `npm run build` — сборка стабильной версии.
 - `npm run start` — исполняет команды build и preview.
 
+### **Стартовая страница проекта**
+
+[MyMessenger](https://ypraktikum.netlify.app/)
+
 ### **Страницы проекта**
 
 - «[Login](https://ypraktikum.netlify.app/index.html#login)»,
