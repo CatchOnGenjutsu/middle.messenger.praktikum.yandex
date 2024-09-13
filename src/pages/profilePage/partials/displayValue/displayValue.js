@@ -1,2 +1,2 @@
-export { default as DisplayValue } from "./displayValue.hbs?raw";
+export { default as DisplayValue } from "./DisplayValue.hbs?raw";
 import "./displayValue.scss";

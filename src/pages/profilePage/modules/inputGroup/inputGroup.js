@@ -1,2 +1,2 @@
-export { default as InputGroup } from "./inputGroup.hbs?raw";
+export { default as InputGroup } from "./InputGroup.hbs?raw";
 import "./inputGroup.scss";

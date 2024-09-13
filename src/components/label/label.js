@@ -1,2 +1,2 @@
-export { default as Label } from "./label.hbs?raw";
+export { default as Label } from "./Label.hbs?raw";
 import "./label.scss";

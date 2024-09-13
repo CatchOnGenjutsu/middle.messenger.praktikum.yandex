@@ -1,2 +1,2 @@
-export { default as BurgerButton } from "./burgerButton.hbs?raw";
+export { default as BurgerButton } from "./BurgerButton.hbs?raw";
 import "./burgerButton.scss";

@@ -1,2 +1,2 @@
-export { default as CurrentChat } from "./currentChat.hbs?raw";
+export { default as CurrentChat } from "./CurrentChat.hbs?raw";
 import "./currentChat.scss";

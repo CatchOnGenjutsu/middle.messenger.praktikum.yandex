@@ -1,2 +1,2 @@
-export { default as AddAppsButton } from "./addAppsButton.hbs?raw";
+export { default as AddAppsButton } from "./AddAppsButton.hbs?raw";
 import "./addAppsButton.scss";

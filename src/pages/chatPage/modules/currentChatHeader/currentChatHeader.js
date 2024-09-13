@@ -1,2 +1,2 @@
-export { default as CurrentChatHeader } from "./currentChatHeader.hbs?raw";
+export { default as CurrentChatHeader } from "./CurrentChatHeader.hbs?raw";
 import "./currentChatHeader.scss";

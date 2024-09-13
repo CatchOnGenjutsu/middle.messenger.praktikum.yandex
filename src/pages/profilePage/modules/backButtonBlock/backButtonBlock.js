@@ -1,2 +1,2 @@
-export { default as BackButtonBlock } from "./backButtonBlock.hbs?raw";
+export { default as BackButtonBlock } from "./BackButtonBlock.hbs?raw";
 import "./backButtonBlock.scss";

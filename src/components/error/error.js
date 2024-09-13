@@ -1,2 +1,2 @@
-export { default as Error } from "./error.hbs?raw";
+export { default as Error } from "./Error.hbs?raw";
 import "./error.scss";
