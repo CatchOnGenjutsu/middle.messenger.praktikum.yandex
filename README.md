@@ -20,15 +20,15 @@
 
 ### **Страницы проекта**
 
-- «[Login](https://github.com/facebook/react)»,
-- «[Registration](https://github.com/labstack/echo)»,
-- «[Active Chat](https://github.com/webpack/webpack)»,
-- «[Popups Chat](https://github.com/taosdata/TDengine)»,
-- «[Modal Chat](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Empty Chat](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Profile View Mode](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Profile Edit Mode](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Profile Edit Password Mode](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Profile Change Avatar Mode](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Error 404](https://github.com/vladpereskokov/soul-hunting/)».
-- «[Error 500](https://github.com/vladpereskokov/soul-hunting/)».
+- «[Login](https://ypraktikum.netlify.app/index.html#login)»,
+- «[Registration](https://ypraktikum.netlify.app/index.html#registration)»,
+- «[Active Chat](https://ypraktikum.netlify.app/index.html#activeChatPage)»,
+- «[Popups Chat](https://ypraktikum.netlify.app/index.html#popupsChatPage)»,
+- «[Modal Chat](https://ypraktikum.netlify.app/index.html#modalChatPage)».
+- «[Empty Chat](https://ypraktikum.netlify.app/index.html#emptyChatPage)».
+- «[Profile View Mode](https://ypraktikum.netlify.app/index.html#profilePageViewMode)».
+- «[Profile Edit Mode](https://ypraktikum.netlify.app/index.html#profilePageEditMode)».
+- «[Profile Edit Password Mode](https://ypraktikum.netlify.app/index.html#profilePageEditPasswordMode)».
+- «[Profile Change Avatar Mode](https://ypraktikum.netlify.app/index.html#profilePageChangeAvatarMode)».
+- «[Error 404](https://ypraktikum.netlify.app/index.html#errorPage404)».
+- «[Error 500](https://ypraktikum.netlify.app/index.html#errorPage500)».
