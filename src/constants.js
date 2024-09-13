@@ -76,10 +76,10 @@ export const registrationPageSettings = {
     type: "password",
     placeholder: "Введите пароль",
   },
-  passwordRe: {
+  passwordRepeat: {
     labelName: "Пароль",
-    id: "password",
-    name: "password",
+    id: "passwordRepeat",
+    name: "passwordRepeat",
     type: "password",
     placeholder: "Введите пароль(ещё раз)",
   },
