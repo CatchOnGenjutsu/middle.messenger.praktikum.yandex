@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-import { Login } from "./pages/login/login";
+// import { Login } from "./pages/login/login";
 import { Registration } from "./pages/registration/registration";
 import { ChatPage } from "./pages/chatPage/chatPage";
 import { ProfilePage } from "./pages/profilePage/profilePage";
@@ -42,14 +42,14 @@ for (let component in profilePageComponents) {
   Handlebars.registerPartial(component, profilePageComponents[component]);
 }
 
-function renderLogin() {
-  const app = document.querySelector("#app");
-  const login = Handlebars.compile(Login);
-  app.innerHTML = login({
-    inputsSettings: loginPageSettings,
-    buttonOptions: loginButtonOptions,
-  });
-}
+// function renderLogin() {
+//   const app = document.querySelector("#app");
+//   const login = Handlebars.compile(Login);
+//   app.innerHTML = login({
+//     inputsSettings: loginPageSettings,
+//     buttonOptions: loginButtonOptions,
+//   });
+// }
 
 function renderRegistration() {
   const app = document.querySelector("#app");
@@ -177,9 +177,9 @@ function handleRoute() {
   }
 
   switch (hash) {
-    case "#login":
-      renderLogin();
-      break;
+    // case "#login":
+    //   renderLogin();
+    //   break;
     case "#registration":
       renderRegistration();
       break;

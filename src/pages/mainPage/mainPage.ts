@@ -1,17 +1,15 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/icons/title_icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MyMessenger</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.scss">
-  </head>
-  <body>
-    <div id="app">
-      <!-- <nav id="navigation" class="navigation">
-        <a class="navigation__link" href="#login">Login</a>
+import Block from "../../globalClasses/Block";
+import "./mainPage.scss";
+
+export default class MainPage extends Block {
+  constructor() {
+    super();
+  }
+
+  override render() {
+    return `
+      <nav id="navigation" class="navigation">
+        <a class="navigation__link" href="/login">Login</a>
         <a class="navigation__link" href="#registration">Registration</a>
         <a class="navigation__link" href="#activeChatPage">Active Chat</a>
         <a class="navigation__link" href="#popupsChatPage">Popups Chat</a>
@@ -23,8 +21,7 @@
         <a class="navigation__link" href="#profilePageChangeAvatarMode">Profile Change Avatar Mode</a>
         <a class="navigation__link" href="#errorPage404">Error 404</a>
         <a class="navigation__link" href="#errorPage500">Error 500</a>
-      </nav> -->
-    </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
-</html>
+      </nav>
+    `;
+  }
+}
