@@ -6,21 +6,22 @@ import { Error } from "../../components/error/Error";
 import "./formField.scss";
 
 export class FormField extends Block {
-  constructor(props?: any) {
+  constructor(props?: FormFieldProps) {
     super({
       ...props,
       label: new Label({
-        labelName: "Логин",
-        for: "login",
+        labelName: props.labelName,
+        for: props.for,
       }),
       input: new Input({
-        name: "login",
-        type: "text",
-        id: "login",
-        placeholder: "Введите логин",
+        inputName: props.inputName,
+        type: props.inputType,
+        id: props.inputId,
+        placeholder: props.inputPlaceholder,
+        events: props.events,
       }),
       error: new Error({
-        errorText: "Неверный логин",
+        errorText: props.errorText,
       }),
     });
   }

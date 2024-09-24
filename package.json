@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3006",
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "start": "npm run build && npm run preview"

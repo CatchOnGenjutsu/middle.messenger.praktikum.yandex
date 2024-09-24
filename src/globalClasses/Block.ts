@@ -81,6 +81,45 @@ export default class Block {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
+    // function deepEqual(oldProps: any, newProps: any): boolean {
+    //   if (oldProps === newProps) {
+    //     return true;
+    //   }
+
+    //   if (
+    //     typeof oldProps !== "object" ||
+    //     oldProps === null ||
+    //     typeof newProps !== "object" ||
+    //     newProps === null
+    //   ) {
+    //     return false;
+    //   }
+
+    //   const keys1 = Object.keys(oldProps);
+    //   const keys2 = Object.keys(newProps);
+
+    //   if (keys1.length !== keys2.length) {
+    //     return false;
+    //   }
+
+    //   for (let key of keys1) {
+    //     if (!keys2.includes(key)) {
+    //       return false;
+    //     }
+
+    //     const value1 = oldProps[key];
+    //     const value2 = newProps[key];
+    //     if (!deepEqual(value1, value2)) {
+    //       return false;
+    //     }
+    //   }
+
+    //   return true;
+    // }
+    // if (oldProps === newProps) {
+    //   return false;
+    // }
+    // return deepEqual(oldProps, newProps);
     return true;
   }
 
@@ -96,7 +135,7 @@ export default class Block {
     Object.entries(propsAndChildren).forEach(([key, value]) => {
       if (value instanceof Block) {
         children[key] = value;
-      } else if (Array.isArray(value)) {
+      } else if (Array.isArray(value) && value.every((item) => item instanceof Block)) {
         lists[key] = value;
       } else {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -132,6 +171,7 @@ export default class Block {
   private _render(): void {
     console.log("Render");
     const propsAndStubs = { ...this.props };
+    console.log(propsAndStubs);
     const _tmpId = Math.floor(100000 + Math.random() * 900000);
     Object.entries(this.children).forEach(([key, child]) => {
       propsAndStubs[key] = `<div data-id="${child._id}"></div>`;

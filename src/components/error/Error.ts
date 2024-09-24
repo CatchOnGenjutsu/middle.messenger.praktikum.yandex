@@ -14,7 +14,7 @@ export class Error extends Block {
 
   render() {
     return `
-      <p class="error">{{errorText}}</p>
+      <p class="error">{{#if errorText}}{{errorText}}{{/if}}</p>
     `;
   }
 }
