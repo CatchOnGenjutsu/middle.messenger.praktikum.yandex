@@ -3,10 +3,10 @@ import "./input.scss";
 
 interface InputProps {
   inputName: string;
-  type: string;
-  id: string;
-  placeholder: string;
-  className?: string;
+  inputType: string;
+  inputId: string;
+  inputPlaceholder: string;
+  inputClassName?: string;
   events?: {
     // focus: (event: Event) => void;
     blur: (event: Event) => void;
@@ -22,11 +22,11 @@ export class Input extends Block {
   override render() {
     return `
       <input
-        class="input{{#if className}} {{className}} {{/if}}"
-        type="{{type}}"
-        id="{{id}}"
+        class="input{{#if inputClassName}} {{inputClassName}} {{/if}}"
+        type="{{inputType}}"
+        id="{{inputId}}"
         name="{{inputName}}"
-        placeholder="{{placeholder}}"
+        placeholder="{{inputPlaceholder}}"
       />
     `;
   }

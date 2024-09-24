@@ -1,6 +1,6 @@
 interface FormFieldProps {
   labelName: string;
-  for: string;
+  labelFor: string;
   inputName: string;
   inputType: string;
   inputId: string;
@@ -18,7 +18,7 @@ interface FormFieldProps {
 const FormFieldSettings: FormFieldProps[] = [
   {
     labelName: "Логин",
-    for: "login",
+    labelFor: "login",
     inputName: "login",
     inputType: "text",
     inputId: "login",
@@ -27,7 +27,7 @@ const FormFieldSettings: FormFieldProps[] = [
   },
   {
     labelName: "Пароль",
-    for: "password",
+    labelFor: "password",
     inputName: "password",
     inputType: "password",
     inputId: "password",

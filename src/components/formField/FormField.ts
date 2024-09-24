@@ -11,13 +11,13 @@ export class FormField extends Block {
       ...props,
       label: new Label({
         labelName: props.labelName,
-        for: props.for,
+        labelFor: props.labelFor,
       }),
       input: new Input({
         inputName: props.inputName,
-        type: props.inputType,
-        id: props.inputId,
-        placeholder: props.inputPlaceholder,
+        inputType: props.inputType,
+        inputId: props.inputId,
+        inputPlaceholder: props.inputPlaceholder,
         events: props.events,
       }),
       error: new Error({

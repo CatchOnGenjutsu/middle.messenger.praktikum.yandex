@@ -3,7 +3,7 @@ import "./label.scss";
 
 interface LabelProps {
   labelName: string;
-  for: string;
+  labelFor: string;
 }
 
 export class Label extends Block {
@@ -15,7 +15,7 @@ export class Label extends Block {
 
   override render() {
     return `
-      <label class="label" for="{{for}}">{{labelName}}</label>
+      <label class="label" for="{{labelFor}}">{{labelName}}</label>
     `;
   }
 }

@@ -13,7 +13,7 @@ export default class Login extends Block {
       Fields: [
         new FormField({
           labelName: "Логин",
-          for: "login",
+          labelFor: "login",
           inputName: "login",
           inputType: "text",
           inputId: "login",
@@ -44,11 +44,12 @@ export default class Login extends Block {
         }),
         new FormField({
           labelName: "Пароль",
-          for: "password",
+          labelFor: "password",
           inputName: "password",
           inputType: "password",
           inputId: "password",
           inputPlaceholder: "Введите пароль",
+          errorText: "",
         }),
       ],
     });
