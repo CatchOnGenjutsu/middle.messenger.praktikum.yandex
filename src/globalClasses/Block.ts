@@ -72,54 +72,32 @@ export default class Block {
   }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-    const response = this.componentDidUpdate(oldProps, newProps);
-    if (!response) {
-      return;
+    console.log("_componentDidUpdate", this, oldProps, newProps);
+    if (this._propsHaveChanged(oldProps, newProps)) {
+      this._updateChildrenProps(newProps);
+      this._render();
     }
-    this._render();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private _propsHaveChanged(oldProps: BlockProps, newProps: BlockProps): boolean {
+    return Object.keys(newProps).some((key) => oldProps[key] !== newProps[key]);
+  }
+
+  private _updateChildrenProps(newProps: BlockProps): void {
+    Object.entries(this.children).forEach(([, child]) => {
+      const newChildProps = { ...child.props };
+
+      Object.entries(child.props).forEach(([key]) => {
+        if (newProps[key]) {
+          newChildProps[key] = newProps[key];
+        }
+      });
+
+      child.setProps(newChildProps);
+    });
+  }
+
   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
-    // function deepEqual(oldProps: any, newProps: any): boolean {
-    //   if (oldProps === newProps) {
-    //     return true;
-    //   }
-
-    //   if (
-    //     typeof oldProps !== "object" ||
-    //     oldProps === null ||
-    //     typeof newProps !== "object" ||
-    //     newProps === null
-    //   ) {
-    //     return false;
-    //   }
-
-    //   const keys1 = Object.keys(oldProps);
-    //   const keys2 = Object.keys(newProps);
-
-    //   if (keys1.length !== keys2.length) {
-    //     return false;
-    //   }
-
-    //   for (let key of keys1) {
-    //     if (!keys2.includes(key)) {
-    //       return false;
-    //     }
-
-    //     const value1 = oldProps[key];
-    //     const value2 = newProps[key];
-    //     if (!deepEqual(value1, value2)) {
-    //       return false;
-    //     }
-    //   }
-
-    //   return true;
-    // }
-    // if (oldProps === newProps) {
-    //   return false;
-    // }
-    // return deepEqual(oldProps, newProps);
     return true;
   }
 
