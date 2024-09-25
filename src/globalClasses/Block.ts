@@ -72,7 +72,7 @@ export default class Block {
   }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-    console.log("_componentDidUpdate", this, oldProps, newProps);
+    // console.log("_componentDidUpdate", this, oldProps, newProps);
     if (this._propsHaveChanged(oldProps, newProps)) {
       this._updateChildrenProps(newProps);
       this._render();
@@ -88,7 +88,7 @@ export default class Block {
       const newChildProps = { ...child.props };
 
       Object.entries(child.props).forEach(([key]) => {
-        if (newProps[key]) {
+        if (newProps[key] || newProps[key] === null) {
           newChildProps[key] = newProps[key];
         }
       });
@@ -149,7 +149,6 @@ export default class Block {
   private _render(): void {
     console.log("Render");
     const propsAndStubs = { ...this.props };
-    console.log(propsAndStubs);
     const _tmpId = Math.floor(100000 + Math.random() * 900000);
     Object.entries(this.children).forEach(([key, child]) => {
       propsAndStubs[key] = `<div data-id="${child._id}"></div>`;

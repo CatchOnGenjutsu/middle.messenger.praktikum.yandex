@@ -1,0 +1,21 @@
+import Block from "../../globalClasses/Block";
+import "./button.scss";
+
+interface ButtonProps {
+  class?: string;
+  id?: string;
+  name?: string;
+  type?: string;
+  value?: string;
+}
+export default class Button extends Block {
+  constructor(props: ButtonProps) {
+    super({ ...props });
+  }
+
+  render() {
+    return `
+    <button class="{{class}}" id="{{id}}" name="{{name}}" type="{{type}}">{{value}}</button>
+    `;
+  }
+}
