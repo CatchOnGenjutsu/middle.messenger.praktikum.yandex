@@ -212,7 +212,7 @@ export default class Registration extends Block {
               if (elem) {
                 if (value && value !== passwordValue) {
                   elem.setProps({
-                    errorText: "Пароль должны совпадать.",
+                    errorText: "Пароли должны совпадать.",
                   });
                 } else {
                   elem.setProps({

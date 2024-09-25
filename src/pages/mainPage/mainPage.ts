@@ -11,7 +11,7 @@ export default class MainPage extends Block {
       <nav id="navigation" class="navigation">
         <a class="navigation__link" href="/login">Login</a>
         <a class="navigation__link" href="/registration">Registration</a>
-        <a class="navigation__link" href="#activeChatPage">Active Chat</a>
+        <a class="navigation__link" href="/chat-page">Chat Page</a>
         <a class="navigation__link" href="#popupsChatPage">Popups Chat</a>
         <a class="navigation__link" href="#modalChatPage">Modal Chat</a>
         <a class="navigation__link" href="#emptyChatPage">Empty Chat</a>
