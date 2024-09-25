@@ -1,5 +1,6 @@
 import MainPage from "./pages/mainPage/mainPage";
 import Login from "./pages/login/Login";
+import Registration from "./pages/registration/Registration";
 
 interface AppState {
   currentPage: string;
@@ -29,6 +30,13 @@ export default class App {
       console.log(login.getContent());
       if (this.appElement) {
         this.appElement.replaceWith(login.getContent());
+      }
+    }
+    if (this.state.currentPage === "registration") {
+      const registration = new Registration();
+      console.log(registration.getContent());
+      if (this.appElement) {
+        this.appElement.replaceWith(registration.getContent());
       }
     }
     return "";

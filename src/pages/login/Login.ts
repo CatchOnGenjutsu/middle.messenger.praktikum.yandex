@@ -63,16 +63,16 @@ export default class Login extends Block {
 
   render(): string {
     return `
-      <div class="login-container">
+      <main class="login-container">
         <div class="login-container__login-block">
         <h1>Вход</h1>
         <form class="login-container__form" action="submit">
           {{{Fields}}}
           {{{Button}}}
         </form>
-        <a class="login-container__link" href="/registration" target="_blank">Нет аккаунта?</a>
+        <a class="login-container__link" href="/registration">Нет аккаунта?</a>
         </div>
-      </div>
+      </main>
     `;
   }
 }
