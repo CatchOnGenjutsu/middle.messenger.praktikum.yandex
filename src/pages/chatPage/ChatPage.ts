@@ -1,12 +1,20 @@
 import Block from "../../globalClasses/Block";
 import SearchInput from "./partials/searchInput/SearchInput";
 import ChatList from "./modules/chatList/ChatList";
+import CurrentChat from "./modules/currentChat/CurrentChat";
+
+import { chatPageOpenSettings } from "./mockData";
 
 import "./chatPage.scss";
 
 export default class ChatPage extends Block {
   constructor(props?: any) {
-    super({ ...props, SearchInput: new SearchInput({}), ChatList: new ChatList({}) });
+    super({
+      ...props,
+      SearchInput: new SearchInput({}),
+      ChatList: new ChatList({}),
+      CurrentChat: new CurrentChat({ ...chatPageOpenSettings }),
+    });
   }
 
   protected render(): string {
@@ -20,6 +28,7 @@ export default class ChatPage extends Block {
         {{{ ChatList }}}
       </aside>
       <main>
+        {{{ CurrentChat }}}
       </main>
     </div>
     `;
