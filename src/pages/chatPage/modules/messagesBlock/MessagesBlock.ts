@@ -1,5 +1,5 @@
 import Block from "../../../../globalClasses/Block";
-import { MessageItem } from "../../partials/messageItem/MessageItem";
+import { MessageGroup } from "../../partials/messageGroup/MessageGroup";
 
 import "./messagesBlock.scss";
 
@@ -23,32 +23,17 @@ interface IMessageBlockProps {
 }
 export class MessagesBlock extends Block {
   constructor(props: IMessageBlockProps) {
-    // const allMessages = props.allMessages.map((group) => ({
-    //   ...group,
-    //   messages: group.messages.map((message) => new MessageItem({ ...message })),
-    // }));
-
     super({
       ...props,
-      // allMessages,
+      messagesGroups: [...props.allMessages.map((group) => new MessageGroup({ ...group }))],
     });
   }
 
   protected render(): string {
     return `
     <div class="messages-block-container">
-      {{#each allMessages}}
-      <time class="messages-block-container__datetime-block">{{date}}</time>
-        {{#each messages}}
-          {{{renderMessage this}}} <!-- Вызываем функцию для рендеринга сообщения -->
-        {{/each}}
-      {{/each}}
+      {{{ messagesGroups }}}
     </div>
     `;
-  }
-
-  renderMessage(message: IMessageProps) {
-    const messageItem = new MessageItem({ ...message });
-    return messageItem.render(); // Возвращаем строку HTML
   }
 }

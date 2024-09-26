@@ -20,7 +20,7 @@ interface CurrentChatProps {
   avatar: string;
   active: boolean;
   allMessages: MessageGroup[];
-  popupsOpen: boolean;
+  popupOpen: boolean;
 }
 export const chatsData = [
   {
@@ -159,8 +159,8 @@ export const chatPageOpenSettings: CurrentChatProps = {
           id: 4,
           content: "Привет!",
           incoming: true,
-          type: "image",
-          isImage: true,
+          type: "text",
+          isImage: false,
           messageTime: "10:01",
         },
         {
@@ -176,6 +176,62 @@ export const chatPageOpenSettings: CurrentChatProps = {
       ],
     },
   ],
-  popupsOpen: false,
+  popupOpen: false,
   // modalOpen: false,
+};
+
+export const addAppsActionButtonsSettings = [
+  {
+    label: "Фото или Видео",
+    alt: "Фото или Видео",
+    icon: "/icons/add_image_icon.png",
+  },
+  {
+    label: "Файл",
+    alt: "Файл",
+    icon: "/icons/add_file_icon.png",
+  },
+  {
+    label: "Локация",
+    alt: "Локация",
+    icon: "/icons/add_location_icon.png",
+  },
+];
+
+export const burgerActionButtonsSettings = [
+  {
+    label: "Добавить пользователя",
+    alt: "Добавить пользователя",
+    icon: "/icons/add_user_icon.png",
+  },
+  {
+    label: "Удалить пользователя",
+    alt: "Удалить пользователя",
+    icon: "/icons/delete_user_icon.png",
+  },
+  {
+    label: "Удалить чат",
+    alt: "Удалить чат",
+    icon: "/icons/trashcan_icon.png",
+  },
+];
+
+export const modalWindowSettings = {
+  title: "Добавить пользователя",
+  inputOptions: {
+    labelName: "Логин",
+    labelFor: "login",
+    inputId: "login",
+    inputName: "login",
+    inputType: "text",
+    inputPlaceholder: "Введите логин",
+    errorText: "",
+  },
+  buttonOptions: {
+    value: "Добавить",
+    type: "submit",
+    class: "submit-button",
+    id: "submit-btn",
+    name: "submit-btn",
+  },
 };

@@ -19,27 +19,6 @@ export default class Login extends Block {
           inputId: "login",
           inputPlaceholder: "Введите логин",
           errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^(?=[a-zA-Z-_]*[a-zA-Z][a-zA-Z0-9-_]{2,19})$/.test(value)) {
-                  elem.setProps({
-                    errorText:
-                      "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание)",
-                  });
-                } else {
-                  elem.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
         }),
         new FormField({
           labelName: "Пароль",
@@ -58,6 +37,14 @@ export default class Login extends Block {
         id: "submit-btn",
         name: "submit-btn",
       }),
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const formData = new FormData(event.target as HTMLFormElement).entries();
+          const data = Object.fromEntries(formData);
+          console.log(data);
+        },
+      },
     });
   }
 

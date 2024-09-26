@@ -163,7 +163,7 @@ export default class Block {
 
     Object.values(this.children).forEach((child) => {
       const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
-      if (stub) {
+      if (stub && stub.parentNode) {
         stub.replaceWith(child.getContent());
       }
     });

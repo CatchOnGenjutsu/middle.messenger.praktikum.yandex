@@ -1,6 +1,7 @@
 import Block from "../../../../globalClasses/Block";
 import { CurrentChatHeader } from "../currentChatHeader/CurrentChatHeader";
 import { MessagesBlock } from "../messagesBlock/MessagesBlock";
+import { CurrentChatFooter } from "../currentChatFooter/CurrentChatFooter";
 
 import "./currentChat.scss";
 
@@ -26,23 +27,39 @@ interface CurrentChatProps {
   initials?: string;
   active: boolean;
   allMessages: IMessageGroup[];
-  popupsOpen: boolean;
+  popupOpen: boolean;
+  isEmpty?: boolean;
 }
 
 export default class CurrentChat extends Block {
-  constructor(props: CurrentChatProps) {
-    super({
-      ...props,
-      Header: new CurrentChatHeader({ ...props }),
-      messageBlock: new MessagesBlock({ ...props, allMessages: props.allMessages }),
+  constructor(props?: CurrentChatProps) {
+    if (props) {
+      super({
+        ...props,
+        Header: new CurrentChatHeader({ ...props }),
+        MessageBlock: new MessagesBlock({ ...props, allMessages: props.allMessages }),
+        Footer: new CurrentChatFooter({ ...props, popupOpen: props.popupOpen }),
+      });
+    } else super({});
+  }
+
+  init(): void {
+    super.init();
+    this.setProps({
+      isEmpty: !Object.values(this.props).length,
     });
   }
 
   protected render(): string {
     return ` 
     <div class="current-chat-container">
-      <header>{{{ Header }}}</header>
-      <main>{{{ messageBlock }}}</main>
+      {{#if isEmpty}}
+        <p class="current-chat_empty">Выберите чат чтобы отправить сообщение</p>
+      {{else}}
+        <header>{{{ Header }}}</header>
+        <main>{{{ MessageBlock }}}</main>
+        <footer>{{{ Footer }}}</footer>
+      {{/if}}
     </div>
     `;
   }

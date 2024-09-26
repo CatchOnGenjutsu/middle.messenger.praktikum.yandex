@@ -7,7 +7,6 @@ import "./chatList.scss";
 
 export default class ChatList extends Block {
   constructor(props: any) {
-    console.log();
     super({
       ...props,
       activeChatId: null,
@@ -28,8 +27,6 @@ export default class ChatList extends Block {
   handleItemClick(event: Event) {
     if (!event) return;
     const target = event.target as HTMLInputElement;
-    console.log(target);
-    console.log(this);
     if (target) {
       this.setProps({ activeChatId: 2 });
     }

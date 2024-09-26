@@ -19,11 +19,6 @@ export default class App {
       currentPage: window.location.pathname.slice(1),
     };
     this.appElement = document.getElementById("app");
-
-    Handlebars.registerHelper("renderMessage", (message) => {
-      const messageItem = new MessageItem({ ...message });
-      return messageItem.render(); // Возвращаем HTML-содержимое
-    });
   }
 
   render(): string {

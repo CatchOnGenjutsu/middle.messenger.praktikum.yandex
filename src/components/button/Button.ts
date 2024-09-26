@@ -7,6 +7,7 @@ interface ButtonProps {
   name?: string;
   type?: string;
   value?: string;
+  events?: Record<string, (event: Event) => void>;
 }
 export default class Button extends Block {
   constructor(props: ButtonProps) {

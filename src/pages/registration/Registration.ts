@@ -231,7 +231,92 @@ export default class Registration extends Block {
         id: "submit-btn",
         name: "submit-btn",
       }),
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isValid = this.validateForm();
+          if (isValid) {
+            const formData = new FormData(event.target as HTMLFormElement).entries();
+            const data = Object.fromEntries(formData);
+            console.log(data);
+          }
+        },
+      },
     });
+  }
+
+  private validateField(inputId: string, value: string): boolean {
+    const field = this.lists.Fields.find((item) => item.props.inputId === inputId);
+    let isValid = true;
+
+    if (field) {
+      switch (inputId) {
+        case "email":
+          isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value);
+          field.setProps({
+            errorText: isValid ? null : "Неправильно введена почта. Почта должна содержать символы @ и .",
+          });
+          break;
+        case "login":
+          isValid = /^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value);
+          field.setProps({
+            errorText: isValid
+              ? null
+              : "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов.",
+          });
+          break;
+        case "first_name":
+        case "second_name":
+          isValid = /^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value);
+          field.setProps({
+            errorText: isValid
+              ? null
+              : "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис).",
+          });
+          break;
+        case "phone":
+          isValid = /^\+?\d{10,15}$/u.test(value);
+          field.setProps({
+            errorText: isValid ? null : "Должен содержать от 10 до 15 цифр, может начинается с плюса.",
+          });
+          break;
+        case "password":
+          isValid = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value);
+          field.setProps({
+            errorText: isValid
+              ? null
+              : "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.",
+          });
+          break;
+        case "passwordRepeat":
+          const passwordField = this.lists.Fields.find((item) => item.props.inputId === "password");
+          const passwordValue = passwordField?.getContent().querySelector("input")?.value || "";
+          isValid = value === passwordValue;
+          field.setProps({
+            errorText: isValid ? null : "Пароли должны совпадать.",
+          });
+          break;
+      }
+    }
+
+    return isValid;
+  }
+
+  // Валидация всей формы
+  private validateForm(): boolean {
+    let isFormValid = true;
+
+    this.lists.Fields.forEach((field: FormField) => {
+      const inputElement = field.getContent().querySelector("input") as HTMLInputElement;
+      const value = inputElement?.value || "";
+      const inputId = inputElement?.id || "";
+      const isValid = this.validateField(inputId, value);
+      if (!isValid) {
+        isFormValid = false;
+      }
+    });
+
+    return isFormValid;
   }
 
   protected render(): string {

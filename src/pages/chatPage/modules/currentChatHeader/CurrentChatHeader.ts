@@ -1,5 +1,8 @@
 import Block from "../../../../globalClasses/Block";
 import { BurgerButton } from "../../partials/burgerButton/BurgerButton";
+import { ButtonsPopup } from "../buttonsPopup/ButtonsPopup";
+
+import { burgerActionButtonsSettings } from "../../mockData";
 
 import "./currentChatHeader.scss";
 
@@ -10,14 +13,33 @@ interface CurrentChatProps {
   initials?: string;
   active: boolean;
   activeChatId?: number | null;
-  popupsOpen: boolean;
-  // allMessages: Record<string, MessageProps[] | string>[];
+  popupOpen: boolean;
 }
 export class CurrentChatHeader extends Block {
   constructor(props: CurrentChatProps) {
     super({
       ...props,
-      burgerButton: new BurgerButton({ popupsOpen: props.popupsOpen }),
+      burgerButton: new BurgerButton({
+        popupsOpen: props.popupOpen,
+        events: {
+          click: (event: Event) => {
+            const target = event.target as HTMLElement;
+            const elem = this.children.ButtonsPopup;
+            target.classList.toggle("burger-button_active");
+            if (elem) {
+              elem.setProps({
+                popupOpen: target.classList.contains("burger-button_active"),
+              });
+            }
+          },
+        },
+      }),
+      ButtonsPopup: new ButtonsPopup({
+        ...props,
+        buttons: burgerActionButtonsSettings,
+        popupOpen: props.popupOpen,
+        isTopRight: true,
+      }),
     });
   }
   // {{> ButtonsPopup buttons=burgerButtons isActive=currentChat.popupsOpen isTopRight=true}}
@@ -37,7 +59,7 @@ export class CurrentChatHeader extends Block {
         <div class="current-chat-header__settings">
           {{{ burgerButton }}}
         </div>
-        
+        {{{ ButtonsPopup }}}
       </div>
     `;
   }
