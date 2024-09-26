@@ -83,17 +83,62 @@ export default class Block {
     return Object.keys(newProps).some((key) => oldProps[key] !== newProps[key]);
   }
 
+  // private _updateChildrenProps(newProps: BlockProps): void {
+  //   Object.entries(this.children).forEach(([, child]) => {
+  //     const newChildProps = { ...child.props };
+
+  //     Object.entries(child.props).forEach(([key]) => {
+  //       if ((child.props.hasOwnProperty(key) && newProps[key]) || newProps[key] === null) {
+  //         newChildProps[key] = newProps[key];
+  //         child.setProps(newChildProps);
+  //       }
+  //     });
+  //   });
+  //   if (Object.values(this.lists)) {
+  //     Object.values(this.lists).forEach((list) => {
+  //       list.forEach((item) => {
+  //         if (item instanceof Block) {
+  //           const updatedProps = { ...item.props };
+  //           console.log(item);
+  //           for (const key in newProps) {
+  //             if (Object.prototype.hasOwnProperty.call(item.props, key)) {
+  //               updatedProps[key] = newProps[key];
+  //             }
+  //           }
+  //           item.setProps(updatedProps);
+  //         }
+  //       });
+  //     });
+  //   }
+  // }
   private _updateChildrenProps(newProps: BlockProps): void {
     Object.entries(this.children).forEach(([, child]) => {
-      const newChildProps = { ...child.props };
+      const newChildProps = JSON.parse(JSON.stringify(child.props));
 
-      Object.entries(child.props).forEach(([key]) => {
-        if (newProps[key] || newProps[key] === null) {
-          newChildProps[key] = newProps[key];
+      Object.entries(newProps).forEach(([key, value]) => {
+        if (child.props.hasOwnProperty(key) && value !== child.props[key]) {
+          newChildProps[key] = value;
         }
       });
 
       child.setProps(newChildProps);
+    });
+
+    // Обновление списков
+    Object.entries(this.lists).forEach(([listName, list]) => {
+      list.forEach((item) => {
+        if (item instanceof Block) {
+          const updatedProps = { ...item.props };
+
+          Object.entries(newProps).forEach(([key, value]) => {
+            if (item.props.hasOwnProperty(key) && value !== item.props[key]) {
+              updatedProps[key] = value;
+            }
+          });
+
+          item.setProps(updatedProps);
+        }
+      });
     });
   }
 

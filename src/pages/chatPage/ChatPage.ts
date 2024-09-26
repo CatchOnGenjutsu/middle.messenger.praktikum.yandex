@@ -8,9 +8,8 @@ import { chatPageOpenSettings } from "./mockData";
 import "./chatPage.scss";
 
 export default class ChatPage extends Block {
-  constructor(props?: any) {
+  constructor() {
     super({
-      ...props,
       SearchInput: new SearchInput({}),
       ChatList: new ChatList({}),
       CurrentChat: new CurrentChat({ ...chatPageOpenSettings }),
@@ -21,7 +20,7 @@ export default class ChatPage extends Block {
     return `
     <div class="chat-page" id="chat-page">
       <aside class="chat-page__aside">
-        <a href="/profile" class="chat-page__aside__profile-link">
+        <a href="/profile-page" class="chat-page__aside__profile-link">
           Профиль <img class="chat-page__aside__profile-link__icon" src="/icons/profile_icon.png" alt="profile icon"/>
         </a>
         {{{ SearchInput }}}

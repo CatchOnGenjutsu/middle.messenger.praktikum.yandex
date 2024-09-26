@@ -3,6 +3,7 @@ import Block from "../../globalClasses/Block";
 import "./arrowButton.scss";
 interface ArrowButtonProps {
   rightBtn?: boolean;
+  events?: Record<string, (event: Event) => void>;
 }
 export class ArrowButton extends Block {
   constructor(props: ArrowButtonProps) {

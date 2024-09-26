@@ -16,7 +16,7 @@
   }
 
   &--primary {
-    color: $--color-blue-primary; 
+    color: $--color-blue-primary;
 
     &:hover {
       color: darken($--color-blue-primary, 10%);
@@ -29,5 +29,17 @@
     &:hover {
       color: darken($--color-danger, 10%);
     }
+  }
+}
+
+.divider-line {
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid $--color-dividing-line;
+  width: 40vh;
+  min-width: 510px;
+  margin: 10px 0;
+  &_last {
+    display: none;
   }
 }

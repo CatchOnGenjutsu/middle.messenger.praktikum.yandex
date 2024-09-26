@@ -13,18 +13,5 @@
     &__buttons {
       margin-top: 60px;
     }
-
-    .input-group-wrapper {
-      &__hr {
-        margin: 0;
-        border: none;
-        border-bottom: 1px solid $--color-dividing-line;
-        width: 100%;
-        margin: 10px 0;
-        &_last {
-          display: none;
-        }
-      }
-    }
   }
 }

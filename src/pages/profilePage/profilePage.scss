@@ -14,7 +14,7 @@
     min-width: 70px;
     height: 100%;
     padding: 0px;
-    background-color: #FBFBFB;
+    background-color: #fbfbfb;
     border-right: 1px solid $--color-dividing-line;
   }
 
@@ -37,18 +37,6 @@
       color: $--color-text-primary;
       margin: 20px 0 60px;
       text-align: center;
-    }
-
-    .divider-line {
-      margin: 0;
-      border: none;
-      border-bottom: 1px solid $--color-dividing-line;
-      width: 40vh;
-      min-width: 510px;
-      margin: 10px 0;
-      &_last {
-        display: none;
-        }
     }
   }
 }

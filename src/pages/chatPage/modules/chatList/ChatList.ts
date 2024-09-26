@@ -1,7 +1,7 @@
 import Block from "../../../../globalClasses/Block";
 import { ChatItem } from "../../partials/chatItem/ChatItem";
 
-import { chatsData } from "./mockData";
+import { chatsData } from "../../mockData";
 
 import "./chatList.scss";
 
