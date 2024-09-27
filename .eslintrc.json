@@ -19,7 +19,7 @@
     "node": true
   },
   "rules": {
-    "constructor-super": "error",
+    "constructor-super": "structuredClone",
     "import/extensions": "off",
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/no-explicit-any": "off",

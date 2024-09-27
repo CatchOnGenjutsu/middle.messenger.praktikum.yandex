@@ -6,7 +6,6 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     rules: {
-      "constructor-super": structuredClone,
       "@typescript-eslint/ban-tslint-comment": "error",
     },
   },
