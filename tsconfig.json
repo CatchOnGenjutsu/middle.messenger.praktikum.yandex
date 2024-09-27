@@ -4,10 +4,7 @@
     "module": "ESNext",
     "sourceMap": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*.ts",
-    ".eslintrc.cjs"
-  ]
+  "include": ["src/**/*.ts", ".eslintrc.cjs"]
 }
