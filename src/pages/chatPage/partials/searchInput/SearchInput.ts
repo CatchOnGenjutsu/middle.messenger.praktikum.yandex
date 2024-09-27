@@ -2,9 +2,8 @@ import Block from "../../../../globalClasses/Block";
 import "./searchInput.scss";
 
 export default class SearchInput extends Block {
-  constructor(props?: any) {
+  constructor() {
     super({
-      ...props,
       events: {
         focus: (event: Event) => {
           const target = event.target as HTMLInputElement;

@@ -7,9 +7,8 @@ import "./login.scss";
 export default class Login extends Block {
   // private children: Record<string, Block> = {};
 
-  constructor(props?: any) {
+  constructor() {
     super({
-      ...props,
       Fields: [
         new FormField({
           labelName: "Логин",

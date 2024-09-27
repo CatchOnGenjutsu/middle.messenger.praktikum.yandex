@@ -1,5 +1,3 @@
-import Handlebars from "handlebars";
-
 import MainPage from "./pages/mainPage/mainPage";
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";

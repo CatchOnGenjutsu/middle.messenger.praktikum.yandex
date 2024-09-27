@@ -6,9 +6,8 @@ import { chatsData } from "../../mockData";
 import "./chatList.scss";
 
 export default class ChatList extends Block {
-  constructor(props: any) {
+  constructor() {
     super({
-      ...props,
       activeChatId: null,
       chatList: [
         ...chatsData.map(

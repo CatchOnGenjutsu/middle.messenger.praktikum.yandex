@@ -235,7 +235,7 @@ export const modalWindowAddAvatarSettings = {
     inputId: "avatar",
     inputName: "avatar",
     inputType: "file",
-    placeholder: "Выберите аватар",
+    inputPlaceholder: "Выберите аватар",
     errorText: "",
     isFile: true,
   },

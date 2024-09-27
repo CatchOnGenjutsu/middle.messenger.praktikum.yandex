@@ -8,8 +8,12 @@ import { addAppsActionButtonsSettings } from "../../mockData";
 
 import "./currentChatFooter.scss";
 
+class CurrentChatFooterProps {
+  popupOpen: boolean;
+}
+
 export class CurrentChatFooter extends Block {
-  constructor(props: any) {
+  constructor(props: CurrentChatFooterProps) {
     super({
       ...props,
       AddAppsButton: new AddAppsButton({

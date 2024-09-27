@@ -2,7 +2,17 @@ import EventBus, { EventCallback } from "./EventBus";
 import Handlebars from "handlebars";
 
 interface BlockProps {
-  [key: string]: any;
+  [key: string]: unknown;
+  events?: Record<string, EventListener>;
+  attr?: Record<string, string>;
+}
+
+interface Children {
+  [key: string]: Block;
+}
+
+interface Lists {
+  [key: string]: Block[];
 }
 
 export default class Block {
@@ -17,11 +27,11 @@ export default class Block {
 
   protected _id: number = Math.floor(100000 + Math.random() * 900000);
 
-  protected props: BlockProps;
+  props: BlockProps;
 
-  protected children: Record<string, Block>;
+  children: Children;
 
-  protected lists: Record<string, any[]>;
+  lists: Lists;
 
   protected eventBus: () => EventBus;
 
@@ -72,7 +82,6 @@ export default class Block {
   }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-    // console.log("_componentDidUpdate", this, oldProps, newProps);
     if (this._propsHaveChanged(oldProps, newProps)) {
       this._updateChildrenProps(newProps);
       this._render();
@@ -83,40 +92,12 @@ export default class Block {
     return Object.keys(newProps).some((key) => oldProps[key] !== newProps[key]);
   }
 
-  // private _updateChildrenProps(newProps: BlockProps): void {
-  //   Object.entries(this.children).forEach(([, child]) => {
-  //     const newChildProps = { ...child.props };
-
-  //     Object.entries(child.props).forEach(([key]) => {
-  //       if ((child.props.hasOwnProperty(key) && newProps[key]) || newProps[key] === null) {
-  //         newChildProps[key] = newProps[key];
-  //         child.setProps(newChildProps);
-  //       }
-  //     });
-  //   });
-  //   if (Object.values(this.lists)) {
-  //     Object.values(this.lists).forEach((list) => {
-  //       list.forEach((item) => {
-  //         if (item instanceof Block) {
-  //           const updatedProps = { ...item.props };
-  //           console.log(item);
-  //           for (const key in newProps) {
-  //             if (Object.prototype.hasOwnProperty.call(item.props, key)) {
-  //               updatedProps[key] = newProps[key];
-  //             }
-  //           }
-  //           item.setProps(updatedProps);
-  //         }
-  //       });
-  //     });
-  //   }
-  // }
   private _updateChildrenProps(newProps: BlockProps): void {
     Object.entries(this.children).forEach(([, child]) => {
       const newChildProps = JSON.parse(JSON.stringify(child.props));
 
       Object.entries(newProps).forEach(([key, value]) => {
-        if (child.props.hasOwnProperty(key) && value !== child.props[key]) {
+        if (Object.prototype.hasOwnProperty.call(child.props, key) && value !== child.props[key]) {
           newChildProps[key] = value;
         }
       });
@@ -124,14 +105,13 @@ export default class Block {
       child.setProps(newChildProps);
     });
 
-    // Обновление списков
-    Object.entries(this.lists).forEach(([listName, list]) => {
+    Object.entries(this.lists).forEach(([, list]) => {
       list.forEach((item) => {
         if (item instanceof Block) {
           const updatedProps = { ...item.props };
 
           Object.entries(newProps).forEach(([key, value]) => {
-            if (item.props.hasOwnProperty(key) && value !== item.props[key]) {
+            if (Object.prototype.hasOwnProperty.call(item.props, key) && value !== item.props[key]) {
               updatedProps[key] = value;
             }
           });
@@ -142,18 +122,14 @@ export default class Block {
     });
   }
 
-  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
-    return true;
-  }
-
   private _getChildrenPropsAndProps(propsAndChildren: BlockProps): {
-    children: Record<string, Block>;
+    children: Children;
     props: BlockProps;
-    lists: Record<string, any[]>;
+    lists: Lists;
   } {
-    const children: Record<string, Block> = {};
+    const children: Children = {};
     const props: BlockProps = {};
-    const lists: Record<string, any[]> = {};
+    const lists: Lists = {};
 
     Object.entries(propsAndChildren).forEach(([key, value]) => {
       if (value instanceof Block) {
@@ -161,7 +137,6 @@ export default class Block {
       } else if (Array.isArray(value) && value.every((item) => item instanceof Block)) {
         lists[key] = value;
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         props[key] = value;
       }
     });
@@ -179,7 +154,7 @@ export default class Block {
     });
   }
 
-  public setProps = (nextProps: BlockProps): void => {
+  public setProps = (nextProps: Partial<BlockProps>): void => {
     if (!nextProps) {
       return;
     }
@@ -192,7 +167,6 @@ export default class Block {
   }
 
   private _render(): void {
-    console.log("Render");
     const propsAndStubs = { ...this.props };
     const _tmpId = Math.floor(100000 + Math.random() * 900000);
     Object.entries(this.children).forEach(([key, child]) => {
@@ -213,9 +187,9 @@ export default class Block {
       }
     });
 
-    Object.entries(this.lists).forEach(([, child]) => {
+    Object.entries(this.lists).forEach(([, list]) => {
       const listCont = this._createDocumentElement("template");
-      child.forEach((item) => {
+      list.forEach((item) => {
         if (item instanceof Block) {
           listCont.content.append(item.getContent());
         } else {
@@ -249,21 +223,18 @@ export default class Block {
   }
 
   private _makePropsProxy(props: BlockProps): BlockProps {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-
     return new Proxy(props, {
-      get(target: BlockProps, prop: string) {
+      get: (target: BlockProps, prop: string) => {
         const value = target[prop];
         return typeof value === "function" ? value.bind(target) : value;
       },
-      set(target: BlockProps, prop: string, value: any) {
+      set: (target: BlockProps, prop: string, value: unknown) => {
         const oldTarget = { ...target };
         target[prop] = value;
-        self.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
+        this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
         return true;
       },
-      deleteProperty() {
+      deleteProperty: () => {
         throw new Error("No access");
       },
     });

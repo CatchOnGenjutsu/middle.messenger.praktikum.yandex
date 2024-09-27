@@ -9,8 +9,37 @@ import { profilePageViewModeMainDataSettings, profilePageEditPasswordDataSetting
 
 import "./profilePage.scss";
 
+interface ProfilePageProps {
+  isEditData: boolean;
+  editMainData?: boolean;
+  avatarUrl: string;
+  buttonOptions: Record<string, string>;
+  actionsButtons: Record<string, Record<string, string>>;
+  inputOptions: Record<string, Record<string, string | boolean | null>>;
+  modalWindowSettings: {
+    title: string;
+    inputOptions: {
+      isFile?: boolean;
+      labelName: string;
+      labelFor: string;
+      inputName: string;
+      inputType: string;
+      inputId: string;
+      inputPlaceholder: string;
+      errorText: string;
+    };
+    buttonOptions: {
+      value: string;
+      type: string;
+      class: string;
+      id: string;
+      name: string;
+    };
+  };
+  events?: Record<string, (event: Event) => void>;
+}
 export default class ProfilePage extends Block {
-  constructor(props: any) {
+  constructor(props: ProfilePageProps) {
     console.log(props);
     super({
       ...props,
@@ -113,6 +142,7 @@ export default class ProfilePage extends Block {
               },
             },
           });
+          break;
         default:
           break;
       }

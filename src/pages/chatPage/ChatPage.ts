@@ -10,8 +10,8 @@ import "./chatPage.scss";
 export default class ChatPage extends Block {
   constructor() {
     super({
-      SearchInput: new SearchInput({}),
-      ChatList: new ChatList({}),
+      SearchInput: new SearchInput(),
+      ChatList: new ChatList(),
       CurrentChat: new CurrentChat({ ...chatPageOpenSettings }),
     });
   }

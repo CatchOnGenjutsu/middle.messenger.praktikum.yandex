@@ -5,9 +5,8 @@ import Button from "../../components/button/Button";
 import "./registration.scss";
 
 export default class Registration extends Block {
-  constructor(props?: any) {
+  constructor() {
     super({
-      ...props,
       Fields: [
         new FormField({
           labelName: "Почта",
@@ -288,7 +287,7 @@ export default class Registration extends Block {
               : "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.",
           });
           break;
-        case "passwordRepeat":
+        case "passwordRepeat": {
           const passwordField = this.lists.Fields.find((item) => item.props.inputId === "password");
           const passwordValue = passwordField?.getContent().querySelector("input")?.value || "";
           isValid = value === passwordValue;
@@ -296,6 +295,7 @@ export default class Registration extends Block {
             errorText: isValid ? null : "Пароли должны совпадать.",
           });
           break;
+        }
       }
     }
 

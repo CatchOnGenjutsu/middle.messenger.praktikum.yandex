@@ -29,6 +29,7 @@ interface CurrentChatProps {
   allMessages: IMessageGroup[];
   popupOpen: boolean;
   isEmpty?: boolean;
+  events?: Record<string, (event: Event) => void>;
 }
 
 export default class CurrentChat extends Block {
@@ -39,6 +40,18 @@ export default class CurrentChat extends Block {
         Header: new CurrentChatHeader({ ...props }),
         MessageBlock: new MessagesBlock({ ...props, allMessages: props.allMessages }),
         Footer: new CurrentChatFooter({ ...props, popupOpen: props.popupOpen }),
+        events: {
+          submit: (event: Event) => {
+            event.preventDefault();
+            const elem = event.currentTarget as HTMLFormElement;
+            if (elem && elem.tagName === "FORM") {
+              const formData = new FormData(event.currentTarget as HTMLFormElement).entries();
+              const data = Object.fromEntries(formData);
+              console.log(data);
+              (event.currentTarget as HTMLFormElement).reset();
+            }
+          },
+        },
       });
     } else super({});
   }

@@ -1,4 +1,5 @@
 import Block from "../../globalClasses/Block";
+
 import "./mainPage.scss";
 
 export default class MainPage extends Block {
