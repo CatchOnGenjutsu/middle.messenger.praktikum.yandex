@@ -6,7 +6,7 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     rules: {
-      "constructor-super": "off",
+      "constructor-super": "error",
       "@typescript-eslint/ban-tslint-comment": "error",
     },
   },
