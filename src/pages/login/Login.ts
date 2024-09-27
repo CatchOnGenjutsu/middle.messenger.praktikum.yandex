@@ -2,7 +2,7 @@ import Block from "../../globalClasses/Block";
 import { FormField } from "../../components/formField/FormField";
 import Button from "../../components/button/Button";
 
-// import "./login.scss";
+import "./login.scss";
 
 export default class Login extends Block {
   // private children: Record<string, Block> = {};
