@@ -5,9 +5,9 @@ import tseslint from "typescript-eslint";
 export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    // rules: {
-    //   "@typescript-eslint/ban-tslint-comment": "structuredClone",
-    // },
+    rules: {
+      "@typescript-eslint/ban-tslint-comment": "error",
+    },
   },
 
   { languageOptions: { globals: globals.browser } },
