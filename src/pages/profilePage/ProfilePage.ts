@@ -100,7 +100,9 @@ export default class ProfilePage extends Block {
   }
 
   setEventsByProps(key: string): void {
-    const elem = this.lists.ProfileActionButtons.find((item) => item.props.options.key === key);
+    const elem = this.lists.ProfileActionButtons.find(
+      (item) => (item.props.options as Record<string, string>).key === key,
+    );
     if (elem) {
       switch (key) {
         case "exit":
