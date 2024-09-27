@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .current-chat-header {
   user-select: none;
@@ -12,22 +12,24 @@
   padding: 10px 20px;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 10px;
     right: 10px;
     bottom: 0;
     height: 1px;
-    background-color: $--color-dividing-line;
+    background-color: $color-dividing-line;
   }
-  &__avatar{
+
+  &__avatar {
     margin-right: 10px;
+
     &__avatar-img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
     }
-  
+
     &__avatar-placeholder {
       display: flex;
       align-items: center;
@@ -35,7 +37,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: $--color-input-avatar-grey;
+      background-color: $color-input-avatar-grey;
     }
   }
 
@@ -43,7 +45,7 @@
     &__chat-name {
       font-size: 16px;
       font-weight: 600;
-      color: $--color-text-primary;
+      color: $color-text-primary;
     }
   }
 

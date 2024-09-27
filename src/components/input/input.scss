@@ -1,14 +1,14 @@
-@import "../../../styles.scss";
+@import "../../assets/styles/variables.scss";
 
 .input {
   width: 100%;
-  border-bottom: 1px solid $--color-blue-primary;
+  border-bottom: 1px solid $color-blue-primary;
   font-size: 14px;
-  color: $--color-text-primary;
+  color: $color-text-primary;
   line-height: 2;
   margin-bottom: 8px;
 
   &::placeholder {
-    color: $--color-light-grey;
+    color: $color-light-grey;
   }
 }

@@ -1,22 +1,25 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .buttons-popup {
   display: none;
+
   &_active {
     display: flex;
     flex-direction: column;
     align-items: center;
     height: fit-content;
     width: fit-content;
-    border-radius: 12px;  
-    box-shadow: 0 0 10px $--color-light-grey;
+    border-radius: 12px;
+    box-shadow: 0 0 10px $color-light-grey;
   }
+
   &_top-right {
     position: absolute;
     z-index: 2000;
     top: 70px;
     right: 16px;
   }
+
   &_bottom-left {
     position: absolute;
     z-index: 2000;

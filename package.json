@@ -4,14 +4,25 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3000",
     "build": "vite build",
     "preview": "vite preview --port 3000",
-    "start": "npm run build && npm run preview"
+    "start": "npm run build && npm run preview",
+    "lint": "eslint src/**/*.{js,mjs,cjs,ts,jsx,tsx}",
+    "lint:style": "stylelint src/**/*.{css,scss,sass,html}",
+    "tsc": "tsc --noEmit"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "eslint": "^9.11.1",
     "sass": "^1.78.0",
-    "vite": "^5.4.1"
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.7.0",
+    "vite": "^5.4.1",
+    "vite-plugin-sass": "^0.1.0"
   },
   "dependencies": {
     "handlebars": "^4.7.8"

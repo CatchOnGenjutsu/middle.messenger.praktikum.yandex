@@ -1,4 +1,4 @@
-@import "../../../styles.scss";
+@import "../../assets/styles/variables.scss";
 
 .profile-page {
   display: flex;
@@ -13,9 +13,9 @@
     width: 5vw;
     min-width: 70px;
     height: 100%;
-    padding: 0px;
-    background-color: #FBFBFB;
-    border-right: 1px solid $--color-dividing-line;
+    padding: 0;
+    background-color: #fbfbfb;
+    border-right: 1px solid $color-dividing-line;
   }
 
   &__main-content {
@@ -34,21 +34,9 @@
     &__name {
       font-size: 18px;
       font-weight: 550;
-      color: $--color-text-primary;
+      color: $color-text-primary;
       margin: 20px 0 60px;
       text-align: center;
-    }
-
-    .divider-line {
-      margin: 0;
-      border: none;
-      border-bottom: 1px solid $--color-dividing-line;
-      width: 40vh;
-      min-width: 510px;
-      margin: 10px 0;
-      &_last {
-        display: none;
-        }
     }
   }
 }

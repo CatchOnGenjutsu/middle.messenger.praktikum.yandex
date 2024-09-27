@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .input-group {
   display: flex;
@@ -10,5 +10,16 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    &__hr {
+      border: none;
+      border-bottom: 1px solid $color-dividing-line;
+      width: 100%;
+      margin: 10px 0;
+
+      &_last {
+        display: none;
+      }
+    }
   }
 }

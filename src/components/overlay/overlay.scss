@@ -1,0 +1,13 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #52525285;
+  z-index: 8000;
+}
+
+.hidden {
+  display: none;
+}
