@@ -22,7 +22,7 @@ interface FormFieldProps {
 }
 
 export class FormField extends Block {
-  constructor(props?: FormFieldProps) {
+  constructor(props: FormFieldProps) {
     super({
       ...props,
       label: new Label({
