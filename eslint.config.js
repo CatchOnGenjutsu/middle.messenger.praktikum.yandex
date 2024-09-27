@@ -5,6 +5,9 @@ import tseslint from "typescript-eslint";
 export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    rules: {
+      "constructor-super": "error",
+    },
   },
 
   { languageOptions: { globals: globals.browser } },
