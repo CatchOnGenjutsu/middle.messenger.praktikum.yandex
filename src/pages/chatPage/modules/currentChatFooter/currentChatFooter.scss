@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .current-chat-footer {
   position: relative;
@@ -17,6 +17,6 @@
     right: 10px;
     top: 0;
     height: 1px;
-    background-color: $--color-dividing-line;
+    background-color: $color-dividing-line;
   }
 }

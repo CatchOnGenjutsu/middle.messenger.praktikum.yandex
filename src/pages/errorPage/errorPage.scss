@@ -1,4 +1,4 @@
-@import "../../../styles.scss";
+@import "../../assets/styles/variables.scss";
 
 .error-page {
   display: flex;
@@ -12,19 +12,20 @@
     font-weight: 700;
     font-size: 40px;
     line-height: 40px;
-    color: $--color-text-primary;
+    color: $color-text-primary;
     margin-bottom: 20px;
   }
+
   &__description {
     font-weight: 600;
     font-size: 20px;
     line-height: 20px;
-    color: $--color-text-primary;
+    color: $color-text-primary;
     margin-bottom: 70px;
   }
 
   &__link {
     font-size: 14px;
-    color: $--color-blue-primary;
+    color: $color-blue-primary;
   }
 }

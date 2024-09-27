@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .message-item {
   position: relative;
@@ -6,6 +6,7 @@
   width: max-content;
   max-width: 40%;
   margin-bottom: 10px;
+
   &__text {
     padding: 10px;
     font-size: 14px;
@@ -16,6 +17,7 @@
   &__image {
     padding: 1px;
   }
+
   .message-info {
     display: flex;
     align-items: center;
@@ -36,34 +38,37 @@
     height: 12px;
     background: url("/icons/message_read_icon.svg") no-repeat center center;
   }
+
   &:has(.message-item__image) {
     padding-right: 0;
+
     .message-time {
       padding: 2px 7px;
       color: white;
-      background-color: $--color-fill-time;
+      background-color: $color-fill-time;
       border-radius: 30px;
     }
   }
 }
 
 .message-item_incoming {
-  background-color: $--incoming-message-background-color;
+  background-color: $incoming-message-background-color;
   border-top-left-radius: 0;
   margin-right: auto;
   padding-right: 28px;
 }
 
 .message-item_outgoing {
-  background-color: $--outgoing-message-background-color;
+  background-color: $outgoing-message-background-color;
   border-bottom-right-radius: 0;
   margin-left: auto;
   padding-right: 34px;
+
   &_read {
     padding-right: 46px;
   }
 
   .message-time {
-    color: $--color-blue-primary;
+    color: $color-blue-primary;
   }
 }

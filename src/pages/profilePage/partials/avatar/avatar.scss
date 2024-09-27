@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .avatar {
   &__container {
@@ -8,7 +8,7 @@
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    
+
     &--editable {
       &:hover .avatar__overlay {
         opacity: 1;
@@ -23,8 +23,8 @@
     display: block;
 
     &_placeholder {
-      object-fit:none;
-      background-color: $--color-input-avatar-grey;
+      object-fit: none;
+      background-color: $color-input-avatar-grey;
     }
   }
 
@@ -34,7 +34,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 60%);
     display: flex;
     justify-content: center;
     align-items: center;

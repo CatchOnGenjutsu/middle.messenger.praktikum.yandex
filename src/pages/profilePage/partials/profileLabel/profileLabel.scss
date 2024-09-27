@@ -1,7 +1,7 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .input-label {
   font-size: 16px;
   font-weight: 550;
-  color: $--color-text-primary;
+  color: $color-text-primary;
 }

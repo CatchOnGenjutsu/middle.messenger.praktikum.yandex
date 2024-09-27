@@ -1,4 +1,4 @@
-@import "../../../styles.scss";
+@import "../../assets/styles/variables.scss";
 
 .profile-page {
   display: flex;
@@ -13,9 +13,9 @@
     width: 5vw;
     min-width: 70px;
     height: 100%;
-    padding: 0px;
+    padding: 0;
     background-color: #fbfbfb;
-    border-right: 1px solid $--color-dividing-line;
+    border-right: 1px solid $color-dividing-line;
   }
 
   &__main-content {
@@ -34,7 +34,7 @@
     &__name {
       font-size: 18px;
       font-weight: 550;
-      color: $--color-text-primary;
+      color: $color-text-primary;
       margin: 20px 0 60px;
       text-align: center;
     }

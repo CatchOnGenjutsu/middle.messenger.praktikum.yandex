@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .write-message-input {
   flex-grow: 1;
@@ -7,5 +7,5 @@
   padding: 10px 20px;
   margin: 0 10px;
   border-radius: 30px;
-  background-color: $--color-input-avatar-grey;
+  background-color: $color-input-avatar-grey;
 }

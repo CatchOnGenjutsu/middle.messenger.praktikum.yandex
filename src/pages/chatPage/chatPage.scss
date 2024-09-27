@@ -1,4 +1,4 @@
-@import "../../../styles.scss";
+@import "../../assets/styles/variables.scss";
 
 .chat-page {
   display: flex;
@@ -13,15 +13,15 @@
     width: 25vw;
     min-width: 310px;
     height: 100%;
-    padding: 0px;
-    border-right: 1px solid $--color-dividing-line;
+    padding: 0;
+    border-right: 1px solid $color-dividing-line;
 
     &__profile-link {
       display: flex;
       align-items: center;
       align-self: flex-end;
       padding-right: 10px;
-      color: $--color-light-grey;
+      color: $color-light-grey;
       font-weight: 14px;
       margin: 20px 0;
 
@@ -32,6 +32,7 @@
       }
     }
   }
+
   main {
     width: 75vw;
   }

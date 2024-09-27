@@ -15,7 +15,8 @@ body {
   font-family: Inter, sans-serif;
 }
 
-ol, ul {
+ol,
+ul {
   list-style: none;
 }
 
@@ -36,12 +37,20 @@ table {
   border-spacing: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-size: inherit;
   font-weight: normal;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font: inherit;
   border: none;
   outline: none;
@@ -51,42 +60,19 @@ li {
   list-style-type: none;
 }
 
-button, [type="button"], [type="reset"], [type="submit"] {
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
   -webkit-appearance: button;
   cursor: pointer;
 }
 
-blockquote, q {
+blockquote,
+q {
   quotes: none;
 }
 
-$--color-blue-primary: #3369F3;
-$--color-text-primary: #1E1E1E;
-$--color-light-grey: #999999;
-$--color-input-avatar-grey: #EFEFEF;
-$--color-dividing-line: #EAEAEA;
-$--hover-color: #E4EDFD;
-$--incoming-message-background-color: #E5E5E5;
-$--outgoing-message-background-color: #E4EDFD;
-$--color-fill-time: #5252527e;
-$--color-danger: #FF2F2F;
-
 #app {
   height: 100vh;
-}
-.navigation {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  &__link {
-    color: $--color-text-primary;
-    text-decoration: underline;
-    font-size: 20px;
-    line-height: 24px;
-    padding: 0 20px;
-    width: max-content;
-  }
 }
