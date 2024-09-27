@@ -19,7 +19,6 @@
     "node": true
   },
   "rules": {
-    "constructor-super": "off",
     "import/extensions": "off",
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/no-explicit-any": "off",
