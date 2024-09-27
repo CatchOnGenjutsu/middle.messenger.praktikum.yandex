@@ -11,7 +11,7 @@
     "import/extensions": "off",
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/no-useless-constructor": "off",
-    "constructor-super": "off",
+    "constructor-super": structuredClone,
     "@typescript-eslint/ban-tslint-comment": "error"
   }
 }
