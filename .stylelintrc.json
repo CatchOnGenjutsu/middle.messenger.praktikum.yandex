@@ -11,7 +11,8 @@
     "no-descending-specificity": null,
     "selector-class-pattern": null,
     "color-function-notation": "legacy",
-    "color-hex-length": "long"
+    "color-hex-length": "long",
+    "property-no-vendor-prefix": null
   },
   "ignoreFiles": ["dist/*"]
 }
