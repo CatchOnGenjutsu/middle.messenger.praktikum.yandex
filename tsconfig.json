@@ -1,14 +1,33 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES2020",
+//     "module": "ESNext",
+//     "sourceMap": true,
+//     "moduleResolution": "node",
+//     "allowSyntheticDefaultImports": true,
+//     "noImplicitAny": true,
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true,
+//     "strictNullChecks": true
+//   },
+//   "include": ["src/**/*.ts", ".eslintrc.cjs"]
+// }
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
     "module": "ESNext",
-    "sourceMap": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strictNullChecks": true
+    "noImplicitReturns": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", ".eslintrc.cjs"]
+  "include": ["src"]
 }

@@ -42,7 +42,7 @@ export class FormField extends Block {
     });
   }
 
-  override render(): string {
+  protected render(): string {
     return `
       <div class="form-field">
         {{{ label }}}

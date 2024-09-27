@@ -235,9 +235,15 @@ export default class Registration extends Block {
           event.preventDefault();
           const isValid = this.validateForm();
           if (isValid) {
-            const formData = new FormData(event.target as HTMLFormElement).entries();
-            const data = Object.fromEntries(formData);
-            console.log(data);
+            const elem = event.target as HTMLFormElement;
+            if (elem && elem.tagName === "FORM") {
+              const formData = new FormData(event.target as HTMLFormElement);
+              const data: Record<string, string> = {};
+              formData.forEach((value, key) => {
+                data[key] = value.toString();
+              });
+              console.log(data);
+            }
           }
         },
       },
@@ -306,8 +312,9 @@ export default class Registration extends Block {
   private validateForm(): boolean {
     let isFormValid = true;
 
-    this.lists.Fields.forEach((field: FormField) => {
-      const inputElement = field.getContent().querySelector("input") as HTMLInputElement;
+    this.lists.Fields.forEach((field: Block) => {
+      const formField = field as FormField;
+      const inputElement = formField.getContent().querySelector("input") as HTMLInputElement;
       const value = inputElement?.value || "";
       const inputId = inputElement?.id || "";
       const isValid = this.validateField(inputId, value);
