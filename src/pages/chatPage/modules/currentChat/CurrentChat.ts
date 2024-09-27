@@ -43,12 +43,14 @@ export default class CurrentChat extends Block {
         events: {
           submit: (event: Event) => {
             event.preventDefault();
-            const elem = event.currentTarget as HTMLFormElement;
+            const elem = event.target as HTMLFormElement;
             if (elem && elem.tagName === "FORM") {
-              const formData = new FormData(event.currentTarget as HTMLFormElement).entries();
-              const data = Object.fromEntries(formData);
+              const formData = new FormData(event.target as HTMLFormElement);
+              const data: Record<string, string> = {};
+              formData.forEach((value, key) => {
+                data[key] = value.toString();
+              });
               console.log(data);
-              (event.currentTarget as HTMLFormElement).reset();
             }
           },
         },

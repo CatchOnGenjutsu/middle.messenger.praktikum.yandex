@@ -8,7 +8,7 @@ import { addAppsActionButtonsSettings } from "../../mockData";
 
 import "./currentChatFooter.scss";
 
-class CurrentChatFooterProps {
+interface CurrentChatFooterProps {
   popupOpen: boolean;
 }
 
@@ -44,9 +44,15 @@ export class CurrentChatFooter extends Block {
       events: {
         submit: (event: Event) => {
           event.preventDefault();
-          const formData = new FormData(event.target as HTMLFormElement).entries();
-          const data = Object.fromEntries(formData);
-          console.log(data);
+          const elem = event.target as HTMLFormElement;
+          if (elem && elem.tagName === "FORM") {
+            const formData = new FormData(event.target as HTMLFormElement);
+            const data: Record<string, string> = {};
+            formData.forEach((value, key) => {
+              data[key] = value.toString();
+            });
+            console.log(data);
+          }
         },
       },
     });

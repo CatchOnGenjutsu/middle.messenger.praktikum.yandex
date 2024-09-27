@@ -9,7 +9,7 @@ export const profilePageViewModeMainDataSettings = {
       inputType: "email",
       inputId: "email",
       inputPlaceholder: "Введите почту",
-      errorText: null,
+      errorText: "",
       // events: {
       //   blur: (event: Event) => {
       //     if (!event) return;
@@ -39,7 +39,7 @@ export const profilePageViewModeMainDataSettings = {
       inputType: "text",
       inputId: "login",
       inputPlaceholder: "Введите логин",
-      errorText: null,
+      errorText: "",
       // events: {
       //   blur: (event: Event) => {
       //     if (!event) return;
@@ -70,7 +70,7 @@ export const profilePageViewModeMainDataSettings = {
       inputType: "text",
       inputId: "first_name",
       inputPlaceholder: "Введите имя",
-      errorText: null,
+      errorText: "",
       // events: {
       //   blur: (event: Event) => {
       //     if (!event) return;
@@ -101,7 +101,7 @@ export const profilePageViewModeMainDataSettings = {
       inputType: "text",
       inputId: "second_name",
       inputPlaceholder: "Введите фамилию",
-      errorText: null,
+      errorText: "",
       // events: {
       //   blur: (event: Event) => {
       //     if (!event) return;
@@ -141,7 +141,7 @@ export const profilePageViewModeMainDataSettings = {
       inputType: "tel",
       inputId: "phone",
       inputPlaceholder: "Введите телефон",
-      errorText: null,
+      errorText: "",
       // events: {
       //   blur: (event: Event) => {
       //     if (!event) return;
