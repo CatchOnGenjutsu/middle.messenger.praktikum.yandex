@@ -15,7 +15,6 @@ export default class ProfileFormBlock extends Block {
     console.log(props);
     super({
       ...props,
-      Button: new Button({ ...props.buttonOptions }),
       InputsGroup: [
         ...Object.entries(props.inputOptions).map(
           ([key, value]) =>
@@ -26,19 +25,18 @@ export default class ProfileFormBlock extends Block {
             }),
         ),
       ],
+      Button: new Button({ ...props.buttonOptions }),
     });
   }
 
   render() {
     return `
-    <div class="profile-form-block">
-      <form class="profile-form-block__form" action="submit">
+      <form class="profile-form-block__form">
         {{{ InputsGroup }}}
         <div class="profile-form-block__form__buttons">
           {{#if isEditData}}{{{ Button }}}{{/if}}
         </div>
       </form>
-    </div>
     `;
   }
 }

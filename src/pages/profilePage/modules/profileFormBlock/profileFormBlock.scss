@@ -1,17 +1,14 @@
 @import "../../../../../styles.scss";
 
-.profile-form-block {
+.profile-form-block__form {
   width: 40vh;
   min-width: 510px;
   height: fit-content;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 
-  &__form {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-
-    &__buttons {
-      margin-top: 60px;
-    }
+  &__buttons {
+    margin-top: 60px;
   }
 }

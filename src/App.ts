@@ -5,6 +5,8 @@ import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
 import ChatPage from "./pages/chatPage/ChatPage";
 import ProfilePage from "./pages/profilePage/ProfilePage";
+import ErrorPage from "./pages/errorPage/ErrorPage";
+
 import {
   modalWindowAddAvatarSettings,
   profileActionsButtonsSettings,
@@ -72,6 +74,27 @@ export default class App {
         console.log(profilePage.getContent());
         if (this.appElement) {
           this.appElement.appendChild(profilePage.getContent());
+        }
+        break;
+      }
+      case "error-page-404": {
+        const errorPage = new ErrorPage({
+          title: "404",
+          description: "Не туда попали",
+        });
+        if (this.appElement) {
+          this.appElement.appendChild(errorPage.getContent());
+        }
+        break;
+      }
+
+      case "error-page-500": {
+        const errorPage = new ErrorPage({
+          title: "500",
+          description: "Мы уже фиксим",
+        });
+        if (this.appElement) {
+          this.appElement.appendChild(errorPage.getContent());
         }
         break;
       }

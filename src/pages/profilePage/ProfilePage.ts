@@ -56,6 +56,14 @@ export default class ProfilePage extends Block {
       OverlayWithModalWindow: new Overlay({
         ...props.modalWindowSettings,
       }),
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const formData = new FormData(event.target as HTMLFormElement).entries();
+          const data = Object.fromEntries(formData);
+          console.log(data);
+        },
+      },
     });
     for (const key in props.actionsButtons) {
       this.setEventsByProps(key);
@@ -64,7 +72,6 @@ export default class ProfilePage extends Block {
 
   setEventsByProps(key: string): void {
     const elem = this.lists.ProfileActionButtons.find((item) => item.props.options.key === key);
-    console.log(elem);
     if (elem) {
       switch (key) {
         case "exit":
