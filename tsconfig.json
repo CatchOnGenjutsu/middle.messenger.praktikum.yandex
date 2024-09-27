@@ -1,17 +1,3 @@
-// {
-//   "compilerOptions": {
-//     "target": "ES2020",
-//     "module": "ESNext",
-//     "sourceMap": true,
-//     "moduleResolution": "node",
-//     "allowSyntheticDefaultImports": true,
-//     "noImplicitAny": true,
-//     "noUnusedLocals": true,
-//     "noUnusedParameters": true,
-//     "strictNullChecks": true
-//   },
-//   "include": ["src/**/*.ts", ".eslintrc.cjs"]
-// }
 {
   "compilerOptions": {
     "target": "ESNext",
