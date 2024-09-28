@@ -65,6 +65,7 @@ export default class App {
       case "profile-page": {
         const profilePage = new ProfilePage({
           ...profilePageViewModeMainDataSettings,
+          isEditData: false,
           buttonOptions: { ...saveButtonOptions },
           actionsButtons: { ...profileActionsButtonsSettings },
           modalWindowSettings: { ...modalWindowAddAvatarSettings },

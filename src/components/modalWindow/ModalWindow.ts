@@ -27,7 +27,6 @@ interface ModalWindowProps {
 
 export class ModalWindow extends Block {
   constructor(props: ModalWindowProps) {
-    console.log(props);
     super({
       ...props,
       FormField: new FormField({ ...props.inputOptions }),
