@@ -54,7 +54,6 @@ MyMessenger — это учебное веб-приложение мессенд
 ### Страницы проекта
 
 - «[Login](https://ypraktikum.netlify.app/index.html/login)»,
-- «[Registration](https://ypraktikum.netlify.app/index.html/registration)»,
 - «[Chat Page](https://ypraktikum.netlify.app/index.html/activeChatPage)»,
 - «[Profile Page](https://ypraktikum.netlify.app/index.html/profilePageViewMode)»,
 - «[Error 404](https://ypraktikum.netlify.app/index.html/errorPage404)»,

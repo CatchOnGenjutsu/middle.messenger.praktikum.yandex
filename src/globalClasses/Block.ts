@@ -48,10 +48,21 @@ export default class Block {
 
   private _addEvents(): void {
     const { events } = this.props;
+    // console.log(this._element, events);
     if (events) {
       Object.keys(events).forEach((eventName) => {
         if (this._element) {
           this._element.addEventListener(eventName, events[eventName]);
+        }
+      });
+    }
+  }
+  private _removeEvents(): void {
+    const { events } = this.props;
+    if (events) {
+      Object.keys(events).forEach((eventName) => {
+        if (this._element) {
+          this._element.removeEventListener(eventName, events[eventName]);
         }
       });
     }
@@ -83,43 +94,74 @@ export default class Block {
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
     if (this._propsHaveChanged(oldProps, newProps)) {
-      this._updateChildrenProps(newProps);
+      this._updateChildrenProps(this.children, newProps);
       this._render();
     }
   }
 
-  private _propsHaveChanged(oldProps: BlockProps, newProps: BlockProps): boolean {
-    return Object.keys(newProps).some((key) => oldProps[key] !== newProps[key]);
+  private _propsHaveChanged(oldProps: Record<string, unknown>, newProps: Record<string, unknown>): boolean {
+    function deepCompare(obj1: unknown, obj2: unknown): boolean {
+      if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
+        return obj1 !== obj2;
+      }
+
+      const obj1Record = obj1 as Record<string, unknown>;
+      const obj2Record = obj2 as Record<string, unknown>;
+
+      const keys1 = Object.keys(obj1Record);
+      const keys2 = Object.keys(obj2Record);
+
+      if (keys1.length !== keys2.length) {
+        return true;
+      }
+
+      for (const key of keys1) {
+        if (!keys2.includes(key)) {
+          return true;
+        }
+
+        if (deepCompare(obj1Record[key], obj2Record[key])) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return deepCompare(oldProps, newProps);
   }
 
-  private _updateChildrenProps(newProps: BlockProps): void {
-    Object.entries(this.children).forEach(([, child]) => {
-      const newChildProps = JSON.parse(JSON.stringify(child.props));
-
-      Object.entries(newProps).forEach(([key, value]) => {
-        if (Object.prototype.hasOwnProperty.call(child.props, key) && value !== child.props[key]) {
-          newChildProps[key] = value;
+  private _updateChildrenProps(children: Record<string, unknown>, newProps: Record<string, unknown>): void {
+    function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
+      for (const key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          if (
+            typeof source[key] === "object" &&
+            source[key] !== null &&
+            typeof target[key] === "object" &&
+            target[key] !== null
+          ) {
+            deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+          } else {
+            target[key] = source[key];
+          }
         }
-      });
+      }
+    }
 
-      child.setProps(newChildProps);
-    });
-
-    Object.entries(this.lists).forEach(([, list]) => {
-      list.forEach((item) => {
-        if (item instanceof Block) {
-          const updatedProps = { ...item.props };
-
-          Object.entries(newProps).forEach(([key, value]) => {
-            if (Object.prototype.hasOwnProperty.call(item.props, key) && value !== item.props[key]) {
-              updatedProps[key] = value;
-            }
-          });
-
-          item.setProps(updatedProps);
+    for (const childName in children) {
+      if (Object.prototype.hasOwnProperty.call(children, childName)) {
+        const child = children[childName] as {
+          props: Record<string, unknown>;
+          setProps?: (props: Record<string, unknown>) => void;
+        };
+        if (child && typeof child.setProps === "function") {
+          const childNewProps = (newProps[childName] || {}) as Record<string, unknown>;
+          deepUpdateProps(child.props, childNewProps);
+          child.setProps(child.props);
         }
-      });
-    });
+      }
+    }
   }
 
   private _getChildrenPropsAndProps(propsAndChildren: BlockProps): {
@@ -204,6 +246,7 @@ export default class Block {
 
     const newElement = fragment.content.firstElementChild as HTMLElement;
     if (this._element && newElement) {
+      this._removeEvents();
       this._element.replaceWith(newElement);
     }
     this._element = newElement;

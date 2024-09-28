@@ -25,11 +25,11 @@ export default class Registration extends Block {
               const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
               if (elem) {
                 if (value && !/^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value)) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: "Неправильно введена почта. Почта должна содержать символы @ и .",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -54,12 +54,12 @@ export default class Registration extends Block {
               const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
               if (elem) {
                 if (value && !/^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value)) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText:
                       "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание).",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -84,12 +84,12 @@ export default class Registration extends Block {
               const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
               if (elem) {
                 if (value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText:
                       "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -115,12 +115,12 @@ export default class Registration extends Block {
               const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
               if (elem) {
                 if (value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText:
                       "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -146,11 +146,11 @@ export default class Registration extends Block {
               const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
               if (elem) {
                 if (value && !/^\+?\d{10,15}$/u.test(value)) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: "Должен содержать от 10 до 15 цифр, может начинается с плюса",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -175,12 +175,12 @@ export default class Registration extends Block {
               const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
               if (elem) {
                 if (value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText:
                       "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -210,11 +210,11 @@ export default class Registration extends Block {
                 passwordField?.props.inputId && passwordField?.getContent().querySelector("input")?.value;
               if (elem) {
                 if (value && value !== passwordValue) {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: "Пароли должны совпадать.",
                   });
                 } else {
-                  elem.setProps({
+                  elem.children.error.setProps({
                     errorText: null,
                   });
                 }
@@ -251,7 +251,7 @@ export default class Registration extends Block {
   }
 
   private validateField(inputId: string, value: string): boolean {
-    const field = this.lists.Fields.find((item) => item.props.inputId === inputId);
+    const field = this.lists.Fields.find((item) => item.props.inputId === inputId)?.children.error;
     let isValid = true;
 
     if (field) {

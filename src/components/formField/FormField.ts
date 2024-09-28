@@ -37,7 +37,7 @@ export class FormField extends Block {
         events: props.events,
       }),
       error: new Error({
-        errorText: props.errorText,
+        errorText: props.errorText as string,
       }),
     });
   }
