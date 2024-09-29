@@ -1,34 +1,60 @@
 ## MyMessenger
 
-### Этот учебный проект представляет собой простое веб-приложение мессенджера, разработанное с использованием современных веб-технологий. Проект включает в себя функционал для обмена сообщениями, управления пользователями и отображения списка чатов. Целью создания данного приложения является улучшение навыков в веб-разработке, включая работу с JavaScript, SCSS, Handlebars и сборщиками вроде Vite.
+### Описание проекта
+
+MyMessenger — это учебное веб-приложение мессенджера, разработанное для улучшения навыков веб-разработки. Оно включает функционал обмена сообщениями, управления пользователями и отображения списка чатов, а также использует современные технологии, такие как TypeScript, SCSS, Handlebars и Vite для сборки.
 
 ---
 
-### В данный момент времени проект находится на этапе разработки!
+### Обновления sprint_2
 
-## Команды, используемые в проекте
+В рамках второго спринта были внедрены следующие изменения:
 
-- `npm install` — установка стабильной версии,
-- `npm run dev` — запуск версии для разработчика,
-- `npm run preview` - запуск предпросмотра
+- Проект переведён на **TypeScript**.
+- Добавлена страница со списком чатов и лентой переписки.
+- Внедрён компонентный подход:
+  - Используется реализация **Block** и **Event Bus**.
+  - Проект разделён на компоненты и страницы, что позволяет переиспользовать элементы интерфейса.
+- Добавлен сбор данных из форм: данные выводятся в консоль как объект.
+- Реализована валидация на все формы:
+  - Авторизация.
+  - Регистрация.
+  - Отправка сообщения.
+  - Настройки пользователя.
+  - Валидация осуществляется через регулярные выражения и проверяется при событиях **blur** и **submit**.
+- Валидационные проверки включают:
+  - Имя, фамилия: латиница или кириллица, первая буква заглавная, без пробелов и цифр.
+  - Логин: 3–20 символов, латиница, может содержать цифры, но не состоять из них, допускаются дефис и нижнее подчёркивание.
+  - Email: латиница, обязательные символы `@` и точка.
+  - Пароль: 8–40 символов, хотя бы одна заглавная буква и цифра.
+  - Телефон: 10–15 символов, может начинаться с плюса.
+  - Сообщение: поле не должно быть пустым.
+- Генерация страниц происходит на стороне клиента.
+- В качестве сборщика используется **Vite**.
+- Структура проекта приведена в соответствие с рекомендациями по архитектуре, добавлены единообразные экспорты и импорты.
+- Реализован базовый класс **View** для отображения страниц и компонентов по шаблону MVC.
+- Добавлен класс для работы с XHR-запросами с методами GET, POST, PUT, DELETE, поддержкой **query string** и body для запросов.
+- Настроены **ESLint** и **Stylelint** для статического анализа кода. Весь код проходит проверку типов, линтинг и тесты.
+
+### Команды для работы с проектом
+
+- `npm install` — установка зависимостей.
+- `npm run dev` — запуск версии для разработки.
+- `npm run preview` — предпросмотр собранной версии.
 - `npm run build` — сборка стабильной версии.
-- `npm run start` — исполняет команды build и preview.
+- `npm run start` — сборка и запуск проекта.
+- `npm run lint` — запуск проверки ESlint.
+- `npm run lint:style` — запуск проверки stylelint.
+- `npm run tsc` — запуск проверки typescript.
 
-### **Стартовая страница проекта**
+### Стартовая страница
 
 [MyMessenger](https://ypraktikum.netlify.app/)
 
-### **Страницы проекта**
+### Страницы проекта
 
-- «[Login](https://ypraktikum.netlify.app/index.html#login)»,
-- «[Registration](https://ypraktikum.netlify.app/index.html#registration)»,
-- «[Active Chat](https://ypraktikum.netlify.app/index.html#activeChatPage)»,
-- «[Popups Chat](https://ypraktikum.netlify.app/index.html#popupsChatPage)»,
-- «[Modal Chat](https://ypraktikum.netlify.app/index.html#modalChatPage)».
-- «[Empty Chat](https://ypraktikum.netlify.app/index.html#emptyChatPage)».
-- «[Profile View Mode](https://ypraktikum.netlify.app/index.html#profilePageViewMode)».
-- «[Profile Edit Mode](https://ypraktikum.netlify.app/index.html#profilePageEditMode)».
-- «[Profile Edit Password Mode](https://ypraktikum.netlify.app/index.html#profilePageEditPasswordMode)».
-- «[Profile Change Avatar Mode](https://ypraktikum.netlify.app/index.html#profilePageChangeAvatarMode)».
-- «[Error 404](https://ypraktikum.netlify.app/index.html#errorPage404)».
-- «[Error 500](https://ypraktikum.netlify.app/index.html#errorPage500)».
+- «[Login](https://ypraktikum.netlify.app/index.html/login)»,
+- «[Chat Page](https://ypraktikum.netlify.app/index.html/activeChatPage)»,
+- «[Profile Page](https://ypraktikum.netlify.app/index.html/profilePageViewMode)»,
+- «[Error 404](https://ypraktikum.netlify.app/index.html/errorPage404)»,
+- «[Error 500](https://ypraktikum.netlify.app/index.html/errorPage500)».

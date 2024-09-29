@@ -1,0 +1,18 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": ["darken"]
+      }
+    ],
+    "import-notation": "string",
+    "no-descending-specificity": null,
+    "selector-class-pattern": null,
+    "color-function-notation": "legacy",
+    "color-hex-length": "long",
+    "property-no-vendor-prefix": null
+  },
+  "ignoreFiles": ["dist/*"]
+}

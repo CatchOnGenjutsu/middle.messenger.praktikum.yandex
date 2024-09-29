@@ -1,17 +1,21 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .input-field {
   border: none;
   outline: none;
   font-size: 16px;
   text-align: right;
-  color: $--color-light-grey;
+  color: $color-light-grey;
   flex: 1;
 }
 
 .display-value {
-  color: $--color-light-grey;
+  color: $color-light-grey;
   padding: 0;
   font-size: 16px;
   text-align: right;
+}
+
+.hidden {
+  display: none;
 }

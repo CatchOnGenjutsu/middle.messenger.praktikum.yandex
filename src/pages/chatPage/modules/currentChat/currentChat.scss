@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .current-chat-container {
   display: flex;
@@ -6,6 +6,7 @@
   width: 100%;
   height: 100%;
   overflow-y: auto;
+
   .current-chat_empty {
     display: flex;
     justify-content: center;
@@ -14,6 +15,6 @@
     height: 100vh;
     font-size: 18px;
     line-height: 22px;
-    color: $--color-light-grey;
+    color: $color-light-grey;
   }
 }

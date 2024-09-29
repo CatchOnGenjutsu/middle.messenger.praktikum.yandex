@@ -1,10 +1,10 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .action-button {
   padding: 15px;
   font-size: 14px;
   line-height: 18px;
-  color: $--color-text-primary;
+  color: $color-text-primary;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -12,9 +12,10 @@
   background-color: white;
 
   &:hover {
-    background-color: $--hover-color;
+    background-color: $hover-color;
     transition: 0.3s;
   }
+
   &__icon {
     margin-right: 15px;
     width: 24px;

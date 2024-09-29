@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import "../../../../assets/styles/variables.scss";
 
 .messages-block-container {
   overflow-y: scroll;
@@ -8,26 +8,32 @@
   flex-direction: column;
   width: 100%;
   padding: 10px 20px 30px;
+
   &__datetime-block {
     text-align: center;
-    color: $--color-light-grey;
+    color: $color-light-grey;
     font-size: 14px;
     margin-bottom: 30px;
   }
+
   &::-webkit-scrollbar-button {
     display: none;
   }
+
   &::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
+
   &::-webkit-scrollbar-thumb {
-    background-color: $--color-light-grey;
+    background-color: $color-light-grey;
     border-radius: 4px;
+
     &:hover {
       cursor: grab;
     }
   }
+
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
