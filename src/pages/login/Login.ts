@@ -1,14 +1,19 @@
-import Block from "../../globalClasses/Block";
+import Block, { BlockProps } from "../../globalClasses/Block";
 import { FormField } from "../../components/formField/FormField";
 import Button from "../../components/button/Button";
 
 import "./login.scss";
 
+interface LoginProps extends BlockProps {
+  // Здесь вы можете добавить дополнительные свойства, если это необходимо
+}
+
 export default class Login extends Block {
   // private children: Record<string, Block> = {};
 
-  constructor() {
+  constructor(props?: LoginProps) {
     super({
+      ...props,
       Fields: [
         new FormField({
           labelName: "Логин",

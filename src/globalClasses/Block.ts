@@ -1,21 +1,21 @@
 import EventBus, { EventCallback } from "./EventBus";
 import Handlebars from "handlebars";
 
-interface BlockProps {
+export interface BlockProps {
   [key: string]: unknown;
   events?: Record<string, EventListener>;
   attr?: Record<string, string>;
 }
 
 interface Children {
-  [key: string]: Block;
+  [key: string]: Block<any>;
 }
 
 interface Lists {
-  [key: string]: Block[];
+  [key: string]: Block<any>[];
 }
 
-export default class Block {
+export default class Block<P extends BlockProps = {}> {
   static EVENTS = {
     INIT: "init",
     FLOW_CDM: "flow:component-did-mount",
@@ -27,7 +27,7 @@ export default class Block {
 
   protected _id: number = Math.floor(100000 + Math.random() * 900000);
 
-  props: BlockProps;
+  props: P;
 
   children: Children;
 
@@ -35,12 +35,13 @@ export default class Block {
 
   protected eventBus: () => EventBus;
 
-  constructor(propsWithChildren: BlockProps = {}) {
+  constructor(propsWithChildren: P = {} as P) {
     const eventBus = new EventBus();
     const { props, children, lists } = this._getChildrenPropsAndProps(propsWithChildren);
-    this.props = this._makePropsProxy({ ...props });
+    this.props = this._makePropsProxy<P>({ ...props } as P);
     this.children = children;
     this.lists = lists;
+    // this.lists = this._makePropsProxy<Lists>({ ...lists });
     this.eventBus = () => eventBus;
     this._registerEvents(eventBus);
     eventBus.emit(Block.EVENTS.INIT);
@@ -212,11 +213,11 @@ export default class Block {
     const propsAndStubs = { ...this.props };
     const _tmpId = Math.floor(100000 + Math.random() * 900000);
     Object.entries(this.children).forEach(([key, child]) => {
-      propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
+      (propsAndStubs as Record<string, unknown>)[key] = `<div data-id="${child._id}"></div>`;
     });
 
     Object.entries(this.lists).forEach(([key]) => {
-      propsAndStubs[key] = `<div data-id="__l_${_tmpId}"></div>`;
+      (propsAndStubs as Record<string, unknown>)[key] = `<div data-id="__l_${_tmpId}"></div>`;
     });
 
     const fragment = this._createDocumentElement("template");
@@ -265,15 +266,33 @@ export default class Block {
     return this._element;
   }
 
-  private _makePropsProxy(props: BlockProps): BlockProps {
+  // private _makePropsProxy(props: BlockProps): BlockProps {
+  //   return new Proxy(props, {
+  //     get: (target: BlockProps, prop: string) => {
+  //       const value = target[prop];
+  //       return typeof value === "function" ? value.bind(target) : value;
+  //     },
+  //     set: (target: BlockProps, prop: string, value: unknown) => {
+  //       const oldTarget = { ...target };
+  //       target[prop] = value;
+  //       this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
+  //       return true;
+  //     },
+  //     deleteProperty: () => {
+  //       throw new Error("No access");
+  //     },
+  //   });
+  // }
+
+  private _makePropsProxy<T extends object>(props: T): T {
     return new Proxy(props, {
-      get: (target: BlockProps, prop: string) => {
-        const value = target[prop];
+      get: (target: T, prop: string) => {
+        const value = target[prop as keyof T];
         return typeof value === "function" ? value.bind(target) : value;
       },
-      set: (target: BlockProps, prop: string, value: unknown) => {
+      set: (target: T, prop: string, value: unknown) => {
         const oldTarget = { ...target };
-        target[prop] = value;
+        (target as any)[prop] = value;
         this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
         return true;
       },

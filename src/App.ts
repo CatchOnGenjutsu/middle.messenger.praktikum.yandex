@@ -1,3 +1,6 @@
+import Router from "./globalClasses/Router";
+import { connect } from "./globalClasses/HOC";
+
 import MainPage from "./pages/mainPage/mainPage";
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
@@ -25,87 +28,13 @@ export default class App {
       currentPage: window.location.pathname.slice(1),
     };
     this.appElement = document.getElementById("app");
+    const loginPage = connect(Login);
+    const router = new Router("app");
+    router.use("/", loginPage).start();
+    console.log(window.location.pathname.slice(1));
   }
 
   render(): string {
-    switch (this.state.currentPage) {
-      case "": {
-        const mainPage = new MainPage();
-        console.log(mainPage.getContent());
-        if (this.appElement) {
-          this.appElement.appendChild(mainPage.getContent());
-        }
-        break;
-      }
-
-      case "login": {
-        const login = new Login();
-        console.log(login.getContent());
-        if (this.appElement) {
-          this.appElement.appendChild(login.getContent());
-        }
-        break;
-      }
-      case "registration": {
-        const registration = new Registration();
-        console.log(registration.getContent());
-        if (this.appElement) {
-          this.appElement.appendChild(registration.getContent());
-        }
-        break;
-      }
-      case "chat-page": {
-        const chatPage = new ChatPage();
-        console.log(chatPage.getContent());
-        if (this.appElement) {
-          this.appElement.appendChild(chatPage.getContent());
-        }
-        break;
-      }
-      case "profile-page": {
-        const profilePage = new ProfilePage({
-          ...profilePageViewModeMainDataSettings,
-          isEditData: false,
-          buttonOptions: { ...saveButtonOptions },
-          actionsButtons: { ...profileActionsButtonsSettings },
-          modalWindowSettings: { ...modalWindowAddAvatarSettings },
-        });
-        console.log(profilePage.getContent());
-        if (this.appElement) {
-          this.appElement.appendChild(profilePage.getContent());
-        }
-        break;
-      }
-      case "error-page-404": {
-        const errorPage = new ErrorPage({
-          title: "404",
-          description: "Не туда попали",
-        });
-        if (this.appElement) {
-          this.appElement.appendChild(errorPage.getContent());
-        }
-        break;
-      }
-
-      case "error-page-500": {
-        const errorPage = new ErrorPage({
-          title: "500",
-          description: "Мы уже фиксим",
-        });
-        if (this.appElement) {
-          this.appElement.appendChild(errorPage.getContent());
-        }
-        break;
-      }
-      default: {
-        const mainPage = new MainPage();
-        console.log(mainPage.getContent());
-        if (this.appElement) {
-          this.appElement.replaceWith(mainPage.getContent());
-        }
-        break;
-      }
-    }
     return "";
   }
 }
