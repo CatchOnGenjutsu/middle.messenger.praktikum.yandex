@@ -1,19 +1,21 @@
-import Block, { BlockProps } from "../../globalClasses/Block";
+import Block from "../../globalClasses/Block";
+import Router from "../../globalClasses/Router";
+
 import { FormField } from "../../components/formField/FormField";
+import { Link } from "../../components/link/Link";
 import Button from "../../components/button/Button";
 
 import "./login.scss";
 
-interface LoginProps extends BlockProps {
-  // Здесь вы можете добавить дополнительные свойства, если это необходимо
-}
+// interface LoginProps extends BlockProps {
+//   // Здесь вы можете добавить дополнительные свойства, если это необходимо
+// }
 
 export default class Login extends Block {
   // private children: Record<string, Block> = {};
 
-  constructor(props?: LoginProps) {
+  constructor() {
     super({
-      ...props,
       Fields: [
         new FormField({
           labelName: "Логин",
@@ -41,6 +43,22 @@ export default class Login extends Block {
         id: "submit-btn",
         name: "submit-btn",
       }),
+      Link: new Link({
+        href: "/sign-up",
+        text: "Нет аккаунта?",
+        datapage: "sign-up",
+        class: "login-container__link",
+        onClick: (event: Event) => {
+          const router = new Router("app");
+          router.go("/sign-up");
+          console.log("CLICK /sign-up");
+          event.preventDefault();
+          event.stopPropagation();
+          // event.preventDefault();
+          // event.stopPropagation();
+          // console.log("click");
+        },
+      }),
       events: {
         submit: (event: Event) => {
           event.preventDefault();
@@ -57,6 +75,15 @@ export default class Login extends Block {
       },
     });
   }
+  // <a
+  //         class="login-container__link"
+  //         href="/sign-up"
+  //         onclick="() => {
+  //           console.log('click');
+  //           event.preventDefault()
+  //         }">
+  //         Нет аккаунта?
+  //         </a>
 
   render(): string {
     return `
@@ -67,7 +94,7 @@ export default class Login extends Block {
           {{{Fields}}}
           {{{Button}}}
         </form>
-        <a class="login-container__link" href="/registration">Нет аккаунта?</a>
+        {{{Link}}}
         </div>
       </main>
     `;

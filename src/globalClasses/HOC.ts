@@ -1,21 +1,25 @@
+import Block from "./Block";
 import store from "./Store";
-import Block, { BlockProps } from "./Block"; // Импортируем Block и его интерфейсы
+export interface StoreState {
+  PageTitle: string;
+}
+type ComponentProps = Record<string, unknown>;
 
-type ComponentConstructor<P extends BlockProps = {}> = new (props: P) => Block<P>;
+interface Component extends Block {
+  setProps(nextProps: ComponentProps): void;
+}
 
-export function connect<P extends BlockProps>(
-  Component: ComponentConstructor<P>,
-  noProps: boolean = false,
-): ComponentConstructor<P> {
-  return class ConnectedComponent extends Component {
-    constructor(props?: P) {
-      const initialProps = noProps ? ({} as P) : (props as P);
-      super({ ...initialProps, ...store.getState() });
+export function connect<P extends ComponentProps>(
+  Component: new (props: P) => Component,
+): new (props: Omit<P, keyof StoreState>) => Component {
+  return class extends Component {
+    constructor(props: Omit<P, keyof StoreState>) {
+      const combinedProps = { ...props, ...store.getState() } as unknown as P;
+      super(combinedProps);
 
       store.subscribe(() => {
         console.log("We are in store subscription");
-        const newState = store.getState();
-        this.setProps(newState as unknown as Partial<P>);
+        this.setProps({ ...store.getState() });
       });
 
       console.log(this);

@@ -1,58 +1,59 @@
-interface State {
+type Subscriber<State> = (state: State) => void;
+
+interface Store<State, Action> {
+  getState(): State;
+  subscribe(fn: Subscriber<State>): void;
+  dispatch(action: Action): void;
+}
+
+export interface StoreState {
   PageTitle: string;
 }
 
 interface SetTextAction {
   type: "SET_TEXT";
-  payload: { PageTitle: string };
+  PageTitle: string;
 }
 
 type Action = SetTextAction;
 
-const deepCopy = <T>(object: T): T => {
-  if (object === null || typeof object !== "object") return object;
-  if (object instanceof Date) return new Date(object) as T;
-  if (Array.isArray(object)) return object.map((item) => deepCopy(item)) as unknown as T;
-  if (object instanceof Map) {
-    return new Map(Array.from(object.entries()).map(([k, v]) => [deepCopy(k), deepCopy(v)])) as T;
-  }
-  if (object instanceof Set) {
-    return new Set(Array.from(object).map((item) => deepCopy(item))) as T;
-  }
-  const cloned: Record<string, unknown> = {};
-  Object.keys(object).forEach((key) => (cloned[key] = deepCopy((object as Record<string, unknown>)[key])));
-  return cloned as T;
-};
+const deepCopy = <T>(object: T): T => JSON.parse(JSON.stringify(object));
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: StoreState, action: Action): StoreState => {
   const newState = deepCopy(state);
 
   if (action.type === "SET_TEXT") {
-    newState.PageTitle = action.payload.PageTitle;
+    console.log("SET_TEXT");
+    newState.PageTitle = action.PageTitle;
   }
 
   return newState;
 };
 
-const createStore = <S, A>(reducer: (state: S, action: A) => S, initialState: S) => {
-  const subscribers: Array<(state: S) => void> = [];
+const createStore = <State, Action>(
+  reducer: (state: State, action: Action) => State,
+  initialState: State,
+): Store<State, Action> => {
+  const subscribers: Subscriber<State>[] = [];
   let currentState = initialState;
 
   return {
     getState: () => currentState,
-    subscribe: (fn: (state: S) => void) => {
+    subscribe: (fn) => {
       subscribers.push(fn);
       fn(currentState);
     },
-    dispatch: (action: A) => {
+    dispatch: (action) => {
       currentState = reducer(currentState, action);
       subscribers.forEach((fn) => fn(currentState));
     },
   };
 };
 
-const state: State = { PageTitle: "Initial state text" };
-const store = createStore(reducer, state);
-Object.freeze(store);
+const initialState: StoreState = {
+  PageTitle: "Initial state text",
+};
+
+const store = createStore(reducer, initialState);
 
 export default store;

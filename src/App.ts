@@ -1,3 +1,6 @@
+// import Router from "./globalClasses/Router";
+// import { connect } from "./globalClasses/HOC";
+
 import Router from "./globalClasses/Router";
 import { connect } from "./globalClasses/HOC";
 
@@ -29,9 +32,9 @@ export default class App {
     };
     this.appElement = document.getElementById("app");
     const loginPage = connect(Login);
+    const registrationPage = connect(Registration);
     const router = new Router("app");
-    router.use("/", loginPage).start();
-    console.log(window.location.pathname.slice(1));
+    router.use("/", loginPage).use("/sign-up", registrationPage).start();
   }
 
   render(): string {
