@@ -33,8 +33,15 @@ export default class App {
     this.appElement = document.getElementById("app");
     const loginPage = connect(Login);
     const registrationPage = connect(Registration);
+    const chatPage = connect(ChatPage);
+    // const profilePage = connect(ProfilePage);
     const router = new Router("app");
-    router.use("/", loginPage).use("/sign-up", registrationPage).start();
+    router
+      .use("/", loginPage)
+      .use("/sign-up", registrationPage)
+      .use("/messenger", chatPage)
+      // .use("/settings", profilePage)
+      .start();
   }
 
   render(): string {
