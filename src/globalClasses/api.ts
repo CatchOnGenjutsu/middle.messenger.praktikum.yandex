@@ -40,7 +40,7 @@ function queryStringify(data: QueryStringifyData): string {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class HTTPTransport {
+export class HTTPTransport {
   get(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     const queryString = options.data ? queryStringify(options.data) : "";
     return this.request(`${url}${queryString}`, { ...options, method: METHODS.GET }, options.timeout);
@@ -85,5 +85,24 @@ class HTTPTransport {
         xhr.send(JSON.stringify(data));
       }
     });
+  }
+}
+
+export class BaseAPI {
+  // На случай, если забудете переопределить метод и используете его, — выстрелит ошибка
+  create() {
+    throw new Error("Not implemented");
+  }
+
+  request() {
+    throw new Error("Not implemented");
+  }
+
+  update() {
+    throw new Error("Not implemented");
+  }
+
+  delete() {
+    throw new Error("Not implemented");
   }
 }

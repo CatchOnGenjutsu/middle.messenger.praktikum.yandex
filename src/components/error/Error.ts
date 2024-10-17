@@ -7,6 +7,7 @@ interface ErrorProps {
 
 export class Error extends Block {
   constructor(props: ErrorProps) {
+    console.log(props);
     super({
       ...props,
     });
@@ -14,7 +15,7 @@ export class Error extends Block {
 
   render() {
     return `
-      <p class="error">{{#if errorText}}{{errorText}}{{/if}}</p>
+      <p class="error">{{errorText}}</p>
     `;
   }
 }

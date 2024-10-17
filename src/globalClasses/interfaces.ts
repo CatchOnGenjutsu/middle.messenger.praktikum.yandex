@@ -5,6 +5,7 @@ export interface FormFieldConfig {
   inputType: "text" | "email" | "password" | "tel";
   inputId: string;
   inputPlaceholder: string;
+  errorText: string | null;
   validation: (value: string, allFields?: FormFieldInstance[]) => string | null;
 }
 
@@ -24,14 +25,15 @@ interface FormFieldInstance {
   };
   getContent: () => HTMLElement;
 }
-export const formFieldsConfig: FormFieldConfig[] = [
+export const registrationFormFieldsConfig: FormFieldConfig[] = [
   {
     labelName: "Почта",
     labelFor: "email",
     inputName: "email",
-    inputType: "email",
+    inputType: "text",
     inputId: "email",
     inputPlaceholder: "Введите почту",
+    errorText: null,
     validation: (value: string) =>
       value && !/^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value)
         ? "Неправильно введена почта. Почта должна содержать символы @ и ."
@@ -44,6 +46,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "text",
     inputId: "login",
     inputPlaceholder: "Введите логин",
+    errorText: null,
     validation: (value: string) =>
       value && !/^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value)
         ? "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание)."
@@ -56,6 +59,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "text",
     inputId: "first_name",
     inputPlaceholder: "Введите имя",
+    errorText: null,
     validation: (value: string) =>
       value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)
         ? "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)."
@@ -68,6 +72,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "text",
     inputId: "second_name",
     inputPlaceholder: "Введите фамилию",
+    errorText: null,
     validation: (value: string) =>
       value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)
         ? "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)."
@@ -80,6 +85,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "tel",
     inputId: "phone",
     inputPlaceholder: "Введите телефон",
+    errorText: null,
     validation: (value: string) =>
       value && !/^\+?\d{10,15}$/u.test(value)
         ? "Должен содержать от 10 до 15 цифр, может начинаться с плюса."
@@ -92,6 +98,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "password",
     inputId: "password",
     inputPlaceholder: "Введите пароль",
+    errorText: null,
     validation: (value: string) =>
       value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
         ? "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра."
@@ -104,6 +111,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "password",
     inputId: "passwordRepeat",
     inputPlaceholder: "Повторите пароль",
+    errorText: null,
     validation: (value: string, allFields: any) => {
       const passwordValue = allFields?.password?.getContent()?.querySelector("input")?.value;
       return value && value !== passwordValue ? "Пароли должны совпадать." : null;

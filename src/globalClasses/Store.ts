@@ -1,4 +1,4 @@
-import { FormFieldConfig, formFieldsConfig } from "./interfaces";
+import { FormFieldConfig, registrationFormFieldsConfig } from "./interfaces";
 type Subscriber<State> = (state: State) => void;
 
 interface Store<State, Action> {
@@ -9,6 +9,7 @@ interface Store<State, Action> {
 
 export interface StoreState {
   PageTitle: string;
+  // LoginPageSettings: FormFieldConfig[];
   RegistrationPageSettings: FormFieldConfig[];
 }
 
@@ -26,7 +27,76 @@ interface UpdateFormFieldAction {
   newConfig: Partial<FormFieldConfig>; // Только изменяемые свойства
 }
 
-type Action = SetTextAction | SetFormFieldsAction | UpdateFormFieldAction;
+interface UpdateFormFieldErrorAction {
+  type: "UPDATE_FORM_FIELD_ERROR";
+  fieldId: string;
+  errorText: string | null;
+}
+
+type Action = SetTextAction | SetFormFieldsAction | UpdateFormFieldAction | UpdateFormFieldErrorAction;
+
+const reducer = (state: StoreState, action: Action): StoreState => {
+  const newState = deepCopy(state);
+
+  switch (action.type) {
+    case "SET_TEXT":
+      newState.PageTitle = action.PageTitle;
+      break;
+
+    case "SET_FORM_FIELDS":
+      newState.RegistrationPageSettings = action.fields;
+      break;
+
+    case "UPDATE_FORM_FIELD":
+      console.log("tut");
+      if (newState.RegistrationPageSettings) {
+        newState.RegistrationPageSettings = newState.RegistrationPageSettings.map((field) =>
+          field.inputId === action.fieldId ? { ...field, ...action.newConfig } : field,
+        );
+      }
+      break;
+    case "UPDATE_FORM_FIELD_ERROR":
+      // debugger;
+      if (newState.RegistrationPageSettings) {
+        newState.RegistrationPageSettings = newState.RegistrationPageSettings.map((field) =>
+          field.inputId === action.fieldId ? { ...field, errorText: action.errorText } : field,
+        );
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return newState;
+};
+
+const createStore = <State, Action>(
+  reducer: (state: State, action: Action) => State,
+  initialState: State,
+): Store<State, Action> => {
+  const subscribers: Subscriber<State>[] = [];
+  let currentState = initialState;
+
+  return {
+    getState: () => currentState,
+    subscribe: (fn) => {
+      subscribers.push(fn);
+      fn(currentState);
+    },
+    dispatch: (action) => {
+      // debugger;
+      currentState = reducer(currentState, action);
+      subscribers.forEach((fn) => fn(currentState));
+    },
+  };
+};
+
+const initialState: StoreState = {
+  PageTitle: "Initial state text",
+  // LoginPageSettings:
+  RegistrationPageSettings: registrationFormFieldsConfig,
+};
 
 function deepCopy<T>(object: T, seen = new WeakMap()): T {
   // Примитивные значения и null возвращаются без изменений
@@ -86,59 +156,6 @@ function deepCopy<T>(object: T, seen = new WeakMap()): T {
 
   return copy as T;
 }
-
-const reducer = (state: StoreState, action: Action): StoreState => {
-  const newState = deepCopy(state);
-
-  switch (action.type) {
-    case "SET_TEXT":
-      newState.PageTitle = action.PageTitle;
-      break;
-
-    case "SET_FORM_FIELDS":
-      newState.RegistrationPageSettings = action.fields;
-      break;
-
-    case "UPDATE_FORM_FIELD":
-      if (newState.RegistrationPageSettings) {
-        newState.RegistrationPageSettings = newState.RegistrationPageSettings.map((field) =>
-          field.inputId === action.fieldId ? { ...field, ...action.newConfig } : field,
-        );
-      }
-      break;
-
-    default:
-      break;
-  }
-
-  return newState;
-};
-
-const createStore = <State, Action>(
-  reducer: (state: State, action: Action) => State,
-  initialState: State,
-): Store<State, Action> => {
-  const subscribers: Subscriber<State>[] = [];
-  let currentState = initialState;
-
-  return {
-    getState: () => currentState,
-    subscribe: (fn) => {
-      subscribers.push(fn);
-      fn(currentState);
-    },
-    dispatch: (action) => {
-      currentState = reducer(currentState, action);
-      subscribers.forEach((fn) => fn(currentState));
-    },
-  };
-};
-
-const initialState: StoreState = {
-  PageTitle: "Initial state text",
-  RegistrationPageSettings: formFieldsConfig,
-};
-
 const store = createStore(reducer, initialState);
 
 export default store;

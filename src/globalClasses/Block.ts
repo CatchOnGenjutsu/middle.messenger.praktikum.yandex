@@ -40,8 +40,8 @@ export default class Block<P extends BlockProps = {}> {
     const { props, children, lists } = this._getChildrenPropsAndProps(propsWithChildren);
     this.props = this._makePropsProxy<P>({ ...props } as P);
     this.children = children;
-    this.lists = lists;
-    // this.lists = this._makePropsProxy<Lists>({ ...lists });
+    // this.lists = lists;
+    this.lists = this._makePropsProxy<Lists>({ ...lists });
     this.eventBus = () => eventBus;
     this._registerEvents(eventBus);
     eventBus.emit(Block.EVENTS.INIT);
@@ -94,8 +94,12 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    // console.log(this, this._propsHaveChanged(oldProps, newProps));
     if (this._propsHaveChanged(oldProps, newProps)) {
       this._updateChildrenProps(this.children, newProps);
+      if (Object.values(this.lists).length) {
+        this._updateListsProps(this.lists, newProps);
+      }
       this._render();
     }
   }
@@ -161,6 +165,39 @@ export default class Block<P extends BlockProps = {}> {
           deepUpdateProps(child.props, childNewProps);
           child.setProps(child.props);
         }
+      }
+    }
+  }
+
+  private _updateListsProps(lists: Lists, newProps: Record<string, unknown>): void {
+    function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
+      for (const key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          if (
+            typeof source[key] === "object" &&
+            source[key] !== null &&
+            typeof target[key] === "object" &&
+            target[key] !== null
+          ) {
+            deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+          } else {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+
+    for (const listName in lists) {
+      if (Object.prototype.hasOwnProperty.call(lists, listName)) {
+        const list = lists[listName];
+
+        list.forEach((item) => {
+          if (item && typeof item.setProps === "function") {
+            const listNewProps = (newProps[listName] || {}) as Record<string, unknown>;
+            deepUpdateProps(item.props, listNewProps);
+            item.setProps(item.props);
+          }
+        });
       }
     }
   }
