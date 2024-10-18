@@ -1,5 +1,10 @@
 .error {
   font-size: 12px;
-  color: #FF2F2F;
+  color: #ff2f2f;
   font-weight: 500;
+  display: none;
+}
+
+.error-active {
+  display: block;
 }

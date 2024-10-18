@@ -30,7 +30,7 @@ interface UpdateFormFieldAction {
 interface UpdateFormFieldErrorAction {
   type: "UPDATE_FORM_FIELD_ERROR";
   fieldId: string;
-  errorText: string | null;
+  errorText: string;
 }
 
 type Action = SetTextAction | SetFormFieldsAction | UpdateFormFieldAction | UpdateFormFieldErrorAction;

@@ -9,7 +9,7 @@ export interface FormFieldConfig {
 }
 
 interface FormFieldProps extends FormFieldConfig {
-  errorText: string | null;
+  errorText: string;
   events: {
     blur: (event: Event) => void;
   };
@@ -19,7 +19,7 @@ interface FormFieldInstance {
   props: FormFieldProps;
   children: {
     error: {
-      setProps: (props: { errorText: string | null }) => void;
+      setProps: (props: { errorText: string }) => void;
     };
   };
   getContent: () => HTMLElement;

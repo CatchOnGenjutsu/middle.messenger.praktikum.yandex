@@ -62,9 +62,7 @@ export default class Block<P extends BlockProps = {}> {
     const { events } = this.props;
     if (events) {
       Object.keys(events).forEach((eventName) => {
-        if (this._element) {
-          this._element.removeEventListener(eventName, events[eventName]);
-        }
+        this._element?.removeEventListener(eventName, events[eventName]);
       });
     }
   }
@@ -94,14 +92,14 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-    // console.log(this, this._propsHaveChanged(oldProps, newProps));
-    if (this._propsHaveChanged(oldProps, newProps)) {
-      this._updateChildrenProps(this.children, newProps);
-      if (Object.values(this.lists).length) {
-        this._updateListsProps(this.lists, newProps);
-      }
-      this._render();
+    if (!this._propsHaveChanged(oldProps, newProps)) return;
+    // console.log(this, this._propsHaveChanged(oldProps, newProps), oldProps, newProps);
+    this._updateChildrenProps(this.children, newProps);
+    if (Object.values(this.lists).length) {
+      this._updateListsProps(this.lists, newProps);
     }
+    this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+    // this._render();
   }
 
   private _propsHaveChanged(oldProps: Record<string, unknown>, newProps: Record<string, unknown>): boolean {
@@ -238,8 +236,12 @@ export default class Block<P extends BlockProps = {}> {
     if (!nextProps) {
       return;
     }
-
-    Object.assign(this.props, nextProps);
+    const oldProps = { ...this.props };
+    const newProps = { ...this.props, ...nextProps };
+    if (this._propsHaveChanged(oldProps, newProps)) {
+      this.props = newProps;
+      this._componentDidUpdate(oldProps, newProps);
+    }
   };
 
   get element(): HTMLElement | null {
@@ -260,36 +262,44 @@ export default class Block<P extends BlockProps = {}> {
     const fragment = this._createDocumentElement("template");
     fragment.innerHTML = Handlebars.compile(this.render())(propsAndStubs);
 
-    Object.values(this.children).forEach((child) => {
+    Object.entries(this.children).forEach(([, child]) => {
       const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
       if (stub && stub.parentNode) {
-        stub.replaceWith(child.getContent());
+        const newContent = child.getContent();
+        if (!stub.isEqualNode(newContent)) {
+          stub.replaceWith(newContent);
+        }
       }
     });
 
     Object.entries(this.lists).forEach(([, list]) => {
-      const listCont = this._createDocumentElement("template");
-      list.forEach((item) => {
-        if (item instanceof Block) {
-          listCont.content.append(item.getContent());
-        } else {
-          listCont.content.append(`${item}`);
-        }
-      });
       const stub = fragment.content.querySelector(`[data-id="__l_${_tmpId}"]`);
       if (stub) {
-        stub.replaceWith(listCont.content);
+        const listCont = this._createDocumentElement("template");
+
+        list.forEach((item) => {
+          listCont.content.append(
+            item instanceof Block ? item.getContent() : document.createTextNode(`${item}`),
+          );
+        });
+
+        // Если содержимое изменилось, заменяем заглушку новым списком
+        if (!stub.isEqualNode(listCont.content)) {
+          stub.replaceWith(listCont.content);
+        }
       }
     });
 
     const newElement = fragment.content.firstElementChild as HTMLElement;
     if (this._element && newElement) {
+      this._element.innerHTML = "";
       this._removeEvents();
       this._element.replaceWith(newElement);
     }
     this._element = newElement;
     this._addEvents();
     this.addAttributes();
+    // console.log("Render is triggered", this, this._element);
   }
 
   protected render(): string {
@@ -302,24 +312,6 @@ export default class Block<P extends BlockProps = {}> {
     }
     return this._element;
   }
-
-  // private _makePropsProxy(props: BlockProps): BlockProps {
-  //   return new Proxy(props, {
-  //     get: (target: BlockProps, prop: string) => {
-  //       const value = target[prop];
-  //       return typeof value === "function" ? value.bind(target) : value;
-  //     },
-  //     set: (target: BlockProps, prop: string, value: unknown) => {
-  //       const oldTarget = { ...target };
-  //       target[prop] = value;
-  //       this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
-  //       return true;
-  //     },
-  //     deleteProperty: () => {
-  //       throw new Error("No access");
-  //     },
-  //   });
-  // }
 
   private _makePropsProxy<T extends object>(props: T): T {
     return new Proxy(props, {

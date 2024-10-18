@@ -8,10 +8,10 @@ import { FormFieldConfig } from "../../globalClasses/interfaces"; // Тип на
 import "./registration.scss";
 
 export default class Registration extends Block {
-  constructor() {
+  constructor(props: any) {
     const { RegistrationPageSettings } = store.getState(); // Получаем данные из Store
     console.log(RegistrationPageSettings);
-
+    console.log(props);
     super({
       Fields: RegistrationPageSettings.map(
         (config: FormFieldConfig) =>
