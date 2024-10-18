@@ -16,6 +16,9 @@ export class Link extends Block {
       ...props,
       events: {
         click: (e: Event) => {
+          // this.setAttributes({
+          //   class: "footer-link",
+          // });
           if (props.onClick) {
             props.onClick(e);
           }

@@ -14,9 +14,11 @@ interface FormFieldProps {
   inputPlaceholder: string;
   inputClassName?: string;
   events?: {
+    // focus?: (event: Event) => void;
     blur: (event: Event) => void;
+    // input?: (event: Event) => void;
   };
-  errorText?: string;
+  errorText?: string | null;
 }
 
 export class FormField extends Block {
@@ -35,7 +37,7 @@ export class FormField extends Block {
         events: props.events,
       }),
       error: new Error({
-        errorText: props.errorText!,
+        errorText: props.errorText as string,
       }),
     });
   }

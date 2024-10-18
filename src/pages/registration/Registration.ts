@@ -8,17 +8,28 @@ import { FormFieldConfig } from "../../globalClasses/interfaces"; // Тип на
 import "./registration.scss";
 
 export default class Registration extends Block {
-  constructor(props: any) {
+  constructor() {
     const { RegistrationPageSettings } = store.getState(); // Получаем данные из Store
-    console.log(RegistrationPageSettings);
-    console.log(props);
+
     super({
       Fields: RegistrationPageSettings.map(
         (config: FormFieldConfig) =>
           new FormField({
             ...config,
+            errorText: null,
             events: {
-              blur: (event: Event) => this.validateField(event), // Используем общий метод валидации
+              blur: (event: Event) => {
+                if (!event) return;
+
+                const target = event.target as HTMLInputElement;
+                const value = target.value;
+                const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
+
+                if (elem) {
+                  const errorMessage = config.validation(value);
+                  elem.children.error.setProps({ errorText: errorMessage });
+                }
+              },
             },
           }),
       ),
@@ -30,7 +41,21 @@ export default class Registration extends Block {
         name: "submit-btn",
       }),
       events: {
-        submit: (event: Event) => this.handleSubmit(event),
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isValid = this.validateForm();
+          if (isValid) {
+            const elem = event.target as HTMLFormElement;
+            if (elem && elem.tagName === "FORM") {
+              const formData = new FormData(elem);
+              const data: Record<string, string> = {};
+              formData.forEach((value, key) => {
+                data[key] = value.toString();
+              });
+              console.log(data);
+            }
+          }
+        },
       },
     });
 
@@ -38,87 +63,105 @@ export default class Registration extends Block {
     store.subscribe(() => this.updateFields());
   }
 
-  /**
-   * Метод валидации одного поля, вызывается при blur и сабмите.
-   */
-  private validateField(event: Event): boolean {
-    // debugger;
-    const target = event.target as HTMLInputElement;
-    if (!target) return false;
-
-    const value = target.value;
-    const inputId = target.id;
-
-    // Находим конфигурацию поля из Store
-    const { RegistrationPageSettings } = store.getState();
-    const config = RegistrationPageSettings.find((f) => f.inputId === inputId);
-
-    if (config) {
-      // Выполняем валидацию и сохраняем ошибку в Store
-      const errorMessage = config.validation(value);
-      store.dispatch({
-        type: "UPDATE_FORM_FIELD_ERROR",
-        fieldId: inputId,
-        errorText: errorMessage,
-      });
-      if (!errorMessage) {
-        return true;
-      }
-
-      // return !errorMessage; // Возвращаем true, если нет ошибки
-    }
-    return false;
-  }
-
-  /**
-   * Метод обновления полей при изменениях в Store.
-   */
+  // Метод для обновления полей при изменении состояния в Store
   private updateFields() {
-    // debugger;
     const { RegistrationPageSettings } = store.getState();
     const updatedFields = RegistrationPageSettings.map(
       (config: FormFieldConfig) =>
         new FormField({
           ...config,
+          errorText: null,
           events: {
-            blur: (event: Event) => this.validateField(event), // Обновляем событие blur
+            blur: (event: Event) => {
+              const target = event.target as HTMLInputElement;
+              const value = target.value;
+              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
+
+              if (elem) {
+                const errorMessage = config.validation(value);
+                elem.children.error.setProps({ errorText: errorMessage });
+              }
+            },
           },
         }),
     );
-    // console.log(updatedFields[0].props.errorText);
+
     this.setProps({ Fields: updatedFields });
   }
 
-  /**
-   * Метод сабмита формы с валидацией всех полей.
-   */
-  private handleSubmit(event: Event) {
-    event.preventDefault();
+  private validateField(inputId: string, value: string): boolean {
+    const field = this.lists.Fields.find((item) => item.props.inputId === inputId)?.children.error;
+    let isValid = true;
 
+    if (field) {
+      switch (inputId) {
+        case "email":
+          isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value);
+          field.setProps({
+            errorText: isValid ? null : "Неправильно введена почта. Почта должна содержать символы @ и .",
+          });
+          break;
+        case "login":
+          isValid = /^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value);
+          field.setProps({
+            errorText: isValid
+              ? null
+              : "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов.",
+          });
+          break;
+        case "first_name":
+        case "second_name":
+          isValid = /^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value);
+          field.setProps({
+            errorText: isValid
+              ? null
+              : "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис).",
+          });
+          break;
+        case "phone":
+          isValid = /^\+?\d{10,15}$/u.test(value);
+          field.setProps({
+            errorText: isValid ? null : "Должен содержать от 10 до 15 цифр, может начинаться с плюса.",
+          });
+          break;
+        case "password":
+          isValid = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value);
+          field.setProps({
+            errorText: isValid
+              ? null
+              : "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.",
+          });
+          break;
+        case "passwordRepeat": {
+          const passwordField = this.lists.Fields.find((item) => item.props.inputId === "password");
+          const passwordValue = passwordField?.getContent().querySelector("input")?.value || "";
+          isValid = value === passwordValue;
+          field.setProps({
+            errorText: isValid ? null : "Пароли должны совпадать.",
+          });
+          break;
+        }
+      }
+    }
+
+    return isValid;
+  }
+
+  private validateForm(): boolean {
     let isFormValid = true;
 
-    // Валидация всех полей формы
     this.lists.Fields.forEach((field: Block) => {
-      const inputElement = field.getContent().querySelector("input") as HTMLInputElement;
-      if (inputElement) {
-        const customEvent = new Event("validate", { bubbles: true, cancelable: true });
-        Object.defineProperty(customEvent, "target", { value: inputElement, writable: false });
-
-        const isValid = this.validateField(customEvent); // Используем кастомное событие
-        if (!isValid) isFormValid = false;
+      const formField = field as FormField;
+      const inputElement = formField.getContent().querySelector("input") as HTMLInputElement;
+      const value = inputElement?.value || "";
+      const inputId = inputElement?.id || "";
+      const isValid = this.validateField(inputId, value);
+      if (!isValid) {
+        isFormValid = false;
       }
     });
 
-    if (isFormValid) {
-      const formData = new FormData(event.target as HTMLFormElement);
-      const data: Record<string, string> = {};
-
-      formData.forEach((value, key) => {
-        data[key] = value.toString();
-      });
-
-      console.log(data); // Отправляем данные или выполняем другие действия
-    }
+    return isFormValid;
   }
 
   protected render(): string {
@@ -130,7 +173,7 @@ export default class Registration extends Block {
               {{{Fields}}}
               {{{Button}}}
           </form>
-          <a class="registration-container__link" href="/">Войти</a>
+          <a class="registration-container__link" href="/login">Войти</a>
         </div>
       </main>
     `;
