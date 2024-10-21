@@ -7,6 +7,8 @@ import { Overlay } from "../../components/overlay/Overlay";
 
 import { profilePageViewModeMainDataSettings, profilePageEditPasswordDataSettings } from "./mockData";
 
+import { profilePageMainDataSettings, buttonSettings } from "./profilePageSettings";
+
 import "./profilePage.scss";
 
 interface ProfilePageProps {
@@ -34,77 +36,75 @@ interface ProfilePageProps {
       class: string;
       id: string;
       name: string;
+      events?: Record<string, (event: Event) => void>;
     };
   };
 }
 export default class ProfilePage extends Block {
-  constructor(props: ProfilePageProps) {
-    console.log(props);
+  constructor() {
     super({
-      ...props,
-      isEditData: props.isEditData,
-      editMainData: true,
+      // ...props,
+      // isEditData: props.isEditData,
+      // editMainData: true,
       BackButtonBlock: new BackButtonBlock(),
-      Avatar: new Avatar({
-        isEditData: props.isEditData,
-        avatarUrl: props.avatarUrl,
-        events: {
-          click: (event: Event) => {
-            event.stopPropagation();
-            const elem = this.children.OverlayWithModalWindow;
-            if (elem) {
-              elem.getContent().classList.toggle("hidden");
-            }
-          },
-        },
-      }),
+      // Avatar: new Avatar({
+      //   isEditData: props.isEditData,
+      //   avatarUrl: props.avatarUrl,
+      //   events: {
+      //     click: (event: Event) => {
+      //       event.stopPropagation();
+      //       const elem = this.children.OverlayWithModalWindow;
+      //       if (elem) {
+      //         elem.getContent().classList.toggle("hidden");
+      //       }
+      //     },
+      //   },
+      // }),
       ProfileFormBlockMainData: new ProfileFormBlock({
-        isEditData: props.isEditData,
-        inputOptions: {
-          ...profilePageViewModeMainDataSettings.inputOptions,
-        },
-        buttonOptions: props.buttonOptions,
+        isEditData: profilePageMainDataSettings.isEditData,
+        inputOptions: [...profilePageMainDataSettings.inputOptions],
+        buttonOptions: buttonSettings,
       }),
-      ProfileFormBlockPassword: new ProfileFormBlock({
-        isEditData: props.isEditData,
-        inputOptions: {
-          ...profilePageEditPasswordDataSettings.inputOptions,
-        },
-        buttonOptions: props.buttonOptions,
-      }),
-      ProfileActionButtons: [
-        ...Object.entries(props.actionsButtons).map(
-          ([key, value]) =>
-            new ProfileActionButton({
-              options: { ...(value as Record<string, string>) },
-              isLast: key === Object.keys(props.actionsButtons)[Object.keys(props.actionsButtons).length - 1],
-            }),
-        ),
-      ],
-      OverlayWithModalWindow: new Overlay({
-        ...props.modalWindowSettings,
-      }),
-      events: {
-        submit: (event: Event) => {
-          event.preventDefault();
-          const isValid = this.validateForm();
-          if (isValid) {
-            const elem = event.target as HTMLFormElement;
-            if (elem && elem.tagName === "FORM") {
-              const formData = new FormData(event.target as HTMLFormElement);
-              const data: Record<string, string> = {};
-              formData.forEach((value, key) => {
-                data[key] = value.toString();
-              });
-              console.log(data);
-            }
-          }
-        },
-      },
+      // ProfileFormBlockPassword: new ProfileFormBlock({
+      //   isEditData: props.isEditData,
+      //   inputOptions: {
+      //     ...profilePageEditPasswordDataSettings.inputOptions,
+      //   },
+      //   buttonOptions: props.buttonOptions,
+      // }),
+      // ProfileActionButtons: [
+      //   ...Object.entries(props.actionsButtons).map(
+      //     ([key, value]) =>
+      //       new ProfileActionButton({
+      //         options: { ...(value as Record<string, string>) },
+      //         isLast: key === Object.keys(props.actionsButtons)[Object.keys(props.actionsButtons).length - 1],
+      //       }),
+      //   ),
+      // ],
+      // OverlayWithModalWindow: new Overlay({
+      //   ...props.modalWindowSettings,
+      // }),
+      // events: {
+      //   submit: (event: Event) => {
+      //     event.preventDefault();
+      //     const isValid = this.validateForm();
+      //     if (isValid) {
+      //       const elem = event.target as HTMLFormElement;
+      //       if (elem && elem.tagName === "FORM") {
+      //         const formData = new FormData(event.target as HTMLFormElement);
+      //         const data: Record<string, string> = {};
+      //         formData.forEach((value, key) => {
+      //           data[key] = value.toString();
+      //         });
+      //         console.log(data);
+      //       }
+      //     }
+      //   },
+      // },
     });
-    for (const key in props.actionsButtons) {
-      this.setEventsByProps(key);
-    }
+    // for (const key in props.actionsButtons) {
+    //   this.setEventsByProps(key);
+    // }
   }
 
   setEventsByProps(key: string): void {
@@ -235,25 +235,49 @@ export default class ProfilePage extends Block {
     return isValid;
   }
 
-  private validateForm(): boolean {
-    let isFormValid = true;
-    const fields = this.props.editMainData
-      ? this.children.ProfileFormBlockMainData.lists.InputsGroup
-      : this.children.ProfileFormBlockPassword.lists.InputsGroup;
+  // private validateForm(): boolean {
+  //   let isFormValid = true;
+  //   const fields = this.props.editMainData
+  //     ? this.children.ProfileFormBlockMainData.lists.InputsGroup
+  //     : this.children.ProfileFormBlockPassword.lists.InputsGroup;
 
-    fields.forEach((field: Block) => {
-      const inputGroup = field;
-      const inputElement = inputGroup.getContent().querySelector("input") as HTMLInputElement;
-      const value = inputElement?.value || "";
-      const inputId = inputElement?.id || "";
-      const isValid = this.validateField(inputId, value, field);
-      if (!isValid) {
-        isFormValid = false;
-      }
-    });
+  //   fields.forEach((field: Block) => {
+  //     const inputGroup = field;
+  //     const inputElement = inputGroup.getContent().querySelector("input") as HTMLInputElement;
+  //     const value = inputElement?.value || "";
+  //     const inputId = inputElement?.id || "";
+  //     const isValid = this.validateField(inputId, value, field);
+  //     if (!isValid) {
+  //       isFormValid = false;
+  //     }
+  //   });
 
-    return isFormValid;
-  }
+  //   return isFormValid;
+  // }
+  // return `
+  //     <div id="profile-page" class="profile-page">
+  //       <aside class="profile-page__aside">
+  //         {{{ BackButtonBlock }}}
+  //       </aside>
+  //       <main class="profile-page__main-content">
+  //         <div class="profile-page__main-content__avatar-wrapper">
+  //           {{{ Avatar }}}
+  //           {{#unless isEditData}}
+  //             <h1 class="profile-page__main-content__name">{{inputOptions.first_name.value}}</h1>
+  //           {{/unless}}
+  //         </div>
+  //         {{#if editMainData}}
+  //           {{{ ProfileFormBlockMainData }}}
+  //         {{else}}
+  //           {{{ ProfileFormBlockPassword }}}
+  //         {{/if}}
+  //         {{#unless isEditData}}
+  //           {{{ ProfileActionButtons }}}
+  //         {{/unless}}
+  //         {{{ OverlayWithModalWindow }}}
+  //       </main>
+  //     </div>
+  //   `;
 
   protected render(): string {
     return `
@@ -264,18 +288,8 @@ export default class ProfilePage extends Block {
         <main class="profile-page__main-content">
           <div class="profile-page__main-content__avatar-wrapper">
             {{{ Avatar }}}
-            {{#unless isEditData}}
-              <h1 class="profile-page__main-content__name">{{inputOptions.first_name.value}}</h1>
-            {{/unless}}
           </div>
-          {{#if editMainData}}
-            {{{ ProfileFormBlockMainData }}}
-          {{else}}
-            {{{ ProfileFormBlockPassword }}}
-          {{/if}}
-          {{#unless isEditData}}
-            {{{ ProfileActionButtons }}}
-          {{/unless}}
+           {{{ ProfileFormBlockMainData }}}
           {{{ OverlayWithModalWindow }}}
         </main>
       </div>

@@ -1,89 +1,126 @@
 import Block from "../../globalClasses/Block";
 import Router from "../../globalClasses/Router";
 
-import { FormField } from "../../components/formField/FormField";
-import { Link } from "../../components/link/Link";
+import FormField from "../../components/formField/FormField";
+import Link from "../../components/link/Link";
 import Button from "../../components/button/Button";
+
+import { formFieldsConfig, buttonSettings, linkSettings, FormFieldConfig } from "./loginFormSettings";
+
+import loginApi from "../../api/loginApi";
 
 import "./login.scss";
 
-// interface LoginProps extends BlockProps {
-//   // Здесь вы можете добавить дополнительные свойства, если это необходимо
-// }
-
 export default class Login extends Block {
-  // private children: Record<string, Block> = {};
-
   constructor() {
     super({
-      Fields: [
-        new FormField({
-          labelName: "Логин",
-          labelFor: "login",
-          inputName: "login",
-          inputType: "text",
-          inputId: "login",
-          inputPlaceholder: "Введите логин",
-          errorText: null,
-        }),
-        new FormField({
-          labelName: "Пароль",
-          labelFor: "password",
-          inputName: "password",
-          inputType: "password",
-          inputId: "password",
-          inputPlaceholder: "Введите пароль",
-          errorText: "",
-        }),
-      ],
+      Fields: formFieldsConfig.map(
+        (config: FormFieldConfig) =>
+          new FormField({
+            ...config,
+            errorText: null,
+            events: {
+              blur: (event: Event) => {
+                if (!event) return;
+
+                const target = event.target as HTMLInputElement;
+                const value = target.value;
+                const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
+
+                if (elem) {
+                  const errorMessage = config.validation(value, this.lists.Fields as FormField[]);
+                  elem.children.error.setProps({ errorText: errorMessage });
+                }
+              },
+            },
+          }),
+      ),
       Button: new Button({
-        value: "Войти",
-        type: "submit",
-        class: "submit-button",
-        id: "submit-btn",
-        name: "submit-btn",
+        ...buttonSettings,
       }),
       Link: new Link({
-        href: "/sign-up",
-        text: "Нет аккаунта?",
-        datapage: "sign-up",
-        class: "login-container__link",
-        onClick: (event: Event) => {
-          const router = new Router("app");
-          router.go("/sign-up");
-          console.log("CLICK /sign-up");
-          event.preventDefault();
-          event.stopPropagation();
-          // event.preventDefault();
-          // event.stopPropagation();
-          // console.log("click");
-        },
+        ...linkSettings,
       }),
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
           event.preventDefault();
-          const elem = event.target as HTMLFormElement;
-          if (elem && elem.tagName === "FORM") {
-            const formData = new FormData(event.target as HTMLFormElement);
-            const data: Record<string, string> = {};
-            formData.forEach((value, key) => {
-              data[key] = value.toString();
-            });
-            console.log(data);
+          const isValid = this.validateForm();
+          if (isValid) {
+            const elem = event.target as HTMLFormElement;
+            if (elem && elem.tagName === "FORM") {
+              const formData = new FormData(elem);
+              const data: Record<string, string> = {};
+              formData.forEach((value, key) => {
+                data[key] = value.toString();
+              });
+              console.log(data);
+              const response = await loginApi.create(data);
+              if (response?.status === 200) {
+                localStorage.setItem("auth", "true");
+                const router = Router.getInstance("app");
+                router.go("/messenger");
+              } else {
+                const errorMessage = JSON.parse(response?.response).reason;
+                alert(errorMessage);
+              }
+            }
           }
         },
       },
+      // events: {
+      //   submit: (event: Event) => {
+      //     event.preventDefault();
+      //     const elem = event.target as HTMLFormElement;
+      //     if (elem && elem.tagName === "FORM") {
+      //       const formData = new FormData(event.target as HTMLFormElement);
+      //       const data: Record<string, string> = {};
+      //       formData.forEach((value, key) => {
+      //         data[key] = value.toString();
+      //       });
+      //       console.log(data);
+      //     }
+      //   },
+      // },
     });
   }
-  // <a
-  //         class="login-container__link"
-  //         href="/sign-up"
-  //         onclick="() => {
-  //           console.log('click');
-  //           event.preventDefault()
-  //         }">
-  //         Нет аккаунта?
-  //         </a>
+  private validateField(inputId: string, value: string): boolean {
+    const field = this.lists.Fields.find((item) => item.props.inputId === inputId)?.children.error;
+
+    if (field) {
+      switch (inputId) {
+        case "login":
+          field.setProps({
+            errorText: value ? null : "Введите логин",
+          });
+          break;
+        case "password":
+          value;
+          field.setProps({
+            errorText: value ? null : "Введите пароль",
+          });
+          break;
+      }
+    }
+
+    return !!value;
+  }
+
+  private validateForm(): boolean {
+    let isFormValid = true;
+
+    this.lists.Fields.forEach((field: Block) => {
+      const formField = field as FormField;
+      const inputElement = formField.getContent().querySelector("input") as HTMLInputElement;
+      const value = inputElement?.value || "";
+      const inputId = inputElement?.id || "";
+      const isValid = this.validateField(inputId, value);
+      if (!isValid) {
+        isFormValid = false;
+      }
+    });
+
+    return isFormValid;
+  }
 
   render(): string {
     return `

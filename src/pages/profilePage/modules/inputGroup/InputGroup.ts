@@ -3,12 +3,15 @@ import Block from "../../../../globalClasses/Block";
 import DisplayValue from "../../partials/displayValue/DisplayValue";
 import ProfileInput from "../../partials/profileInput/ProfileInput";
 import ProfileLabel from "../../partials/profileLabel/ProfileLabel";
+import { FormFieldConfig } from "../../profilePageSettings";
 
 import "./inputGroup.scss";
 
 interface InputGroupProps {
   isEditData: boolean;
-  inputOption: Record<string, string | boolean | null | Record<string, (event: Event) => void>>;
+  inputOption: FormFieldConfig & {
+    events?: Record<string, (event: Event) => void>;
+  };
   isLast: boolean;
   // events?: Record<string, (event: Event) => void>;
 }
@@ -27,16 +30,16 @@ export default class InputGroup extends Block {
         inputName: props.inputOption.inputName as string,
         inputType: props.inputOption.inputType as string,
         inputPlaceholder: props.inputOption.inputPlaceholder as string,
-        value: props.inputOption.value as string,
+        // value: (props.inputOption.value as string) || "",
         events: props.inputOption.events as Record<string, (event: Event) => void>,
         isEditData: props.isEditData,
       }),
       DisplayValue: new DisplayValue({
-        value: props.inputOption.value as string,
+        // value: props.inputOption.value as string,
         isEditData: props.isEditData,
       }),
       Error: new Error({
-        errorText: props.inputOption.errorText as string,
+        // errorText: props.inputOption.errorText as string,
       }),
     });
   }

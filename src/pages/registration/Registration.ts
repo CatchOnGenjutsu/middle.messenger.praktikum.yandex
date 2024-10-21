@@ -1,18 +1,20 @@
 import Block from "../../globalClasses/Block";
-import { FormField } from "../../components/formField/FormField";
-import Button from "../../components/button/Button";
-import store from "../../globalClasses/Store";
-// import store from "../../store"; // Импорт Store
+import Router from "../../globalClasses/Router";
 
-import { FormFieldConfig } from "../../globalClasses/interfaces"; // Тип настроек поля
+import FormField from "../../components/formField/FormField";
+import Link from "../../components/link/Link";
+import Button from "../../components/button/Button";
+
+import { formFieldsConfig, buttonSettings, linkSettings, FormFieldConfig } from "./registrationPageSettings";
+
+import registrationApi from "../../api/registrationApi";
+
 import "./registration.scss";
 
 export default class Registration extends Block {
   constructor() {
-    const { RegistrationPageSettings } = store.getState(); // Получаем данные из Store
-
     super({
-      Fields: RegistrationPageSettings.map(
+      Fields: formFieldsConfig.map(
         (config: FormFieldConfig) =>
           new FormField({
             ...config,
@@ -26,7 +28,7 @@ export default class Registration extends Block {
                 const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
 
                 if (elem) {
-                  const errorMessage = config.validation(value);
+                  const errorMessage = config.validation(value, this.lists.Fields as FormField[]);
                   elem.children.error.setProps({ errorText: errorMessage });
                 }
               },
@@ -34,14 +36,13 @@ export default class Registration extends Block {
           }),
       ),
       Button: new Button({
-        class: "submit-button",
-        value: "Зарегистрироваться",
-        type: "submit",
-        id: "submit-btn",
-        name: "submit-btn",
+        ...buttonSettings,
+      }),
+      Link: new Link({
+        ...linkSettings,
       }),
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
           event.preventDefault();
           const isValid = this.validateForm();
           if (isValid) {
@@ -52,41 +53,20 @@ export default class Registration extends Block {
               formData.forEach((value, key) => {
                 data[key] = value.toString();
               });
-              console.log(data);
+              const response = await registrationApi.create(data);
+              if (response?.status === 200) {
+                localStorage.setItem("auth", "true");
+                const router = Router.getInstance("app");
+                router.go("/messenger");
+              } else {
+                const errorMessage = JSON.parse(response?.response).reason;
+                alert(errorMessage);
+              }
             }
           }
         },
       },
     });
-
-    // Подписываемся на обновления Store
-    store.subscribe(() => this.updateFields());
-  }
-
-  // Метод для обновления полей при изменении состояния в Store
-  private updateFields() {
-    const { RegistrationPageSettings } = store.getState();
-    const updatedFields = RegistrationPageSettings.map(
-      (config: FormFieldConfig) =>
-        new FormField({
-          ...config,
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-
-              if (elem) {
-                const errorMessage = config.validation(value);
-                elem.children.error.setProps({ errorText: errorMessage });
-              }
-            },
-          },
-        }),
-    );
-
-    this.setProps({ Fields: updatedFields });
   }
 
   private validateField(inputId: string, value: string): boolean {
@@ -173,7 +153,7 @@ export default class Registration extends Block {
               {{{Fields}}}
               {{{Button}}}
           </form>
-          <a class="registration-container__link" href="/login">Войти</a>
+          {{{Link}}}
         </div>
       </main>
     `;

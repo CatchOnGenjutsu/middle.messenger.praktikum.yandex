@@ -1,7 +1,7 @@
 import Block from "../../globalClasses/Block";
 import "./button.scss";
 
-interface ButtonProps {
+export interface ButtonProps {
   class?: string;
   id?: string;
   name?: string;

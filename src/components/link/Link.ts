@@ -2,7 +2,7 @@ import Block from "../../globalClasses/Block";
 
 import "./link.scss";
 
-interface LinkProps {
+export interface LinkProps {
   href: string;
   datapage: string;
   text: string;
@@ -10,7 +10,7 @@ interface LinkProps {
   onClick?: (e: Event) => void;
 }
 
-export class Link extends Block {
+export default class Link extends Block {
   constructor(props: LinkProps) {
     super({
       ...props,

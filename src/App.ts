@@ -1,6 +1,3 @@
-// import Router from "./globalClasses/Router";
-// import { connect } from "./globalClasses/HOC";
-
 import Router from "./globalClasses/Router";
 import { connect } from "./globalClasses/HOC";
 
@@ -34,13 +31,16 @@ export default class App {
     const loginPage = connect(Login);
     const registrationPage = connect(Registration);
     const chatPage = connect(ChatPage);
+    const profilePage = connect(ProfilePage);
     // const profilePage = connect(ProfilePage);
-    const router = new Router("app");
+    const router = Router.getInstance("app");
+
     router
       .use("/", loginPage)
       .use("/sign-up", registrationPage)
       .use("/messenger", chatPage)
-      // .use("/settings", profilePage)
+      .use("/settings", profilePage)
+      .setNotFoundPage(ErrorPage) // Устанавливаем страницу 404
       .start();
   }
 

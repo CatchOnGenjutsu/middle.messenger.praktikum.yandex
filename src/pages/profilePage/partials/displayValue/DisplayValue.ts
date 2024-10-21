@@ -3,7 +3,7 @@ import Block from "../../../../globalClasses/Block";
 import "./displayValue.scss";
 
 interface DisplayValueProps {
-  value: string;
+  value?: string;
   isEditData: boolean;
 }
 export default class DisplayValue extends Block {

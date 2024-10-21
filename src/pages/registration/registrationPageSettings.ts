@@ -1,3 +1,7 @@
+import { ButtonProps } from "../../components/button/Button";
+import FormField from "../../components/formField/FormField";
+import { LinkProps } from "../../components/link/Link";
+import Router from "../../globalClasses/Router";
 export interface FormFieldConfig {
   labelName: string;
   labelFor: string;
@@ -5,7 +9,7 @@ export interface FormFieldConfig {
   inputType: "text" | "email" | "password" | "tel";
   inputId: string;
   inputPlaceholder: string;
-  validation: (value: string, allFields?: FormFieldInstance[]) => string | null;
+  validation: (value: string, allFields?: FormField[]) => string | null;
 }
 
 interface FormFieldProps extends FormFieldConfig {
@@ -15,7 +19,7 @@ interface FormFieldProps extends FormFieldConfig {
   };
 }
 
-interface FormFieldInstance {
+export interface FormFieldInstance {
   props: FormFieldProps;
   children: {
     error: {
@@ -29,7 +33,7 @@ export const formFieldsConfig: FormFieldConfig[] = [
     labelName: "Почта",
     labelFor: "email",
     inputName: "email",
-    inputType: "email",
+    inputType: "text",
     inputId: "email",
     inputPlaceholder: "Введите почту",
     validation: (value: string) =>
@@ -104,9 +108,35 @@ export const formFieldsConfig: FormFieldConfig[] = [
     inputType: "password",
     inputId: "passwordRepeat",
     inputPlaceholder: "Повторите пароль",
-    validation: (value: string, allFields: any) => {
-      const passwordValue = allFields?.password?.getContent()?.querySelector("input")?.value;
+    validation: (value: string, allFields?: FormField[]) => {
+      const passwordField = allFields?.find(
+        (field: FormField) => (field.props as FormFieldProps).inputId === "password",
+      );
+      const passwordValue = passwordField?.getContent()?.querySelector("input")?.value;
+
       return value && value !== passwordValue ? "Пароли должны совпадать." : null;
     },
   },
 ];
+
+export const buttonSettings: ButtonProps = {
+  class: "submit-button",
+  value: "Зарегистрироваться",
+  type: "submit",
+  id: "submit-btn",
+  name: "submit-btn",
+};
+
+export const linkSettings: LinkProps = {
+  href: "/",
+  text: "Войти",
+  datapage: "login",
+  class: "registration-container__link",
+  onClick: (event: Event) => {
+    const router = Router.getInstance("app");
+    router.go("/");
+    console.log("CLICK /");
+    event.preventDefault();
+    event.stopPropagation();
+  },
+};

@@ -1,6 +1,6 @@
 import Block from "../../globalClasses/Block";
 import Button from "../button/Button";
-import { FormField } from "../formField/FormField";
+import FormField from "../formField/FormField";
 
 import "./modalWindow.scss";
 

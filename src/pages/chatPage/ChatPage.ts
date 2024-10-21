@@ -4,12 +4,15 @@ import ChatList from "./modules/chatList/ChatList";
 import CurrentChat from "./modules/currentChat/CurrentChat";
 
 import { chatPageOpenSettings } from "./mockData";
+import { profileLinkSettings } from "./chatPageSettings";
 
 import "./chatPage.scss";
+import { ProfileLink } from "./partials/profileLink/profileLink";
 
 export default class ChatPage extends Block {
   constructor() {
     super({
+      ProfileLink: new ProfileLink({ ...profileLinkSettings }),
       SearchInput: new SearchInput(),
       ChatList: new ChatList(),
       CurrentChat: new CurrentChat({ ...chatPageOpenSettings }),
@@ -20,9 +23,7 @@ export default class ChatPage extends Block {
     return `
     <div class="chat-page" id="chat-page">
       <aside class="chat-page__aside">
-        <a href="/profile-page" class="chat-page__aside__profile-link">
-          Профиль <img class="chat-page__aside__profile-link__icon" src="/icons/profile_icon.png" alt="profile icon"/>
-        </a>
+        {{{ ProfileLink }}}
         {{{ SearchInput }}}
         {{{ ChatList }}}
       </aside>

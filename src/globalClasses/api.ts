@@ -6,7 +6,7 @@ interface QueryStringifyData {
 
 interface RequestOptions {
   headers?: Record<string, string>;
-  data?: QueryStringifyData;
+  data?: any;
   timeout?: number;
 }
 
@@ -39,27 +39,36 @@ function queryStringify(data: QueryStringifyData): string {
     .join("&")}`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class HTTPTransport {
-  get(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
+export class HTTPTransport {
+  protected baseURL = "https://ya-praktikum.tech/api/v2/";
+  private basePath: string;
+  constructor(pathForPage: string) {
+    this.basePath = this.baseURL + pathForPage;
+  }
+  get(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
     const queryString = options.data ? queryStringify(options.data) : "";
-    return this.request(`${url}${queryString}`, { ...options, method: METHODS.GET }, options.timeout);
+    return this.request(
+      `${this.basePath}${path}${queryString}`,
+      { ...options, method: METHODS.GET },
+      options.timeout,
+    );
   }
 
-  put(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
+  put(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
+    return this.request(path, { ...options, method: METHODS.PUT }, options.timeout);
   }
 
-  post(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
+  post(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
+    console.log(options);
+    return this.request(`${this.basePath}${path}`, { ...options, method: METHODS.POST }, options.timeout);
   }
 
-  delete(url: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
+  delete(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
+    return this.request(path, { ...options, method: METHODS.DELETE }, options.timeout);
   }
 
   private request(
-    url: string,
+    path: string,
     options: RequestOptionsWithMethod,
     timeout: number = 5000,
   ): Promise<XMLHttpRequest> {
@@ -67,14 +76,14 @@ class HTTPTransport {
 
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(method, url);
+      xhr.open(method, path);
 
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
       });
 
       xhr.onload = () => resolve(xhr);
-      xhr.onerror = () => reject(new Error(`Error while executing ${method} request to ${url}`));
+      xhr.onerror = () => reject(new Error(`Error while executing ${method} request to ${path}`));
 
       xhr.timeout = timeout;
       xhr.ontimeout = () => reject(new Error("Request timed out"));

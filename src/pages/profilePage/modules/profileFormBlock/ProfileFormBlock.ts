@@ -1,28 +1,30 @@
 import Block from "../../../../globalClasses/Block";
-import Button from "../../../../components/button/Button";
+import Button, { ButtonProps } from "../../../../components/button/Button";
 import InputGroup from "../inputGroup/InputGroup";
+
+import { FormFieldConfig } from "../../profilePageSettings";
 
 import "./profileFormBlock.scss";
 
 interface ProfileFormBlockProps {
   isEditData: boolean;
-  inputOptions: Record<string, Record<string, string | boolean | null>>;
-  buttonOptions: Record<string, string>;
+  inputOptions: FormFieldConfig[];
+  buttonOptions: ButtonProps;
 }
 
 export default class ProfileFormBlock extends Block {
   constructor(props: ProfileFormBlockProps) {
-    console.log(props);
+    console.log(props.inputOptions);
     super({
       ...props,
       InputsGroup: [
-        ...Object.entries(props.inputOptions).map(
-          ([key, value]) =>
+        ...props.inputOptions.map(
+          (item) =>
             new InputGroup({
               inputOption: {
-                ...value,
-                events: ((key: string): Record<string, (event: Event) => void> => {
-                  switch (key) {
+                ...item,
+                events: ((item: FormFieldConfig): Record<string, (event: Event) => void> => {
+                  switch (item.inputId) {
                     case "email":
                       return {
                         blur: (event: Event) => {
@@ -175,10 +177,10 @@ export default class ProfileFormBlock extends Block {
                     default:
                       return {};
                   }
-                })(key),
+                })(item),
               },
               isEditData: props.isEditData,
-              isLast: key === Object.keys(props.inputOptions)[Object.keys(props.inputOptions).length - 1],
+              isLast: props.inputOptions.indexOf(item) === props.inputOptions.length - 1,
             }),
         ),
       ],

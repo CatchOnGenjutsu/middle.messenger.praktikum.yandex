@@ -6,9 +6,9 @@ interface ProfileInputProps {
   inputType: string;
   inputName: string;
   inputId: string;
-  value: string;
+  value?: string;
   inputPlaceholder: string;
-  events: Record<string, (event: Event) => void>;
+  events?: Record<string, (event: Event) => void>;
   isEditData: boolean;
 }
 export default class ProfileInput extends Block {
