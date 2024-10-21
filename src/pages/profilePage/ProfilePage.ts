@@ -1,4 +1,5 @@
 import Block from "../../globalClasses/Block";
+import Router from "../../globalClasses/Router";
 import store from "../../globalClasses/Store";
 
 import BackButtonBlock from "./modules/backButtonBlock/BackButtonBlock";
@@ -9,10 +10,16 @@ import { Overlay } from "../../components/overlay/Overlay";
 
 import { profilePageViewModeMainDataSettings, profilePageEditPasswordDataSettings } from "./mockData";
 
-import { profilePageMainDataSettings, buttonSettings } from "./profilePageSettings";
+import {
+  profilePageMainDataSettings,
+  buttonSettings,
+  profileActionsButtonsSettings,
+} from "./profilePageSettings";
+
+import profilePageApi from "../../api/profilePageApi";
+import logoutApi from "../../api/logoutApi";
 
 import "./profilePage.scss";
-import profilePageApi from "../../api/profilePageApi";
 
 interface ProfilePageProps {
   isEditData: boolean;
@@ -64,7 +71,11 @@ export default class ProfilePage extends Block {
       //     },
       //   },
       // }),
-      ProfileFormBlockMainData: new ProfileFormBlock(ProfilePage.getProfileFormProps(props)),
+      ProfileFormBlockMainData: new ProfileFormBlock({
+        isEditData: props.isEditData,
+        inputOptions: [...profilePageMainDataSettings.inputOptions],
+        buttonOptions: buttonSettings,
+      }),
       // ProfileFormBlockMainData: new ProfileFormBlock({
       //   isEditData: profilePageMainDataSettings.isEditData,
       //   inputOptions: [
@@ -82,15 +93,19 @@ export default class ProfilePage extends Block {
       //   },
       //   buttonOptions: props.buttonOptions,
       // }),
-      // ProfileActionButtons: [
-      //   ...Object.entries(props.actionsButtons).map(
-      //     ([key, value]) =>
-      //       new ProfileActionButton({
-      //         options: { ...(value as Record<string, string>) },
-      //         isLast: key === Object.keys(props.actionsButtons)[Object.keys(props.actionsButtons).length - 1],
-      //       }),
-      //   ),
-      // ],
+      ProfileActionButtons: [
+        ...Object.entries(profileActionsButtonsSettings).map(
+          ([key, value]) =>
+            new ProfileActionButton({
+              options: { ...(value as Record<string, string>) },
+              isLast:
+                key ===
+                Object.keys(profileActionsButtonsSettings)[
+                  Object.keys(profileActionsButtonsSettings).length - 1
+                ],
+            }),
+        ),
+      ],
       // OverlayWithModalWindow: new Overlay({
       //   ...props.modalWindowSettings,
       // }),
@@ -113,9 +128,9 @@ export default class ProfilePage extends Block {
       // },
     });
     this.getUserInfo();
-    // for (const key in props.actionsButtons) {
-    //   this.setEventsByProps(key);
-    // }
+    for (const key in profileActionsButtonsSettings) {
+      this.setEventsByProps(key);
+    }
   }
 
   async getUserInfo(): Promise<void> {
@@ -133,26 +148,26 @@ export default class ProfilePage extends Block {
     }
   }
 
-  static getProfileFormProps(props: any) {
-    return {
-      isEditData: profilePageMainDataSettings.isEditData,
-      inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
-        ...item,
-        value: props.userInfo?.[item.inputName] ?? "", // Подставляем значение из userInfo или пустую строку
-      })),
-      buttonOptions: buttonSettings,
-    };
-  }
+  // static getProfileFormProps(props: any) {
+  //   return {
+  //     isEditData: profilePageMainDataSettings.isEditData,
+  //     inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
+  //       ...item,
+  //       value: props.userInfo?.[item.inputName] ?? "", // Подставляем значение из userInfo или пустую строку
+  //     })),
+  //     buttonOptions: buttonSettings,
+  //   };
+  // }
 
-  componentDidUpdate(oldProps: any, newProps: any): boolean {
-    debugger;
-    // Проверяем, изменились ли данные пользователя
-    if (oldProps.userInfo !== newProps.userInfo) {
-      // Обновляем блок с новыми пропсами
-      this.children.ProfileFormBlockMainData.setProps(ProfilePage.getProfileFormProps(newProps));
-    }
-    return true;
-  }
+  // componentDidUpdate(oldProps: any, newProps: any): boolean {
+  //   debugger;
+  //   // Проверяем, изменились ли данные пользователя
+  //   if (oldProps.userInfo !== newProps.userInfo) {
+  //     // Обновляем блок с новыми пропсами
+  //     this.children.ProfileFormBlockMainData.setProps(ProfilePage.getProfileFormProps(newProps));
+  //   }
+  //   return true;
+  // }
 
   setEventsByProps(key: string): void {
     const elem = this.lists.ProfileActionButtons.find(
@@ -163,9 +178,22 @@ export default class ProfilePage extends Block {
         case "exit":
           elem.setProps({
             events: {
-              click: (event: Event) => {
+              click: async (event: Event) => {
+                event.preventDefault();
                 event.stopPropagation();
-                window.location.href = "/login";
+                try {
+                  const request = await logoutApi.request();
+                  if (request.status === 200) {
+                    store.dispatch({ type: "LOGOUT" });
+                    localStorage.removeItem("auth");
+                    const router = Router.getInstance("app");
+                    router.go("/");
+                  }
+                } catch (error) {
+                  console.error("Ошибка при выходе из профиля:", error);
+                }
+
+                window.location.href = "/";
               },
             },
           });
@@ -336,7 +364,8 @@ export default class ProfilePage extends Block {
           <div class="profile-page__main-content__avatar-wrapper">
             {{{ Avatar }}}
           </div>
-           {{{ ProfileFormBlockMainData }}}
+          {{{ ProfileFormBlockMainData }}}
+          {{{ ProfileActionButtons }}}
           {{{ OverlayWithModalWindow }}}
         </main>
       </div>

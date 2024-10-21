@@ -23,8 +23,11 @@ interface SetUserInfoAction {
   type: "SET_USER_INFO";
   userInfo: Record<string, string | null>;
 }
+interface LogoutAction {
+  type: "LOGOUT";
+}
 
-type Action = SetTextAction | SetFormFieldsAction | SetUserInfoAction;
+type Action = SetTextAction | SetFormFieldsAction | SetUserInfoAction | LogoutAction;
 
 function deepCopy<T>(object: T, seen = new WeakMap()): T {
   // Примитивные значения и null возвращаются без изменений
@@ -86,12 +89,14 @@ function deepCopy<T>(object: T, seen = new WeakMap()): T {
 }
 
 const reducer = (state: StoreState, action: Action): StoreState => {
-  const newState = deepCopy(state);
+  const newState = action.type === "LOGOUT" ? initialState : deepCopy(state);
 
   switch (action.type) {
     case "SET_USER_INFO":
       newState.userInfo = action.userInfo;
       break;
+    case "LOGOUT":
+      return newState;
     // case "SET_FORM_FIELDS":
     //   newState.RegistrationPageSettings = action.fields;
     //   break;

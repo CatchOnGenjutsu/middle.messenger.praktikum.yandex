@@ -87,6 +87,15 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
           : null,
     },
     {
+      labelName: "Имя в чате",
+      labelFor: "display_name",
+      inputName: "display_name",
+      inputType: "text",
+      inputId: "display_name",
+      inputPlaceholder: "Введите имя в чате",
+      validation: (value: string) => (!value ? "Введите имя в чате" : null),
+    },
+    {
       labelName: "Телефон",
       labelFor: "phone",
       inputName: "phone",
@@ -121,6 +130,24 @@ export const formFieldsConfig: FormFieldConfig[] = [
     validation: (value: string) => (!value ? "Введите пароль" : null),
   },
 ];
+
+export const profileActionsButtonsSettings = {
+  editData: {
+    text: "Изменить данные",
+    key: "editData",
+    modifierClass: "button--primary",
+  },
+  editPassword: {
+    text: "Изменить пароль",
+    key: "editPassword",
+    modifierClass: "button--primary",
+  },
+  exit: {
+    text: "Выйти",
+    key: "exit",
+    modifierClass: "button--danger",
+  },
+};
 
 export const buttonSettings: ButtonProps = {
   class: "submit-button",
