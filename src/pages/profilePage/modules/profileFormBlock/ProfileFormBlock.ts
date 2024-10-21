@@ -14,7 +14,7 @@ interface ProfileFormBlockProps {
 
 export default class ProfileFormBlock extends Block {
   constructor(props: ProfileFormBlockProps) {
-    console.log(props.inputOptions);
+    console.log(props);
     super({
       ...props,
       InputsGroup: [

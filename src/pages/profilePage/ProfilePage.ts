@@ -1,4 +1,6 @@
 import Block from "../../globalClasses/Block";
+import store from "../../globalClasses/Store";
+
 import BackButtonBlock from "./modules/backButtonBlock/BackButtonBlock";
 import ProfileFormBlock from "./modules/profileFormBlock/ProfileFormBlock";
 import ProfileActionButton from "./partials/profileActionButton/ProfileActionButton";
@@ -10,6 +12,7 @@ import { profilePageViewModeMainDataSettings, profilePageEditPasswordDataSetting
 import { profilePageMainDataSettings, buttonSettings } from "./profilePageSettings";
 
 import "./profilePage.scss";
+import profilePageApi from "../../api/profilePageApi";
 
 interface ProfilePageProps {
   isEditData: boolean;
@@ -41,9 +44,10 @@ interface ProfilePageProps {
   };
 }
 export default class ProfilePage extends Block {
-  constructor() {
+  constructor(props: any) {
+    console.log(props.userInfo);
     super({
-      // ...props,
+      ...props,
       // isEditData: props.isEditData,
       // editMainData: true,
       BackButtonBlock: new BackButtonBlock(),
@@ -60,11 +64,17 @@ export default class ProfilePage extends Block {
       //     },
       //   },
       // }),
-      ProfileFormBlockMainData: new ProfileFormBlock({
-        isEditData: profilePageMainDataSettings.isEditData,
-        inputOptions: [...profilePageMainDataSettings.inputOptions],
-        buttonOptions: buttonSettings,
-      }),
+      ProfileFormBlockMainData: new ProfileFormBlock(ProfilePage.getProfileFormProps(props)),
+      // ProfileFormBlockMainData: new ProfileFormBlock({
+      //   isEditData: profilePageMainDataSettings.isEditData,
+      //   inputOptions: [
+      //     ...profilePageMainDataSettings.inputOptions.map((item) => ({
+      //       ...item,
+      //       value: props.userInfo && props.userInfo[item.inputName] ? props.userInfo[item.inputName] : "",
+      //     })),
+      //   ],
+      //   buttonOptions: buttonSettings,
+      // }),
       // ProfileFormBlockPassword: new ProfileFormBlock({
       //   isEditData: props.isEditData,
       //   inputOptions: {
@@ -102,9 +112,46 @@ export default class ProfilePage extends Block {
       //   },
       // },
     });
+    this.getUserInfo();
     // for (const key in props.actionsButtons) {
     //   this.setEventsByProps(key);
     // }
+  }
+
+  async getUserInfo(): Promise<void> {
+    try {
+      const request = await profilePageApi.request();
+      if (request.status === 200) {
+        const data = JSON.parse(request.response);
+        store.dispatch({
+          type: "SET_USER_INFO",
+          userInfo: data,
+        });
+      }
+    } catch (error) {
+      console.error("Ошибка при получении информации о пользователе:", error);
+    }
+  }
+
+  static getProfileFormProps(props: any) {
+    return {
+      isEditData: profilePageMainDataSettings.isEditData,
+      inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
+        ...item,
+        value: props.userInfo?.[item.inputName] ?? "", // Подставляем значение из userInfo или пустую строку
+      })),
+      buttonOptions: buttonSettings,
+    };
+  }
+
+  componentDidUpdate(oldProps: any, newProps: any): boolean {
+    debugger;
+    // Проверяем, изменились ли данные пользователя
+    if (oldProps.userInfo !== newProps.userInfo) {
+      // Обновляем блок с новыми пропсами
+      this.children.ProfileFormBlockMainData.setProps(ProfilePage.getProfileFormProps(newProps));
+    }
+    return true;
   }
 
   setEventsByProps(key: string): void {

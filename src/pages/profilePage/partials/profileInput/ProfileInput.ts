@@ -13,7 +13,6 @@ interface ProfileInputProps {
 }
 export default class ProfileInput extends Block {
   constructor(props: ProfileInputProps) {
-    console.log(props);
     super({
       ...props,
     });

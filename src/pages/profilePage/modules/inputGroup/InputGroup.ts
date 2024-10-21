@@ -18,7 +18,6 @@ interface InputGroupProps {
 
 export default class InputGroup extends Block {
   constructor(props: InputGroupProps) {
-    console.log(props);
     super({
       ...props,
       ProfileLabel: new ProfileLabel({

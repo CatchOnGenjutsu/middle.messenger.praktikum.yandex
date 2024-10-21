@@ -8,7 +8,6 @@ interface DisplayValueProps {
 }
 export default class DisplayValue extends Block {
   constructor(props: DisplayValueProps) {
-    console.log(props);
     super({
       ...props,
     });

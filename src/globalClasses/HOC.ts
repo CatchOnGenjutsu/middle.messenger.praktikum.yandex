@@ -18,8 +18,12 @@ export function connect<P extends ComponentProps>(
       super(combinedProps);
 
       store.subscribe(() => {
-        console.log("We are in store subscription");
-        this.setProps({ ...store.getState() });
+        const newStateProps = store.getState(); // Получаем новое состояние
+        console.log("Store updated:", newStateProps);
+
+        this.setProps({
+          ...newStateProps, // Передаём новые данные из Store
+        });
       });
 
       console.log(this);

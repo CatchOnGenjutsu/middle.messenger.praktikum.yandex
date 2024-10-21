@@ -8,6 +8,7 @@ export interface FormFieldConfig {
   inputName: string;
   inputType: "text" | "email" | "password" | "tel";
   inputId: string;
+  value?: string;
   inputPlaceholder: string;
   validation: (value: string, allFields?: FormField[]) => string | null;
 }

@@ -7,7 +7,7 @@ interface Store<State, Action> {
 }
 
 export interface StoreState {
-  PageTitle: string;
+  userInfo?: Record<string, string | null>;
   // RegistrationPageSettings: FormFieldConfig[];
 }
 
@@ -19,13 +19,12 @@ interface SetFormFieldsAction {
   type: "SET_FORM_FIELDS";
   // fields: FormFieldConfig[];
 }
-// interface UpdateFormFieldAction {
-//   type: "UPDATE_FORM_FIELD";
-//   fieldId: string; // ID поля для обновления
-//   newConfig: Partial<FormFieldConfig>; // Только изменяемые свойства
-// }
+interface SetUserInfoAction {
+  type: "SET_USER_INFO";
+  userInfo: Record<string, string | null>;
+}
 
-type Action = SetTextAction | SetFormFieldsAction;
+type Action = SetTextAction | SetFormFieldsAction | SetUserInfoAction;
 
 function deepCopy<T>(object: T, seen = new WeakMap()): T {
   // Примитивные значения и null возвращаются без изменений
@@ -90,10 +89,9 @@ const reducer = (state: StoreState, action: Action): StoreState => {
   const newState = deepCopy(state);
 
   switch (action.type) {
-    case "SET_TEXT":
-      newState.PageTitle = action.PageTitle;
+    case "SET_USER_INFO":
+      newState.userInfo = action.userInfo;
       break;
-
     // case "SET_FORM_FIELDS":
     //   newState.RegistrationPageSettings = action.fields;
     //   break;
@@ -127,15 +125,14 @@ const createStore = <State, Action>(
       fn(currentState);
     },
     dispatch: (action) => {
+      console.log(action);
       currentState = reducer(currentState, action);
       subscribers.forEach((fn) => fn(currentState));
     },
   };
 };
 
-const initialState: StoreState = {
-  PageTitle: "Initial state text",
-};
+const initialState: StoreState = {};
 
 const store = createStore(reducer, initialState);
 

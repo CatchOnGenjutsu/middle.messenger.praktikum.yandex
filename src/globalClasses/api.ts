@@ -78,6 +78,8 @@ export class HTTPTransport {
       const xhr = new XMLHttpRequest();
       xhr.open(method, path);
 
+      xhr.withCredentials = true;
+
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
       });

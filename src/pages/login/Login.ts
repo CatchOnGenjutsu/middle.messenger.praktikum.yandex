@@ -55,11 +55,18 @@ export default class Login extends Block {
               });
               console.log(data);
               const response = await loginApi.create(data);
+              const router = Router.getInstance("app");
               if (response?.status === 200) {
                 localStorage.setItem("auth", "true");
-                const router = Router.getInstance("app");
                 router.go("/messenger");
               } else {
+                if (response?.status === 400) {
+                  const errorMessage = JSON.parse(response?.response).reason;
+                  if (errorMessage === "User already in system") {
+                    router.go("/messenger");
+                  }
+                  return;
+                }
                 const errorMessage = JSON.parse(response?.response).reason;
                 alert(errorMessage);
               }
