@@ -8,7 +8,7 @@ export interface FormFieldConfig {
   inputName: string;
   inputType: "text" | "email" | "password" | "tel";
   inputId: string;
-  value?: string;
+  value: string;
   inputPlaceholder: string;
   validation: (value: string, allFields?: FormField[]) => string | null;
 }
@@ -45,6 +45,7 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
       inputType: "text",
       inputId: "email",
       inputPlaceholder: "Введите почту",
+      value: "",
       validation: (value: string) =>
         value && !/^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value)
           ? "Неправильно введена почта. Почта должна содержать символы @ и ."
@@ -57,6 +58,7 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
       inputType: "text",
       inputId: "login",
       inputPlaceholder: "Введите логин",
+      value: "",
       validation: (value: string) =>
         value && !/^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value)
           ? "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание)."
@@ -69,6 +71,7 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
       inputType: "text",
       inputId: "first_name",
       inputPlaceholder: "Введите имя",
+      value: "",
       validation: (value: string) =>
         value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)
           ? "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)."
@@ -81,6 +84,7 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
       inputType: "text",
       inputId: "second_name",
       inputPlaceholder: "Введите фамилию",
+      value: "",
       validation: (value: string) =>
         value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)
           ? "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)."
@@ -93,6 +97,7 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
       inputType: "text",
       inputId: "display_name",
       inputPlaceholder: "Введите имя в чате",
+      value: "",
       validation: (value: string) => (!value ? "Введите имя в чате" : null),
     },
     {
@@ -102,6 +107,7 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
       inputType: "tel",
       inputId: "phone",
       inputPlaceholder: "Введите телефон",
+      value: "",
       validation: (value: string) =>
         value && !/^\+?\d{10,15}$/u.test(value)
           ? "Должен содержать от 10 до 15 цифр, может начинаться с плюса."
@@ -109,27 +115,6 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
     },
   ],
 };
-
-export const formFieldsConfig: FormFieldConfig[] = [
-  {
-    labelName: "Логин",
-    labelFor: "login",
-    inputName: "login",
-    inputType: "text",
-    inputId: "login",
-    inputPlaceholder: "Введите логин",
-    validation: (value: string) => (!value ? "Введите логин" : null),
-  },
-  {
-    labelName: "Пароль",
-    labelFor: "password",
-    inputName: "password",
-    inputType: "password",
-    inputId: "password",
-    inputPlaceholder: "Введите пароль",
-    validation: (value: string) => (!value ? "Введите пароль" : null),
-  },
-];
 
 export const profileActionsButtonsSettings = {
   editData: {

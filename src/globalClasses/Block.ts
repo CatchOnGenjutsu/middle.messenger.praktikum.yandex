@@ -82,22 +82,34 @@ export default class Block<P extends BlockProps = {}> {
 
   private _componentDidMount(): void {
     this.componentDidMount();
-    Object.values(this.children).forEach((child) => {
-      child.dispatchComponentDidMount();
-    });
+    // Object.values(this.children).forEach((child) => {
+    //   child.dispatchComponentDidMount();
+    // });
   }
 
   protected componentDidMount(): void {}
 
-  public dispatchComponentDidMount(): void {
-    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
-  }
+  // public dispatchComponentDidMount(): void {
+  //   this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+  // }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    this.componentDidUpdate(oldProps, newProps);
+
     if (this._propsHaveChanged(oldProps, newProps)) {
+      debugger;
+      console.log(this);
       this._updateChildrenProps(this.children, newProps);
+      // if (Object.values(this.lists).length) {
+
+      //   this._updateListsProps(this.lists, newProps);
+      // }
       this._render();
     }
+  }
+
+  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    // Логика обновления при изменении пропсов
   }
 
   private _propsHaveChanged(oldProps: Record<string, unknown>, newProps: Record<string, unknown>): boolean {
@@ -133,7 +145,9 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _updateChildrenProps(children: Record<string, unknown>, newProps: Record<string, unknown>): void {
+    // debugger;
     function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
+      // debugger;
       for (const key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           if (
@@ -151,6 +165,7 @@ export default class Block<P extends BlockProps = {}> {
     }
 
     for (const childName in children) {
+      // debugger;
       if (Object.prototype.hasOwnProperty.call(children, childName)) {
         const child = children[childName] as {
           props: Record<string, unknown>;
@@ -161,6 +176,78 @@ export default class Block<P extends BlockProps = {}> {
           deepUpdateProps(child.props, childNewProps);
           child.setProps(child.props);
         }
+      }
+    }
+  }
+
+  private _updateListsProps(lists: Lists, newProps: Record<string, unknown>): void {
+    console.log(lists, newProps);
+    function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
+      for (const key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          if (
+            typeof source[key] === "object" &&
+            source[key] !== null &&
+            typeof target[key] === "object" &&
+            target[key] !== null
+          ) {
+            deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+          } else {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    // for (const listName in lists) {
+    //   if (Object.prototype.hasOwnProperty.call(lists, listName)) {
+    //     const list = lists[listName];
+    //     console.log(`Обрабатываем список: ${listName}`, list);
+
+    //     // Проверяем, есть ли в newProps соответствующие данные для этого списка
+    //     const listNewProps = newProps[listName];
+
+    //     if (!listNewProps) {
+    //       console.warn(`Пропсы для списка "${listName}" не найдены`);
+    //       continue;
+    //     }
+
+    //     list.forEach((item, index) => {
+    //       if (item && typeof item.setProps === "function") {
+    //         console.log(`Элемент ${index} списка "${listName}"`, item);
+
+    //         let propsToApply: Record<string, unknown>;
+
+    //         // Если данные — массив, берем соответствующий элемент по индексу
+    //         if (Array.isArray(listNewProps)) {
+    //           propsToApply = listNewProps[index] || {};
+    //         } else {
+    //           // Если данные — объект, применяем его ко всем элементам
+    //           propsToApply = listNewProps as Record<string, unknown>;
+    //         }
+
+    //         console.log(`Пропсы для элемента ${index}:`, propsToApply);
+
+    //         deepUpdateProps(item.props, propsToApply);
+    //         item.setProps(item.props);
+    //       }
+    //     });
+    //   }
+    // }
+    for (const listName in lists) {
+      if (Object.prototype.hasOwnProperty.call(lists, listName)) {
+        const list = lists[listName];
+        console.log(list);
+        console.log("listName", listName);
+        list.forEach((item) => {
+          if (item && typeof item.setProps === "function") {
+            const listNewProps = newProps[listName] as Record<string, unknown>;
+            console.log("item", item);
+            console.log("item.props", item.props);
+            console.log("newProps", newProps);
+            deepUpdateProps(item.props, listNewProps);
+            item.setProps(item.props);
+          }
+        });
       }
     }
   }
@@ -266,24 +353,6 @@ export default class Block<P extends BlockProps = {}> {
     return this._element;
   }
 
-  // private _makePropsProxy(props: BlockProps): BlockProps {
-  //   return new Proxy(props, {
-  //     get: (target: BlockProps, prop: string) => {
-  //       const value = target[prop];
-  //       return typeof value === "function" ? value.bind(target) : value;
-  //     },
-  //     set: (target: BlockProps, prop: string, value: unknown) => {
-  //       const oldTarget = { ...target };
-  //       target[prop] = value;
-  //       this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
-  //       return true;
-  //     },
-  //     deleteProperty: () => {
-  //       throw new Error("No access");
-  //     },
-  //   });
-  // }
-
   private _makePropsProxy<T extends object>(props: T): T {
     return new Proxy(props, {
       get: (target: T, prop: string) => {
@@ -293,6 +362,8 @@ export default class Block<P extends BlockProps = {}> {
       set: (target: T, prop: string, value: unknown) => {
         const oldTarget = { ...target };
         (target as any)[prop] = value;
+        // console.log(oldTarget);
+        // console.log(target);
         this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
         return true;
       },

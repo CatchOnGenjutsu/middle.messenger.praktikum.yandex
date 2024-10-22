@@ -1,9 +1,10 @@
-import Block from "../../globalClasses/Block";
+import Block, { BlockProps } from "../../globalClasses/Block";
 import Router from "../../globalClasses/Router";
 import store from "../../globalClasses/Store";
+import StoreUpdated from "../../globalClasses/StoreUpdated";
 
 import BackButtonBlock from "./modules/backButtonBlock/BackButtonBlock";
-import ProfileFormBlock from "./modules/profileFormBlock/ProfileFormBlock";
+import ProfileFormBlock, { ProfileFormBlockProps } from "./modules/profileFormBlock/ProfileFormBlock";
 import ProfileActionButton from "./partials/profileActionButton/ProfileActionButton";
 import { Avatar } from "./partials/avatar/Avatar";
 import { Overlay } from "../../components/overlay/Overlay";
@@ -20,39 +21,55 @@ import profilePageApi from "../../api/profilePageApi";
 import logoutApi from "../../api/logoutApi";
 
 import "./profilePage.scss";
+import { connect } from "../../globalClasses/HOCupdated";
 
-interface ProfilePageProps {
-  isEditData: boolean;
-  editMainData?: boolean;
-  avatarUrl: string;
-  buttonOptions: Record<string, string>;
-  actionsButtons: Record<string, Record<string, string>>;
-  inputOptions: Record<string, Record<string, string | boolean | null>>;
-  modalWindowSettings: {
-    title: string;
-    inputOptions: {
-      isFile?: boolean;
-      labelName: string;
-      labelFor: string;
-      inputName: string;
-      inputType: string;
-      inputId: string;
-      inputPlaceholder: string;
-      errorText: string;
-    };
-    buttonOptions: {
-      value: string;
-      type: string;
-      class: string;
-      id: string;
-      name: string;
-      events?: Record<string, (event: Event) => void>;
-    };
-  };
+export interface ProfilePageProps extends BlockProps {
+  userInfo?: Record<string, string>;
+  // isEditData: boolean;
+  // editMainData?: boolean;
+  // avatarUrl: string;
+  // buttonOptions: Record<string, string>;
+  // actionsButtons: Record<string, Record<string, string>>;
+  // inputOptions: Record<string, Record<string, string | boolean | null>>;
+  // modalWindowSettings: {
+  //   title: string;
+  //   inputOptions: {
+  //     isFile?: boolean;
+  //     labelName: string;
+  //     labelFor: string;
+  //     inputName: string;
+  //     inputType: string;
+  //     inputId: string;
+  //     inputPlaceholder: string;
+  //     errorText: string;
+  //   };
+  //   buttonOptions: {
+  //     value: string;
+  //     type: string;
+  //     class: string;
+  //     id: string;
+  //     name: string;
+  //     events?: Record<string, (event: Event) => void>;
+  //   };
+  // };
 }
-export default class ProfilePage extends Block {
-  constructor(props: any) {
-    console.log(props.userInfo);
+export default class ProfilePage extends Block<ProfilePageProps> {
+  constructor(props: ProfilePageProps) {
+    console.log(props);
+    // const ConnectedProfileFormBlock = connect<ProfileFormBlockProps>((state) => {
+    //   // Создаем обновленные опции на основе store
+    //   const updatedInputOptions = profilePageMainDataSettings.inputOptions.map((option) => ({
+    //     ...option,
+    //     value: state.userInfo?.[option.inputId] || "", // Значения из store
+    //   }));
+    //   // console.log(updatedInputOptions);
+
+    //   return {
+    //     isEditData: profilePageMainDataSettings.isEditData || false,
+    //     inputOptions: updatedInputOptions,
+    //     buttonOptions: buttonSettings,
+    //   };
+    // })(ProfileFormBlock);
     super({
       ...props,
       // isEditData: props.isEditData,
@@ -71,11 +88,24 @@ export default class ProfilePage extends Block {
       //     },
       //   },
       // }),
-      ProfileFormBlockMainData: new ProfileFormBlock({
-        isEditData: props.isEditData,
-        inputOptions: [...profilePageMainDataSettings.inputOptions],
-        buttonOptions: buttonSettings,
-      }),
+      ProfileFormBlockMainData: new ProfileFormBlock(ProfilePage.getProfileFormProps(props)),
+      // ProfileFormBlockMainData: new ConnectedProfileFormBlock({
+      //   isEditData: profilePageMainDataSettings.isEditData || false,
+      //   inputOptions: profilePageMainDataSettings.inputOptions,
+      //   buttonOptions: buttonSettings,
+      // }),
+
+      // ProfileFormBlockMainData: new ProfileFormBlock(
+      //   {
+      //   isEditData: props.isEditData,
+      //   inputOptions: [
+      //     ...profilePageMainDataSettings.inputOptions.map((item) => ({
+      //       ...item,
+      //       value: props.userInfo && props.userInfo[item.inputName] ? props.userInfo[item.inputName] : "",
+      //     })),
+      //   ],
+      //   buttonOptions: buttonSettings,
+      // }),
       // ProfileFormBlockMainData: new ProfileFormBlock({
       //   isEditData: profilePageMainDataSettings.isEditData,
       //   inputOptions: [
@@ -138,36 +168,32 @@ export default class ProfilePage extends Block {
       const request = await profilePageApi.request();
       if (request.status === 200) {
         const data = JSON.parse(request.response);
-        store.dispatch({
-          type: "SET_USER_INFO",
-          userInfo: data,
-        });
+        StoreUpdated.set("userInfo", data);
       }
     } catch (error) {
       console.error("Ошибка при получении информации о пользователе:", error);
     }
   }
 
-  // static getProfileFormProps(props: any) {
-  //   return {
-  //     isEditData: profilePageMainDataSettings.isEditData,
-  //     inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
-  //       ...item,
-  //       value: props.userInfo?.[item.inputName] ?? "", // Подставляем значение из userInfo или пустую строку
-  //     })),
-  //     buttonOptions: buttonSettings,
-  //   };
-  // }
+  static getProfileFormProps(props: any) {
+    return {
+      isEditData: profilePageMainDataSettings.isEditData,
+      inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
+        ...item,
+        value: props.userInfo?.[item.inputId] ?? "", // Подставляем значение из userInfo или пустую строку
+      })),
+      buttonOptions: buttonSettings,
+    };
+  }
 
-  // componentDidUpdate(oldProps: any, newProps: any): boolean {
-  //   debugger;
-  //   // Проверяем, изменились ли данные пользователя
-  //   if (oldProps.userInfo !== newProps.userInfo) {
-  //     // Обновляем блок с новыми пропсами
-  //     this.children.ProfileFormBlockMainData.setProps(ProfilePage.getProfileFormProps(newProps));
-  //   }
-  //   return true;
-  // }
+  componentDidUpdate(oldProps: ProfilePageProps, newProps: ProfilePageProps): boolean {
+    // Проверяем, изменились ли данные пользователя
+    if (oldProps.userInfo !== newProps.userInfo) {
+      // Обновляем блок с новыми пропсами
+      this.children.ProfileFormBlockMainData.setProps(ProfilePage.getProfileFormProps(newProps));
+    }
+    return true;
+  }
 
   setEventsByProps(key: string): void {
     const elem = this.lists.ProfileActionButtons.find(
@@ -192,8 +218,6 @@ export default class ProfilePage extends Block {
                 } catch (error) {
                   console.error("Ошибка при выходе из профиля:", error);
                 }
-
-                window.location.href = "/";
               },
             },
           });

@@ -1,13 +1,14 @@
-import { Error } from "../../../../components/error/Error";
-import Block from "../../../../globalClasses/Block";
+import Block, { BlockProps } from "../../../../globalClasses/Block";
 import DisplayValue from "../../partials/displayValue/DisplayValue";
 import ProfileInput from "../../partials/profileInput/ProfileInput";
 import ProfileLabel from "../../partials/profileLabel/ProfileLabel";
+import { Error } from "../../../../components/error/Error";
+
 import { FormFieldConfig } from "../../profilePageSettings";
 
 import "./inputGroup.scss";
 
-interface InputGroupProps {
+export interface InputGroupProps extends BlockProps {
   isEditData: boolean;
   inputOption: FormFieldConfig & {
     events?: Record<string, (event: Event) => void>;
@@ -21,20 +22,20 @@ export default class InputGroup extends Block {
     super({
       ...props,
       ProfileLabel: new ProfileLabel({
-        labelName: props.inputOption.labelName as string,
-        labelFor: props.inputOption.labelFor as string,
+        labelName: props.inputOption.labelName,
+        labelFor: props.inputOption.labelFor,
       }),
       ProfileInput: new ProfileInput({
-        inputId: props.inputOption.inputId as string,
-        inputName: props.inputOption.inputName as string,
-        inputType: props.inputOption.inputType as string,
-        inputPlaceholder: props.inputOption.inputPlaceholder as string,
-        // value: (props.inputOption.value as string) || "",
+        inputId: props.inputOption.inputId,
+        inputName: props.inputOption.inputName,
+        inputType: props.inputOption.inputType,
+        inputPlaceholder: props.inputOption.inputPlaceholder,
+        value: props.inputOption.value,
         events: props.inputOption.events as Record<string, (event: Event) => void>,
         isEditData: props.isEditData,
       }),
       DisplayValue: new DisplayValue({
-        // value: props.inputOption.value as string,
+        value: props.inputOption.value,
         isEditData: props.isEditData,
       }),
       Error: new Error({

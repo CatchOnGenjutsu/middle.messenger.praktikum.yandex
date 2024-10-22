@@ -3,7 +3,7 @@ import Block from "../../../../globalClasses/Block";
 import "./displayValue.scss";
 
 interface DisplayValueProps {
-  value?: string;
+  value: string;
   isEditData: boolean;
 }
 export default class DisplayValue extends Block {
@@ -13,7 +13,7 @@ export default class DisplayValue extends Block {
     });
   }
   // {{#if isEditData}}showed{{/if}}
-  protected render(): string {
+  override render(): string {
     return `
       <div class="input-field display-value">{{value}}</div>
     `;

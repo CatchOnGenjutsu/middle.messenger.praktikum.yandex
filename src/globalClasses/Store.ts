@@ -7,7 +7,7 @@ interface Store<State, Action> {
 }
 
 export interface StoreState {
-  userInfo?: Record<string, string | null>;
+  userInfo: Record<string, string | null>;
   // RegistrationPageSettings: FormFieldConfig[];
 }
 
@@ -30,54 +30,47 @@ interface LogoutAction {
 type Action = SetTextAction | SetFormFieldsAction | SetUserInfoAction | LogoutAction;
 
 function deepCopy<T>(object: T, seen = new WeakMap()): T {
-  // Примитивные значения и null возвращаются без изменений
   if (object === null || typeof object !== "object") {
     return object;
   }
 
-  // Если объект уже был скопирован, возвращаем его из WeakMap
   if (seen.has(object)) {
     return seen.get(object);
   }
 
-  // Копируем Date
   if (object instanceof Date) {
     return new Date(object.getTime()) as T;
   }
 
-  // Копируем массивы
   if (Array.isArray(object)) {
     const copy: any[] = [];
-    seen.set(object, copy); // Запоминаем в WeakMap для циклических объектов
+    seen.set(object, copy);
     for (const item of object) {
       copy.push(deepCopy(item, seen));
     }
     return copy as T;
   }
 
-  // Копируем Map
   if (object instanceof Map) {
     const copy = new Map();
-    seen.set(object, copy); // Запоминаем в WeakMap
+    seen.set(object, copy);
     for (const [key, value] of object.entries()) {
       copy.set(deepCopy(key, seen), deepCopy(value, seen));
     }
     return copy as T;
   }
 
-  // Копируем Set
   if (object instanceof Set) {
     const copy = new Set();
-    seen.set(object, copy); // Запоминаем в WeakMap
+    seen.set(object, copy);
     for (const item of object) {
       copy.add(deepCopy(item, seen));
     }
     return copy as T;
   }
 
-  // Копируем обычные объекты
   const copy: { [key: string]: any } = {};
-  seen.set(object, copy); // Запоминаем в WeakMap
+  seen.set(object, copy);
 
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
@@ -93,21 +86,12 @@ const reducer = (state: StoreState, action: Action): StoreState => {
 
   switch (action.type) {
     case "SET_USER_INFO":
-      newState.userInfo = action.userInfo;
+      // console.log(action.userInfo);
+      newState.userInfo = { ...action.userInfo };
+      // console.log(newState.userInfo);
       break;
     case "LOGOUT":
       return newState;
-    // case "SET_FORM_FIELDS":
-    //   newState.RegistrationPageSettings = action.fields;
-    //   break;
-
-    // case "UPDATE_FORM_FIELD":
-    //   if (newState.RegistrationPageSettings) {
-    //     newState.RegistrationPageSettings = newState.RegistrationPageSettings.map((field) =>
-    //       field.inputId === action.fieldId ? { ...field, ...action.newConfig } : field,
-    //     );
-    //   }
-    //   break;
 
     default:
       break;
@@ -130,15 +114,15 @@ const createStore = <State, Action>(
       fn(currentState);
     },
     dispatch: (action) => {
-      console.log(action);
       currentState = reducer(currentState, action);
       subscribers.forEach((fn) => fn(currentState));
     },
   };
 };
 
-const initialState: StoreState = {};
-
-const store = createStore(reducer, initialState);
+const initialState: StoreState = {
+  userInfo: {},
+};
+const store = Object.freeze(createStore(reducer, initialState));
 
 export default store;
