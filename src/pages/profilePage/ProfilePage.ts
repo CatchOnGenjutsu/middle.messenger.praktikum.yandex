@@ -25,8 +25,8 @@ import { connect } from "../../globalClasses/HOCupdated";
 
 export interface ProfilePageProps extends BlockProps {
   userInfo?: Record<string, string>;
-  // isEditData: boolean;
-  // editMainData?: boolean;
+  isEditData: boolean;
+  editMainData?: boolean;
   // avatarUrl: string;
   // buttonOptions: Record<string, string>;
   // actionsButtons: Record<string, Record<string, string>>;
@@ -74,7 +74,16 @@ export default class ProfilePage extends Block<ProfilePageProps> {
       ...props,
       // isEditData: props.isEditData,
       // editMainData: true,
-      BackButtonBlock: new BackButtonBlock(),
+      BackButtonBlock: new BackButtonBlock({
+        onClick: () => {
+          if (this.props.isEditData) {
+            StoreUpdated.set("ProfilePageState.isEditData", false);
+          } else {
+            const router = Router.getInstance("app");
+            router.back();
+          }
+        },
+      }),
       // Avatar: new Avatar({
       //   isEditData: props.isEditData,
       //   avatarUrl: props.avatarUrl,
@@ -89,40 +98,6 @@ export default class ProfilePage extends Block<ProfilePageProps> {
       //   },
       // }),
       ProfileFormBlockMainData: new ProfileFormBlock(ProfilePage.getProfileFormProps(props)),
-      // ProfileFormBlockMainData: new ConnectedProfileFormBlock({
-      //   isEditData: profilePageMainDataSettings.isEditData || false,
-      //   inputOptions: profilePageMainDataSettings.inputOptions,
-      //   buttonOptions: buttonSettings,
-      // }),
-
-      // ProfileFormBlockMainData: new ProfileFormBlock(
-      //   {
-      //   isEditData: props.isEditData,
-      //   inputOptions: [
-      //     ...profilePageMainDataSettings.inputOptions.map((item) => ({
-      //       ...item,
-      //       value: props.userInfo && props.userInfo[item.inputName] ? props.userInfo[item.inputName] : "",
-      //     })),
-      //   ],
-      //   buttonOptions: buttonSettings,
-      // }),
-      // ProfileFormBlockMainData: new ProfileFormBlock({
-      //   isEditData: profilePageMainDataSettings.isEditData,
-      //   inputOptions: [
-      //     ...profilePageMainDataSettings.inputOptions.map((item) => ({
-      //       ...item,
-      //       value: props.userInfo && props.userInfo[item.inputName] ? props.userInfo[item.inputName] : "",
-      //     })),
-      //   ],
-      //   buttonOptions: buttonSettings,
-      // }),
-      // ProfileFormBlockPassword: new ProfileFormBlock({
-      //   isEditData: props.isEditData,
-      //   inputOptions: {
-      //     ...profilePageEditPasswordDataSettings.inputOptions,
-      //   },
-      //   buttonOptions: props.buttonOptions,
-      // }),
       ProfileActionButtons: [
         ...Object.entries(profileActionsButtonsSettings).map(
           ([key, value]) =>
@@ -168,7 +143,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
       const request = await profilePageApi.request();
       if (request.status === 200) {
         const data = JSON.parse(request.response);
-        StoreUpdated.set("userInfo", data);
+        StoreUpdated.set("ProfilePageState.userInfo", data);
       }
     } catch (error) {
       console.error("Ошибка при получении информации о пользователе:", error);
@@ -180,7 +155,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
       isEditData: profilePageMainDataSettings.isEditData,
       inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
         ...item,
-        value: props.userInfo?.[item.inputId] ?? "", // Подставляем значение из userInfo или пустую строку
+        value: props.userInfo?.[item.inputId] ?? "",
       })),
       buttonOptions: buttonSettings,
     };
@@ -227,20 +202,21 @@ export default class ProfilePage extends Block<ProfilePageProps> {
             events: {
               click: (event: Event) => {
                 event.stopPropagation();
-                this.setProps({
-                  isEditData: true,
-                  editMainData: true,
-                  // inputOptions: { ...profilePageViewModeMainDataSettings.inputOptions },
-                });
-                this.children.ProfileFormBlockMainData.setProps({
-                  ...this.children.ProfileFormBlockMainData.props,
-                  isEditData: true,
-                });
-                this.children.ProfileFormBlockMainData.lists.InputsGroup.forEach((input) => {
-                  input.setProps({
-                    isEditData: true,
-                  });
-                });
+                StoreUpdated.set("ProfilePageState.isEditData", true);
+                // this.setProps({
+                //   isEditData: true,
+                //   editMainData: true,
+                //   // inputOptions: { ...profilePageViewModeMainDataSettings.inputOptions },
+                // });
+                // this.children.ProfileFormBlockMainData.setProps({
+                //   ...this.children.ProfileFormBlockMainData.props,
+                //   isEditData: true,
+                // });
+                // this.children.ProfileFormBlockMainData.lists.InputsGroup.forEach((input) => {
+                //   input.setProps({
+                //     isEditData: true,
+                //   });
+                // });
               },
             },
           });
@@ -389,7 +365,9 @@ export default class ProfilePage extends Block<ProfilePageProps> {
             {{{ Avatar }}}
           </div>
           {{{ ProfileFormBlockMainData }}}
-          {{{ ProfileActionButtons }}}
+          {{#unless isEditData}}
+            {{{ ProfileActionButtons }}}
+          {{/unless}}
           {{{ OverlayWithModalWindow }}}
         </main>
       </div>

@@ -25,4 +25,9 @@ class StoreUpdated<Store extends Record<string, unknown>> extends EventBus {
   }
 }
 
-export default new StoreUpdated({ userInfo: {} });
+export default new StoreUpdated({
+  ProfilePageState: {
+    userInfo: {},
+    isEditData: false,
+  },
+});

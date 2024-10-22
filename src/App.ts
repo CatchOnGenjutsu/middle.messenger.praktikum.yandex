@@ -32,7 +32,7 @@ export default class App {
     const loginPage = connect(() => ({}))(Login);
     const registrationPage = connect(() => ({}))(Registration);
     const chatPage = connect(() => ({}))(ChatPage);
-    const profilePage = connect<ProfilePageProps>((state) => ({ userInfo: state.userInfo }))(ProfilePage);
+    const profilePage = connect<ProfilePageProps>((state) => ({ ...state.ProfilePageState }))(ProfilePage);
     // const profilePage = connect(ProfilePage);
     const router = Router.getInstance("app");
 

@@ -22,21 +22,13 @@ export default class InputGroup extends Block {
     super({
       ...props,
       ProfileLabel: new ProfileLabel({
-        labelName: props.inputOption.labelName,
-        labelFor: props.inputOption.labelFor,
+        ...props,
       }),
       ProfileInput: new ProfileInput({
-        inputId: props.inputOption.inputId,
-        inputName: props.inputOption.inputName,
-        inputType: props.inputOption.inputType,
-        inputPlaceholder: props.inputOption.inputPlaceholder,
-        value: props.inputOption.value,
-        events: props.inputOption.events as Record<string, (event: Event) => void>,
-        isEditData: props.isEditData,
+        ...props,
       }),
       DisplayValue: new DisplayValue({
-        value: props.inputOption.value,
-        isEditData: props.isEditData,
+        ...props,
       }),
       Error: new Error({
         // errorText: props.inputOption.errorText as string,

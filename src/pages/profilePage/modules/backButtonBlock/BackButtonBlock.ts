@@ -5,26 +5,32 @@ import { ArrowButton } from "../../../../components/arrowButton/ArrowButton";
 
 import "./backButtonBlock.scss";
 
+interface BackButtonBlockProps {
+  onClick: () => void;
+}
+
 export default class BackButtonBlock extends Block {
-  constructor() {
+  constructor(props: BackButtonBlockProps) {
     super({
       ArrowButton: new ArrowButton({
         rightBtn: false,
         events: {
           click: (event: Event) => {
-            const router = Router.getInstance("app");
-            router.back();
+            // const router = Router.getInstance("app");
+            // router.back();
             event.preventDefault();
             event.stopPropagation();
+            props.onClick();
           },
         },
       }),
       events: {
         click: (event: Event) => {
-          const router = Router.getInstance("app");
-          router.back();
+          // const router = Router.getInstance("app");
+          // router.back();
           event.preventDefault();
           event.stopPropagation();
+          props.onClick();
         },
       },
     });

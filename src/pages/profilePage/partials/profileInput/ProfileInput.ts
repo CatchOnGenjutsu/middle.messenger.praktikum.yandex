@@ -1,26 +1,18 @@
 import Block from "../../../../globalClasses/Block";
+import { InputGroupProps } from "../../modules/inputGroup/InputGroup";
 
 import "./profileInput.scss";
 
-interface ProfileInputProps {
-  inputType: string;
-  inputName: string;
-  inputId: string;
-  value?: string;
-  inputPlaceholder: string;
-  events?: Record<string, (event: Event) => void>;
-  isEditData: boolean;
-}
 export default class ProfileInput extends Block {
-  constructor(props: ProfileInputProps) {
+  constructor(props: InputGroupProps) {
     super({
       ...props,
     });
   }
-  // {{#if isEditData}}showed{{/if}}
+
   render(): string {
     return `
-      <input class="input-field " type="{{inputType}}" name="{{inputName}}" id="{{inputId}}" value="{{value}}" placeholder="{{inputPlaceholder}}">
+      <input class="input-field" type="{{inputOption.inputType}}" name="{{inputOption.inputName}}" id="{{inputOption.inputId}}" value="{{inputOption.value}}" placeholder="{{inputOption.inputPlaceholder}}">
     `;
   }
 }
