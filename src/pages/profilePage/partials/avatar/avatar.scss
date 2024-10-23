@@ -7,9 +7,11 @@
     height: 140px;
     border-radius: 50%;
     overflow: hidden;
-    cursor: pointer;
+    cursor: default;
 
     &--editable {
+      cursor: pointer;
+
       &:hover .avatar__overlay {
         opacity: 1;
       }

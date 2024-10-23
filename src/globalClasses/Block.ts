@@ -96,6 +96,7 @@ export default class Block<P extends BlockProps = {}> {
   // }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    // debugger;
     this.componentDidUpdate(oldProps, newProps);
 
     if (this._propsHaveChanged(oldProps, newProps)) {
@@ -145,46 +146,10 @@ export default class Block<P extends BlockProps = {}> {
     return deepCompare(oldProps, newProps);
   }
 
-  // private _updateChildrenProps(children: Record<string, unknown>, newProps: Record<string, unknown>): void {
-  //   // debugger;
-  //   function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
-  //     // debugger;
-  //     for (const key in source) {
-  //       if (Object.prototype.hasOwnProperty.call(source, key)) {
-  //         if (
-  //           typeof source[key] === "object" &&
-  //           source[key] !== null &&
-  //           typeof target[key] === "object" &&
-  //           target[key] !== null
-  //         ) {
-  //           deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
-  //         } else {
-  //           target[key] = source[key];
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   for (const childName in children) {
-  //     debugger;
-  //     if (Object.prototype.hasOwnProperty.call(children, childName)) {
-  //       const child = children[childName] as {
-  //         props: Record<string, unknown>;
-  //         setProps?: (props: Record<string, unknown>) => void;
-  //       };
-  //       console.log(child);
-  //       console.log(newProps);
-  //       if (child && typeof child.setProps === "function") {
-  //         const childNewProps = (newProps[childName] || {}) as Record<string, unknown>;
-  //         deepUpdateProps(child.props, childNewProps);
-  //         child.setProps(child.props);
-  //       }
-  //     }
-  //   }
-  // }
-
   private _updateChildrenProps(children: Record<string, unknown>, newProps: Record<string, unknown>): void {
+    // debugger
     function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): boolean {
+      // debugger
       let hasChanged = false;
 
       for (const key in target) {
@@ -210,6 +175,7 @@ export default class Block<P extends BlockProps = {}> {
     }
 
     for (const childName in children) {
+      // debugger
       if (Object.prototype.hasOwnProperty.call(children, childName)) {
         const child = children[childName] as {
           props: Record<string, unknown>;
@@ -217,11 +183,9 @@ export default class Block<P extends BlockProps = {}> {
         };
 
         if (child && typeof child.setProps === "function") {
-          // Создаём копию пропсов, чтобы избежать побочных эффектов
           const currentProps = deepCopy(child.props);
           // console.log(currentProps);
 
-          // Ищем пересечение свойств между `child.props` и `newProps`
           const relevantProps = Object.keys(currentProps).reduce((acc, key) => {
             if (key in newProps) {
               acc[key] = newProps[key];

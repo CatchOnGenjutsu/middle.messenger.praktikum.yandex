@@ -55,7 +55,7 @@ export class HTTPTransport {
   }
 
   put(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    return this.request(path, { ...options, method: METHODS.PUT }, options.timeout);
+    return this.request(`${this.basePath}${path}`, { ...options, method: METHODS.PUT }, options.timeout);
   }
 
   post(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
@@ -80,9 +80,11 @@ export class HTTPTransport {
 
       xhr.withCredentials = true;
 
-      Object.entries(headers).forEach(([key, value]) => {
-        xhr.setRequestHeader(key, value);
-      });
+      if (!(data instanceof FormData)) {
+        Object.entries(headers).forEach(([key, value]) => {
+          xhr.setRequestHeader(key, value);
+        });
+      }
 
       xhr.onload = () => resolve(xhr);
       xhr.onerror = () => reject(new Error(`Error while executing ${method} request to ${path}`));
@@ -92,6 +94,8 @@ export class HTTPTransport {
 
       if (method === METHODS.GET || !data) {
         xhr.send();
+      } else if (data instanceof FormData) {
+        xhr.send(data);
       } else {
         xhr.send(JSON.stringify(data));
       }

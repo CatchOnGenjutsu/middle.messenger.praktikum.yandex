@@ -1,6 +1,9 @@
 import { ButtonProps } from "../../components/button/Button";
 import FormField from "../../components/formField/FormField";
 import { LinkProps } from "../../components/link/Link";
+import { ModalWindowProps } from "../../components/modalWindow/ModalWindow";
+import { OverlayProps } from "../../components/overlay/Overlay";
+import Block from "../../globalClasses/Block";
 import Router from "../../globalClasses/Router";
 export interface FormFieldConfig {
   labelName: string;
@@ -8,7 +11,7 @@ export interface FormFieldConfig {
   inputName: string;
   inputType: "text" | "email" | "password" | "tel";
   inputId: string;
-  value: string;
+  value?: string;
   inputPlaceholder: string;
   validation: (value: string, allFields?: FormField[]) => string | null;
 }
@@ -31,12 +34,10 @@ export interface FormFieldInstance {
 }
 
 export interface ProfilePageSettings {
-  isEditData: boolean;
   inputOptions: FormFieldConfig[];
 }
 
 export const profilePageMainDataSettings: ProfilePageSettings = {
-  isEditData: false,
   inputOptions: [
     {
       labelName: "Почта",
@@ -114,6 +115,84 @@ export const profilePageMainDataSettings: ProfilePageSettings = {
           : null,
     },
   ],
+};
+
+export const profilePagePasswordSettings: ProfilePageSettings = {
+  inputOptions: [
+    {
+      labelName: "Старый пароль",
+      labelFor: "oldPassword",
+      inputId: "oldPassword",
+      inputName: "oldPassword",
+      inputType: "password",
+      inputPlaceholder: "Старый пароль",
+      validation: (value: string) =>
+        value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
+          ? "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра."
+          : null,
+    },
+    {
+      labelName: "Новый пароль",
+      labelFor: "newPassword",
+      inputId: "newPassword",
+      inputName: "newPassword",
+      inputType: "password",
+      inputPlaceholder: "Новый пароль",
+      validation: (value: string) =>
+        value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
+          ? "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра."
+          : null,
+    },
+    {
+      labelName: "Повторите новый пароль",
+      labelFor: "repeatNewPassword",
+      inputId: "repeatNewPassword",
+      inputName: "repeatNewPassword",
+      inputType: "password",
+      inputPlaceholder: "Повторите новый пароль",
+      validation: (value: string, allFields?: FormField[]) => {
+        const passwordField = allFields?.find(
+          (field: FormField) => (field.props as FormFieldProps).inputId === "newPassword",
+        );
+        const passwordValue = passwordField?.getContent()?.querySelector("input")?.value;
+
+        return value && value !== passwordValue ? "Пароли должны совпадать." : null;
+      },
+    },
+  ],
+};
+
+export const modalWindowAddAvatarSettings: OverlayProps = {
+  title: "Загрузите файл",
+  inputOptions: {
+    labelName: "Выбрать файл на компьютере",
+    labelFor: "avatar",
+    inputId: "avatar",
+    inputName: "avatar",
+    inputType: "file",
+    inputPlaceholder: "Выберите аватар",
+    errorText: "",
+    fileName: "",
+    isFile: true,
+    events: {},
+  },
+  buttonOptions: {
+    value: "Поменять",
+    type: "submit",
+    class: "submit-button",
+    id: "change-btn",
+    name: "submit-btn",
+  },
+  events: {
+    submit: (event: Event) => {
+      event.preventDefault();
+    },
+  },
+  overlayEvents: {
+    click: (event: Event) => {
+      event.stopPropagation();
+    },
+  },
 };
 
 export const profileActionsButtonsSettings = {

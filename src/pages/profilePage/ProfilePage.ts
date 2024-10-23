@@ -9,24 +9,25 @@ import ProfileActionButton from "./partials/profileActionButton/ProfileActionBut
 import { Avatar } from "./partials/avatar/Avatar";
 import { Overlay } from "../../components/overlay/Overlay";
 
-import { profilePageViewModeMainDataSettings, profilePageEditPasswordDataSettings } from "./mockData";
-
 import {
   profilePageMainDataSettings,
   buttonSettings,
   profileActionsButtonsSettings,
+  profilePagePasswordSettings,
+  modalWindowAddAvatarSettings,
 } from "./profilePageSettings";
 
 import profilePageApi from "../../api/profilePageApi";
 import logoutApi from "../../api/logoutApi";
+import avatarApi from "../../api/avatarApi";
 
 import "./profilePage.scss";
-import { connect } from "../../globalClasses/HOCupdated";
 
 export interface ProfilePageProps extends BlockProps {
-  userInfo?: Record<string, string>;
+  userInfo: Record<string, string>;
   isEditData: boolean;
-  editMainData?: boolean;
+  editMainData: boolean;
+  newAvatar: File | null;
   // avatarUrl: string;
   // buttonOptions: Record<string, string>;
   // actionsButtons: Record<string, Record<string, string>>;
@@ -56,48 +57,38 @@ export interface ProfilePageProps extends BlockProps {
 export default class ProfilePage extends Block<ProfilePageProps> {
   constructor(props: ProfilePageProps) {
     console.log(props);
-    // const ConnectedProfileFormBlock = connect<ProfileFormBlockProps>((state) => {
-    //   // Создаем обновленные опции на основе store
-    //   const updatedInputOptions = profilePageMainDataSettings.inputOptions.map((option) => ({
-    //     ...option,
-    //     value: state.userInfo?.[option.inputId] || "", // Значения из store
-    //   }));
-    //   // console.log(updatedInputOptions);
-
-    //   return {
-    //     isEditData: profilePageMainDataSettings.isEditData || false,
-    //     inputOptions: updatedInputOptions,
-    //     buttonOptions: buttonSettings,
-    //   };
-    // })(ProfileFormBlock);
     super({
       ...props,
-      // isEditData: props.isEditData,
-      // editMainData: true,
       BackButtonBlock: new BackButtonBlock({
         onClick: () => {
           if (this.props.isEditData) {
             StoreUpdated.set("ProfilePageState.isEditData", false);
+            StoreUpdated.set("ProfilePageState.editMainData", true);
           } else {
             const router = Router.getInstance("app");
             router.back();
           }
         },
       }),
-      // Avatar: new Avatar({
-      //   isEditData: props.isEditData,
-      //   avatarUrl: props.avatarUrl,
-      //   events: {
-      //     click: (event: Event) => {
-      //       event.stopPropagation();
-      //       const elem = this.children.OverlayWithModalWindow;
-      //       if (elem) {
-      //         elem.getContent().classList.toggle("hidden");
-      //       }
-      //     },
-      //   },
-      // }),
+      Avatar: new Avatar({
+        isEditData: props.isEditData,
+        avatarUrl: props.userInfo.avatar,
+        events: {
+          click: (event: Event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            if (!this.props.isEditData) {
+              const elem = this.children.OverlayWithModalWindow;
+              if (elem) {
+                StoreUpdated.set("ProfilePageState.OverlayWithModalWindow", elem);
+                elem.getContent().classList.toggle("hidden");
+              }
+            }
+          },
+        },
+      }),
       ProfileFormBlockMainData: new ProfileFormBlock(ProfilePage.getProfileFormProps(props)),
+      ProfileFormBlockPassword: new ProfileFormBlock(ProfilePage.getProfileFormPropsPassword(props)),
       ProfileActionButtons: [
         ...Object.entries(profileActionsButtonsSettings).map(
           ([key, value]) =>
@@ -111,26 +102,92 @@ export default class ProfilePage extends Block<ProfilePageProps> {
             }),
         ),
       ],
-      // OverlayWithModalWindow: new Overlay({
-      //   ...props.modalWindowSettings,
-      // }),
-      // events: {
-      //   submit: (event: Event) => {
-      //     event.preventDefault();
-      //     const isValid = this.validateForm();
-      //     if (isValid) {
-      //       const elem = event.target as HTMLFormElement;
-      //       if (elem && elem.tagName === "FORM") {
-      //         const formData = new FormData(event.target as HTMLFormElement);
-      //         const data: Record<string, string> = {};
-      //         formData.forEach((value, key) => {
-      //           data[key] = value.toString();
-      //         });
-      //         console.log(data);
-      //       }
-      //     }
-      //   },
-      // },
+      OverlayWithModalWindow: new Overlay({
+        ...modalWindowAddAvatarSettings,
+        inputOptions: {
+          ...modalWindowAddAvatarSettings.inputOptions,
+          events: {
+            change: (event: Event) => {
+              event.stopPropagation();
+              event.preventDefault();
+              const file = (event.target as HTMLInputElement).files?.[0];
+              if (file) {
+                const elem =
+                  this.children.OverlayWithModalWindow.children.ModalWindow.children.FileInputGroup;
+                StoreUpdated.set("ProfilePageState.newAvatar", file);
+                elem.setProps({
+                  fileName: file.name,
+                  errorText: "",
+                });
+              }
+            },
+          },
+        },
+        events: {
+          submit: async (event: Event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const file = this.props.newAvatar;
+            if (!(file instanceof File)) {
+              const elem = this.children.OverlayWithModalWindow.children.ModalWindow.children.FileInputGroup;
+              elem.setProps({
+                errorText: "Файл не выбран",
+              });
+            } else {
+              const formData = new FormData();
+              formData.append("avatar", file);
+              const request = await avatarApi.create(formData);
+              console.log(request);
+              const elemModal = this.children.OverlayWithModalWindow.children.ModalWindow;
+              if (request.status === 200) {
+                elemModal.setProps({
+                  title: "Аватар успешно обновлен",
+                });
+                this.getUserInfo();
+              } else {
+                elemModal.setProps({
+                  title: "Ошибка, попробуйте ещё раз",
+                });
+              }
+            }
+          },
+        },
+        overlayEvents: {
+          click: (event: Event) => {
+            const target = event.target as HTMLElement;
+            if (target?.id === "modalOverlay") {
+              target.classList.toggle("hidden");
+              const elemModal = this.children.OverlayWithModalWindow.children.ModalWindow;
+              elemModal.setProps({
+                title: "Загрузите файл",
+                inputOptions: {
+                  ...modalWindowAddAvatarSettings.inputOptions,
+                  errorText: "",
+                },
+              });
+              elemModal.children.FileInputGroup.setProps({ fileName: "" });
+              StoreUpdated.set("ProfilePageState.newAvatar", null);
+            }
+          },
+        },
+      }),
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isValid = this.validateForm();
+          if (isValid) {
+            const elem = event.target as HTMLFormElement;
+            if (elem && elem.tagName === "FORM") {
+              const formData = new FormData(event.target as HTMLFormElement);
+              const data: Record<string, string> = {};
+              formData.forEach((value, key) => {
+                data[key] = value.toString();
+              });
+              console.log(data);
+            }
+          }
+        },
+      },
     });
     this.getUserInfo();
     for (const key in profileActionsButtonsSettings) {
@@ -143,6 +200,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
       const request = await profilePageApi.request();
       if (request.status === 200) {
         const data = JSON.parse(request.response);
+        data.avatar = `https://ya-praktikum.tech/api/v2/resources${data.avatar}`;
         StoreUpdated.set("ProfilePageState.userInfo", data);
       }
     } catch (error) {
@@ -152,7 +210,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
 
   static getProfileFormProps(props: any) {
     return {
-      isEditData: profilePageMainDataSettings.isEditData,
+      isEditData: props.isEditData,
       inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
         ...item,
         value: props.userInfo?.[item.inputId] ?? "",
@@ -161,11 +219,18 @@ export default class ProfilePage extends Block<ProfilePageProps> {
     };
   }
 
+  static getProfileFormPropsPassword(props: any) {
+    return {
+      isEditData: props.isEditData,
+      inputOptions: profilePagePasswordSettings.inputOptions,
+      buttonOptions: buttonSettings,
+    };
+  }
+
   componentDidUpdate(oldProps: ProfilePageProps, newProps: ProfilePageProps): boolean {
-    // Проверяем, изменились ли данные пользователя
     if (oldProps.userInfo !== newProps.userInfo) {
-      // Обновляем блок с новыми пропсами
       this.children.ProfileFormBlockMainData.setProps(ProfilePage.getProfileFormProps(newProps));
+      this.children.Avatar.setProps({ avatarUrl: newProps.userInfo.avatar });
     }
     return true;
   }
@@ -203,20 +268,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
               click: (event: Event) => {
                 event.stopPropagation();
                 StoreUpdated.set("ProfilePageState.isEditData", true);
-                // this.setProps({
-                //   isEditData: true,
-                //   editMainData: true,
-                //   // inputOptions: { ...profilePageViewModeMainDataSettings.inputOptions },
-                // });
-                // this.children.ProfileFormBlockMainData.setProps({
-                //   ...this.children.ProfileFormBlockMainData.props,
-                //   isEditData: true,
-                // });
-                // this.children.ProfileFormBlockMainData.lists.InputsGroup.forEach((input) => {
-                //   input.setProps({
-                //     isEditData: true,
-                //   });
-                // });
+                StoreUpdated.set("ProfilePageState.editMainData", true);
               },
             },
           });
@@ -226,20 +278,8 @@ export default class ProfilePage extends Block<ProfilePageProps> {
             events: {
               click: (event: Event) => {
                 event.stopPropagation();
-                this.setProps({
-                  isEditData: true,
-                  editMainData: false,
-                  // inputOptions: { ...profilePageEditPasswordDataSettings.inputOptions },
-                });
-                this.children.ProfileFormBlockPassword.setProps({
-                  ...this.children.ProfileFormBlockPassword.props,
-                  isEditData: true,
-                });
-                this.children.ProfileFormBlockPassword.lists.InputsGroup.forEach((input) => {
-                  input.setProps({
-                    isEditData: true,
-                  });
-                });
+                StoreUpdated.set("ProfilePageState.isEditData", true);
+                StoreUpdated.set("ProfilePageState.editMainData", false);
               },
             },
           });
@@ -310,49 +350,25 @@ export default class ProfilePage extends Block<ProfilePageProps> {
     return isValid;
   }
 
-  // private validateForm(): boolean {
-  //   let isFormValid = true;
-  //   const fields = this.props.editMainData
-  //     ? this.children.ProfileFormBlockMainData.lists.InputsGroup
-  //     : this.children.ProfileFormBlockPassword.lists.InputsGroup;
+  private validateForm(): boolean {
+    let isFormValid = true;
+    const fields = this.props.editMainData
+      ? this.children.ProfileFormBlockMainData.lists.InputsGroup
+      : this.children.ProfileFormBlockPassword.lists.InputsGroup;
 
-  //   fields.forEach((field: Block) => {
-  //     const inputGroup = field;
-  //     const inputElement = inputGroup.getContent().querySelector("input") as HTMLInputElement;
-  //     const value = inputElement?.value || "";
-  //     const inputId = inputElement?.id || "";
-  //     const isValid = this.validateField(inputId, value, field);
-  //     if (!isValid) {
-  //       isFormValid = false;
-  //     }
-  //   });
+    fields.forEach((field: Block) => {
+      const inputGroup = field;
+      const inputElement = inputGroup.getContent().querySelector("input") as HTMLInputElement;
+      const value = inputElement?.value || "";
+      const inputId = inputElement?.id || "";
+      const isValid = this.validateField(inputId, value, field);
+      if (!isValid) {
+        isFormValid = false;
+      }
+    });
 
-  //   return isFormValid;
-  // }
-  // return `
-  //     <div id="profile-page" class="profile-page">
-  //       <aside class="profile-page__aside">
-  //         {{{ BackButtonBlock }}}
-  //       </aside>
-  //       <main class="profile-page__main-content">
-  //         <div class="profile-page__main-content__avatar-wrapper">
-  //           {{{ Avatar }}}
-  //           {{#unless isEditData}}
-  //             <h1 class="profile-page__main-content__name">{{inputOptions.first_name.value}}</h1>
-  //           {{/unless}}
-  //         </div>
-  //         {{#if editMainData}}
-  //           {{{ ProfileFormBlockMainData }}}
-  //         {{else}}
-  //           {{{ ProfileFormBlockPassword }}}
-  //         {{/if}}
-  //         {{#unless isEditData}}
-  //           {{{ ProfileActionButtons }}}
-  //         {{/unless}}
-  //         {{{ OverlayWithModalWindow }}}
-  //       </main>
-  //     </div>
-  //   `;
+    return isFormValid;
+  }
 
   protected render(): string {
     return `
@@ -363,8 +379,15 @@ export default class ProfilePage extends Block<ProfilePageProps> {
         <main class="profile-page__main-content">
           <div class="profile-page__main-content__avatar-wrapper">
             {{{ Avatar }}}
+            {{#unless isEditData}}
+              <h1 class="profile-page__main-content__name">{{userInfo.first_name}}</h1>
+            {{/unless}}
           </div>
-          {{{ ProfileFormBlockMainData }}}
+            {{#if editMainData}}
+              {{{ ProfileFormBlockMainData }}}
+            {{else}}
+              {{{ ProfileFormBlockPassword }}}
+            {{/if}}
           {{#unless isEditData}}
             {{{ ProfileActionButtons }}}
           {{/unless}}
