@@ -5,6 +5,8 @@ import { ModalWindowProps } from "../../components/modalWindow/ModalWindow";
 import { OverlayProps } from "../../components/overlay/Overlay";
 import Block from "../../globalClasses/Block";
 import Router from "../../globalClasses/Router";
+import InputGroup, { InputGroupProps } from "./modules/inputGroup/InputGroup";
+
 export interface FormFieldConfig {
   labelName: string;
   labelFor: string;
@@ -13,11 +15,11 @@ export interface FormFieldConfig {
   inputId: string;
   value?: string;
   inputPlaceholder: string;
-  validation: (value: string, allFields?: FormField[]) => string | null;
+  validation: (value: string, allFields?: FormField[] | InputGroup[]) => string | null;
 }
 
-interface FormFieldProps extends FormFieldConfig {
-  errorText: string | null;
+export interface FormFieldProps extends FormFieldConfig {
+  errorText: string;
   events: {
     blur: (event: Event) => void;
   };
@@ -127,7 +129,7 @@ export const profilePagePasswordSettings: ProfilePageSettings = {
       inputType: "password",
       inputPlaceholder: "Старый пароль",
       validation: (value: string) =>
-        value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
+        !value || !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
           ? "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра."
           : null,
     },
@@ -139,7 +141,7 @@ export const profilePagePasswordSettings: ProfilePageSettings = {
       inputType: "password",
       inputPlaceholder: "Новый пароль",
       validation: (value: string) =>
-        value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
+        !value || !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)
           ? "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра."
           : null,
     },
@@ -150,9 +152,11 @@ export const profilePagePasswordSettings: ProfilePageSettings = {
       inputName: "repeatNewPassword",
       inputType: "password",
       inputPlaceholder: "Повторите новый пароль",
-      validation: (value: string, allFields?: FormField[]) => {
+      validation: (value: string, allFields?: FormField[] | InputGroup[]) => {
         const passwordField = allFields?.find(
-          (field: FormField) => (field.props as FormFieldProps).inputId === "newPassword",
+          (field: FormField | InputGroup) =>
+            (field.props as FormFieldProps).inputId === "newPassword" ||
+            (field.props as InputGroupProps).inputOption.inputId === "newPassword",
         );
         const passwordValue = passwordField?.getContent()?.querySelector("input")?.value;
 

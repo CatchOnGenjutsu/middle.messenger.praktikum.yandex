@@ -2,7 +2,7 @@ import Block from "../../globalClasses/Block";
 import "./error.scss";
 
 interface ErrorProps {
-  errorText?: string | null;
+  errorText?: string;
 }
 
 export class Error extends Block {

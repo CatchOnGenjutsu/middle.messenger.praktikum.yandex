@@ -7,6 +7,9 @@ export default class ProfileInput extends Block {
   constructor(props: InputGroupProps) {
     super({
       ...props,
+      events: {
+        ...props.inputOption.events,
+      },
     });
   }
 

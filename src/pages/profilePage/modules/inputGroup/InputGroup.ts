@@ -14,7 +14,6 @@ export interface InputGroupProps extends BlockProps {
     events?: Record<string, (event: Event) => void>;
   };
   isLast: boolean;
-  // events?: Record<string, (event: Event) => void>;
 }
 
 export default class InputGroup extends Block {

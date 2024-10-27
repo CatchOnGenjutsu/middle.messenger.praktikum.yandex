@@ -4,7 +4,7 @@ import store from "../../globalClasses/Store";
 import StoreUpdated from "../../globalClasses/StoreUpdated";
 
 import BackButtonBlock from "./modules/backButtonBlock/BackButtonBlock";
-import ProfileFormBlock, { ProfileFormBlockProps } from "./modules/profileFormBlock/ProfileFormBlock";
+import ProfileFormBlock from "./modules/profileFormBlock/ProfileFormBlock";
 import ProfileActionButton from "./partials/profileActionButton/ProfileActionButton";
 import { Avatar } from "./partials/avatar/Avatar";
 import { Overlay } from "../../components/overlay/Overlay";
@@ -19,7 +19,6 @@ import {
 
 import profilePageApi from "../../api/profilePageApi";
 import logoutApi from "../../api/logoutApi";
-import avatarApi from "../../api/avatarApi";
 
 import "./profilePage.scss";
 
@@ -136,7 +135,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
             } else {
               const formData = new FormData();
               formData.append("avatar", file);
-              const request = await avatarApi.create(formData);
+              const request = await profilePageApi.changeAvatar(formData);
               console.log(request);
               const elemModal = this.children.OverlayWithModalWindow.children.ModalWindow;
               if (request.status === 200) {
@@ -172,7 +171,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
         },
       }),
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
           event.preventDefault();
           const isValid = this.validateForm();
           if (isValid) {
@@ -183,7 +182,27 @@ export default class ProfilePage extends Block<ProfilePageProps> {
               formData.forEach((value, key) => {
                 data[key] = value.toString();
               });
-              console.log(data);
+
+              let request: XMLHttpRequest = this.props.editMainData
+                ? await profilePageApi.changeUserInfo(data)
+                : await profilePageApi.changeUserPassword(data);
+              console.log(this.props.editMainData);
+              // if (this.props.editMainData) {
+              //   request = await profilePageApi.changeUserInfo(data);
+              // } else {
+              //   console.log("tut");
+              //   request = await profilePageApi.changeUserPassword(data);
+              // }
+
+              if (request.status !== 200) {
+                const errorMessage = JSON.parse(request?.response).reason;
+                alert(errorMessage);
+              } else {
+                alert("Данные успешно обновлены");
+                StoreUpdated.set("ProfilePageState.isEditData", false);
+                StoreUpdated.set("ProfilePageState.editMainData", true);
+                this.getUserInfo();
+              }
             }
           }
         },
@@ -200,7 +219,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
       const request = await profilePageApi.request();
       if (request.status === 200) {
         const data = JSON.parse(request.response);
-        data.avatar = `https://ya-praktikum.tech/api/v2/resources${data.avatar}`;
+        data.avatar = data.avatar ? `https://ya-praktikum.tech/api/v2/resources${data.avatar}` : null;
         StoreUpdated.set("ProfilePageState.userInfo", data);
       }
     } catch (error) {
@@ -290,68 +309,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
     }
   }
 
-  private validateField(inputId: string, value: string, field: Block): boolean {
-    let isValid = true;
-
-    if (field) {
-      switch (inputId) {
-        case "email":
-          isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value);
-          field.setProps({
-            errorText: isValid ? null : "Неправильно введена почта. Почта должна содержать символы @ и .",
-          });
-          break;
-        case "login":
-          isValid = /^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value);
-          field.setProps({
-            errorText: isValid
-              ? null
-              : "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов.",
-          });
-          break;
-        case "first_name":
-        case "second_name":
-          isValid = /^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value);
-          field.setProps({
-            errorText: isValid
-              ? null
-              : "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис).",
-          });
-          break;
-        case "phone":
-          isValid = /^\+?\d{10,15}$/u.test(value);
-          field.setProps({
-            errorText: isValid ? null : "Должен содержать от 10 до 15 цифр, может начинается с плюса.",
-          });
-          break;
-        case "oldPassword":
-        case "newPassword":
-          isValid = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value);
-          field.setProps({
-            errorText: isValid
-              ? null
-              : "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.",
-          });
-          break;
-        case "newPasswordRepeat": {
-          const newPasswordField = this.children.ProfileFormBlockPassword.lists.InputsGroup.find(
-            (item) => item.props.inputId === "newPassword",
-          );
-          const newPasswordValue = newPasswordField?.getContent().querySelector("input")?.value || "";
-          isValid = value === newPasswordValue;
-          field.setProps({
-            errorText: isValid ? null : "Пароли должны совпадать.",
-          });
-          break;
-        }
-      }
-    }
-
-    return isValid;
-  }
-
   private validateForm(): boolean {
-    let isFormValid = true;
     const fields = this.props.editMainData
       ? this.children.ProfileFormBlockMainData.lists.InputsGroup
       : this.children.ProfileFormBlockPassword.lists.InputsGroup;
@@ -359,15 +317,18 @@ export default class ProfilePage extends Block<ProfilePageProps> {
     fields.forEach((field: Block) => {
       const inputGroup = field;
       const inputElement = inputGroup.getContent().querySelector("input") as HTMLInputElement;
-      const value = inputElement?.value || "";
-      const inputId = inputElement?.id || "";
-      const isValid = this.validateField(inputId, value, field);
-      if (!isValid) {
-        isFormValid = false;
+      if (inputElement) {
+        inputElement.dispatchEvent(new Event("blur", { bubbles: true }));
       }
     });
 
-    return isFormValid;
+    return fields.every((field: Block) => {
+      if (field.children.Error.props.errorText) {
+        return false;
+      } else {
+        return true;
+      }
+    });
   }
 
   protected render(): string {
