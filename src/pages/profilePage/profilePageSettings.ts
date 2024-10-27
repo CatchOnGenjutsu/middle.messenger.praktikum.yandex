@@ -1,9 +1,7 @@
 import { ButtonProps } from "../../components/button/Button";
 import FormField from "../../components/formField/FormField";
 import { LinkProps } from "../../components/link/Link";
-import { ModalWindowProps } from "../../components/modalWindow/ModalWindow";
 import { OverlayProps } from "../../components/overlay/Overlay";
-import Block from "../../globalClasses/Block";
 import Router from "../../globalClasses/Router";
 import InputGroup, { InputGroupProps } from "./modules/inputGroup/InputGroup";
 
