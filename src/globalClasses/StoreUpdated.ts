@@ -1,5 +1,6 @@
 import EventBus from "./EventBus";
 import { set } from "../utils";
+import { modalWindowAddChatSettings } from "../pages/chatPage/chatPageSettings";
 
 export enum StoreEvents {
   Updated = "updated",
@@ -32,5 +33,9 @@ export default new StoreUpdated({
     isEditData: false,
     editMainData: true,
     newAvatar: "",
+  },
+  ChatPage: {
+    overlaySettings: modalWindowAddChatSettings,
+    chats: [],
   },
 });

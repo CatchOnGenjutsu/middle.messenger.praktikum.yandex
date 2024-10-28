@@ -186,13 +186,6 @@ export default class ProfilePage extends Block<ProfilePageProps> {
               let request: XMLHttpRequest = this.props.editMainData
                 ? await profilePageApi.changeUserInfo(data)
                 : await profilePageApi.changeUserPassword(data);
-              console.log(this.props.editMainData);
-              // if (this.props.editMainData) {
-              //   request = await profilePageApi.changeUserInfo(data);
-              // } else {
-              //   console.log("tut");
-              //   request = await profilePageApi.changeUserPassword(data);
-              // }
 
               if (request.status !== 200) {
                 const errorMessage = JSON.parse(request?.response).reason;

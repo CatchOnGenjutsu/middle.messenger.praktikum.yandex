@@ -15,6 +15,7 @@ export interface OverlayProps {
     inputPlaceholder: string;
     errorText: string;
     fileName: string;
+    validation?: (value: string) => string | null;
     events: {
       blur?: (event: Event) => void;
       change?: (event: Event) => void;
