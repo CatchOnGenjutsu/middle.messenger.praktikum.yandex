@@ -15,7 +15,7 @@ export default class App {
   constructor() {
     const loginPage = connect(() => ({}))(Login);
     const registrationPage = connect(() => ({}))(Registration);
-    const chatPage = connect(() => ({}))(ChatPage);
+    const chatPage = connect((state) => ({ ...state.ChatPage }))(ChatPage);
     const profilePage = connect<ProfilePageProps>((state) => ({ ...state.ProfilePageState }))(ProfilePage);
     const router = Router.getInstance("app");
 

@@ -1,42 +1,57 @@
-import Block from "../../../../globalClasses/Block";
-import { ChatItem } from "../../partials/chatItem/ChatItem";
-
-import { chatsData } from "../../mockData";
+import Block, { BlockProps } from "../../../../globalClasses/Block";
+import { ChatItem, ChatItemProps } from "../../partials/chatItem/ChatItem";
 
 import "./chatList.scss";
 
 export default class ChatList extends Block {
-  constructor() {
+  constructor(props: any) {
     super({
       activeChatId: null,
-      chatList: [
-        ...chatsData.map(
-          (chat) =>
-            new ChatItem({
-              ...chat,
-              events: {
-                click: (event: Event) => this.handleItemClick.bind(this)(event),
-              },
-            }),
-        ),
-      ],
+      chats: props.chats,
+      // chatList: ChatList.createChatList(props.chats, this.handleItemClick.bind(this)),
     });
+
+    this.children.chatList = this.createChatList(props.chats);
   }
 
-  handleItemClick(event: Event) {
-    if (!event) return;
-    const target = event.target as HTMLInputElement;
-    if (target) {
-      this.setProps({ activeChatId: 2 });
+  // Создаем список чатов с передачей обработчика клика
+  private createChatList(chats: ChatItemProps[]): ChatItem[] {
+    return chats.map(
+      (chat: ChatItemProps) =>
+        new ChatItem({
+          ...chat,
+          events: {
+            click: () => this.handleItemClick(chat.id),
+          },
+        }),
+    );
+  }
+
+  // Обновление списка чатов
+  private updateChatList(chats: ChatItemProps[]) {
+    this.children.chatList = this.createChatList(chats);
+    this.setProps({}); // Принудительный ререндеринг
+  }
+
+  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
+    if (oldProps.chats !== newProps.chats) {
+      this.updateChatList(newProps.chats as ChatItemProps[]);
+      return true;
     }
+    return false;
+  }
+
+  // Обработчик клика по элементу чата
+  private handleItemClick(chatId: number) {
+    this.setProps({ activeChatId: chatId });
   }
 
   render() {
     return `
       <ul class="chat-list">
-        {{#if chatList.length}}
-          {{{ chatList }}}
-        {{/if}}  
+        {{#each chatList}}
+          {{{this}}}
+        {{/each}}
       </ul>
     `;
   }

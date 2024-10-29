@@ -2,7 +2,6 @@ import Block from "../../globalClasses/Block";
 import StoreUpdated from "../../globalClasses/StoreUpdated";
 import chatsApi from "../../api/chatsApi";
 
-import ChatList from "./modules/chatList/ChatList";
 import CurrentChat from "./modules/currentChat/CurrentChat";
 import { Overlay } from "../../components/overlay/Overlay";
 import SearchInput from "./partials/searchInput/SearchInput";
@@ -17,9 +16,16 @@ import {
 
 import "./chatPage.scss";
 import Button from "../../components/button/Button";
+import { ChatItem, ChatItemProps } from "./partials/chatItem/ChatItem";
+// import { ChatItemProps } from "./partials/chatItem/ChatItem";
+
+interface ChatPageProps {
+  overlaySettings: Record<string, unknown>;
+  chats: ChatItemProps[] | [];
+}
 
 export default class ChatPage extends Block {
-  constructor(props: any) {
+  constructor(props: ChatPageProps) {
     console.log(props);
     super({
       ...props,
@@ -39,7 +45,17 @@ export default class ChatPage extends Block {
         },
       }),
       SearchInput: new SearchInput(),
-      ChatList: new ChatList(),
+      ChatList: [
+        ...props.chats.map(
+          (chat: ChatItemProps) =>
+            new ChatItem({
+              ...chat,
+              events: {
+                click: () => this.handleItemClick(chat.id),
+              },
+            }),
+        ),
+      ],
       CurrentChat: new CurrentChat({ ...chatPageOpenSettings }),
       OverlayWithModalWindow: new Overlay({
         ...modalWindowAddChatSettings,
@@ -92,29 +108,6 @@ export default class ChatPage extends Block {
                 // const reason = JSON.parse(request.response).reason;
               }
             }
-            // const file = this.props.newAvatar;
-            // if (!(file instanceof File)) {
-            //   const elem = this.children.OverlayWithModalWindow.children.ModalWindow.children.FileInputGroup;
-            //   elem.setProps({
-            //     errorText: "Файл не выбран",
-            //   });
-            // } else {
-            //   const formData = new FormData();
-            //   formData.append("avatar", file);
-            //   const request = await profilePageApi.changeAvatar(formData);
-            //   console.log(request);
-            //   const elemModal = this.children.OverlayWithModalWindow.children.ModalWindow;
-            //   if (request.status === 200) {
-            //     elemModal.setProps({
-            //       title: "Аватар успешно обновлен",
-            //     });
-            //     this.getUserInfo();
-            //   } else {
-            //     elemModal.setProps({
-            //       title: "Ошибка, попробуйте ещё раз",
-            //     });
-            //   }
-            // }
           },
         },
         overlayEvents: {
@@ -136,7 +129,6 @@ export default class ChatPage extends Block {
         },
       }),
     });
-
     this.getChats();
   }
 
@@ -145,12 +137,41 @@ export default class ChatPage extends Block {
       const request = await chatsApi.getChats();
       if (request.status === 200) {
         const data = JSON.parse(request.response);
-        console.log(data);
         StoreUpdated.set("ChatPage.chats", data);
       }
     } catch (error) {
       console.error("Ошибка при получении информации о чатах:", error);
     }
+  }
+
+  // static getChatListsProps(props: any) {
+  //   return {
+  //     chats: props.chats,
+  //   };
+  // }
+
+  private handleItemClick(chatId: number) {
+    this.setProps({ activeChatId: chatId });
+  }
+
+  componentDidUpdate(oldProps: any, newProps: any): boolean {
+    if (oldProps.chats !== newProps.chats) {
+      // debugger;
+      console.log("Чаты обновлены:", newProps.chats);
+      this.lists.ChatList =
+        newProps.chats!.map(
+          (chat: ChatItemProps) =>
+            new ChatItem({
+              ...chat,
+              events: {
+                click: () => this.handleItemClick(chat.id),
+              },
+            }),
+        ) || [];
+      this.setProps({});
+      return true;
+    }
+    return true;
   }
 
   protected render(): string {
@@ -161,6 +182,11 @@ export default class ChatPage extends Block {
         {{{ CreateChatBtn }}}
         {{{ SearchInput }}}
         {{{ ChatList }}}
+        <ul class="chat-list">
+          {{#each lists.ChatList}}
+            <li>{{{this}}}</li>
+          {{/each}}
+        </ul>
       </aside>
       <main>
         {{{ CurrentChat }}}
