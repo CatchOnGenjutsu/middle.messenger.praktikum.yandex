@@ -2,6 +2,17 @@ import EventBus from "./EventBus";
 import { set } from "../utils";
 import { modalWindowAddChatSettings } from "../pages/chatPage/chatPageSettings";
 
+export interface UserInterface {
+  avatar: string | null;
+  display_name: string | null;
+  email: string | null;
+  first_name: string | null;
+  id: number;
+  login: string | null;
+  phone: string | null;
+  second_name: string | null;
+}
+
 export enum StoreEvents {
   Updated = "updated",
 }
@@ -35,6 +46,16 @@ export default new StoreUpdated({
   },
   ChatPage: {
     overlaySettings: modalWindowAddChatSettings,
-    chats: [],
   },
+  userInfo: {
+    avatar: null,
+    display_name: null,
+    email: null,
+    first_name: null,
+    id: null,
+    login: null,
+    phone: null,
+    second_name: null,
+  },
+  messages: [],
 });

@@ -10,6 +10,7 @@ import "./currentChatFooter.scss";
 
 interface CurrentChatFooterProps {
   popupOpen: boolean;
+  webSocketInstance?: WebSocket | null;
 }
 
 export class CurrentChatFooter extends Block {
@@ -45,13 +46,23 @@ export class CurrentChatFooter extends Block {
         submit: (event: Event) => {
           event.preventDefault();
           const elem = event.target as HTMLFormElement;
+          console.log(elem);
           if (elem && elem.tagName === "FORM") {
             const formData = new FormData(event.target as HTMLFormElement);
-            const data: Record<string, string> = {};
-            formData.forEach((value, key) => {
-              data[key] = value.toString();
-            });
-            console.log(data);
+            const message = formData.get("message")?.toString();
+
+            const webSocketInstance = (this.props as CurrentChatFooterProps).webSocketInstance;
+            console.log(message);
+            console.log(webSocketInstance);
+            if (message && webSocketInstance) {
+              console.log(message);
+              webSocketInstance.send(
+                JSON.stringify({
+                  content: message,
+                  type: "message",
+                }),
+              );
+            }
           }
         },
       },

@@ -114,10 +114,21 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _propsHaveChanged(oldProps: Record<string, unknown>, newProps: Record<string, unknown>): boolean {
-    function deepCompare(obj1: unknown, obj2: unknown): boolean {
+    function deepCompare(
+      obj1: unknown,
+      obj2: unknown,
+      seen: WeakMap<object, boolean> = new WeakMap(),
+    ): boolean {
       if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
         return obj1 !== obj2;
       }
+
+      // Проверка на циклическую ссылку
+      if (seen.has(obj1) || seen.has(obj2)) {
+        return false;
+      }
+      seen.set(obj1 as object, true);
+      seen.set(obj2 as object, true);
 
       const obj1Record = obj1 as Record<string, unknown>;
       const obj2Record = obj2 as Record<string, unknown>;
@@ -133,8 +144,7 @@ export default class Block<P extends BlockProps = {}> {
         if (!keys2.includes(key)) {
           return true;
         }
-
-        if (deepCompare(obj1Record[key], obj2Record[key])) {
+        if (deepCompare(obj1Record[key], obj2Record[key], seen)) {
           return true;
         }
       }
@@ -230,12 +240,11 @@ export default class Block<P extends BlockProps = {}> {
         const listNewProps = newProps[listName];
 
         if (!listNewProps) {
-          console.warn(`Пропсы для списка "${listName}" не найдены`);
+          // console.warn(`Пропсы для списка "${listName}" не найдены`);
           continue;
         }
 
         if (!list.length && Array.isArray(listNewProps) && listNewProps.length) {
-          console.log(listNewProps[0]);
           list.push(...listNewProps);
           this.lists[listName] = list;
           // this.lists[listName].forEach((item: Block) => (item.setProps ? item.setProps(item.props) : null));
@@ -243,7 +252,7 @@ export default class Block<P extends BlockProps = {}> {
         }
         list.forEach((item, index) => {
           if (item && typeof item.setProps === "function") {
-            console.log(`Элемент ${index} списка "${listName}"`, item);
+            // console.log(`Элемент ${index} списка "${listName}"`, item);
 
             let propsToApply: Record<string, unknown>;
 
@@ -255,7 +264,7 @@ export default class Block<P extends BlockProps = {}> {
               propsToApply = listNewProps as Record<string, unknown>;
             }
 
-            console.log(`Пропсы для элемента ${index}:`, propsToApply);
+            // console.log(`Пропсы для элемента ${index}:`, propsToApply);
 
             deepUpdateProps(item.props, propsToApply);
             item.setProps(item.props);
@@ -332,7 +341,6 @@ export default class Block<P extends BlockProps = {}> {
 
     Object.entries(this.lists).forEach(([, list]) => {
       const listCont = this._createDocumentElement("template");
-      console.log(this, list);
       list.forEach((item) => {
         if (item instanceof Block) {
           listCont.content.append(item.getContent());

@@ -59,7 +59,6 @@ export class HTTPTransport {
   }
 
   post(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    console.log(options);
     return this.request(`${this.basePath}${path}`, { ...options, method: METHODS.POST }, options.timeout);
   }
 

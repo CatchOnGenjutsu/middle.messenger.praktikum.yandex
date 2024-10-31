@@ -30,6 +30,7 @@ interface CurrentChatProps {
   popupOpen: boolean;
   isEmpty?: boolean;
   events?: Record<string, (event: Event) => void>;
+  webSocketInstance?: WebSocket | null;
 }
 
 export default class CurrentChat extends Block {
@@ -44,13 +45,23 @@ export default class CurrentChat extends Block {
           submit: (event: Event) => {
             event.preventDefault();
             const elem = event.target as HTMLFormElement;
+            console.log(elem);
             if (elem && elem.tagName === "FORM") {
               const formData = new FormData(event.target as HTMLFormElement);
-              const data: Record<string, string> = {};
-              formData.forEach((value, key) => {
-                data[key] = value.toString();
-              });
-              console.log(data);
+              const message = formData.get("message")?.toString();
+
+              const webSocketInstance = (this.props as CurrentChatProps).webSocketInstance;
+              console.log(message);
+              console.log(webSocketInstance);
+              if (message && webSocketInstance) {
+                console.log(message);
+                webSocketInstance.send(
+                  JSON.stringify({
+                    content: message,
+                    type: "message",
+                  }),
+                );
+              }
             }
           },
         },

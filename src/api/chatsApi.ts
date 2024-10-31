@@ -13,6 +13,10 @@ class ChatsApi {
       data: { title },
     });
   }
+
+  getChatToken(chatId: number) {
+    return chatsGetChatsAPIInstance.post(`/token/${chatId}`);
+  }
 }
 
 export default new ChatsApi();
