@@ -24,7 +24,7 @@ export interface ChatItemProps {
   };
 }
 
-export class ChatItem extends Block {
+export default class ChatItem extends Block {
   constructor(props: ChatItemProps) {
     console.log("ChatItem", props);
     super({ ...props });
@@ -70,9 +70,9 @@ export class ChatItem extends Block {
 
   render() {
     return `
-      <div class="chat-item__info">
+      <li class="chat-item__info">
         <div class="chat-item__info__name">{{title}}</div>
-      </div>
+      </li>
     `;
   }
 }

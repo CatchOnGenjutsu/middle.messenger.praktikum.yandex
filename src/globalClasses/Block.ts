@@ -102,10 +102,9 @@ export default class Block<P extends BlockProps = {}> {
     if (this._propsHaveChanged(oldProps, newProps)) {
       // console.log(this);
       this._updateChildrenProps(this.children, newProps);
-      // if (Object.values(this.lists).length) {
-
-      //   this._updateListsProps(this.lists, newProps);
-      // }
+      if (Object.values(this.lists).length) {
+        this._updateListsProps(this.lists, newProps);
+      }
       this._render();
     }
   }
@@ -206,7 +205,7 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _updateListsProps(lists: Lists, newProps: Record<string, unknown>): void {
-    // console.log(lists, newProps);
+    // console.log(lists);
     function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
       for (const key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
@@ -223,53 +222,42 @@ export default class Block<P extends BlockProps = {}> {
         }
       }
     }
-    // for (const listName in lists) {
-    //   if (Object.prototype.hasOwnProperty.call(lists, listName)) {
-    //     const list = lists[listName];
-    //     console.log(`Обрабатываем список: ${listName}`, list);
-
-    //     // Проверяем, есть ли в newProps соответствующие данные для этого списка
-    //     const listNewProps = newProps[listName];
-
-    //     if (!listNewProps) {
-    //       console.warn(`Пропсы для списка "${listName}" не найдены`);
-    //       continue;
-    //     }
-
-    //     list.forEach((item, index) => {
-    //       if (item && typeof item.setProps === "function") {
-    //         console.log(`Элемент ${index} списка "${listName}"`, item);
-
-    //         let propsToApply: Record<string, unknown>;
-
-    //         // Если данные — массив, берем соответствующий элемент по индексу
-    //         if (Array.isArray(listNewProps)) {
-    //           propsToApply = listNewProps[index] || {};
-    //         } else {
-    //           // Если данные — объект, применяем его ко всем элементам
-    //           propsToApply = listNewProps as Record<string, unknown>;
-    //         }
-
-    //         console.log(`Пропсы для элемента ${index}:`, propsToApply);
-
-    //         deepUpdateProps(item.props, propsToApply);
-    //         item.setProps(item.props);
-    //       }
-    //     });
-    //   }
-    // }
     for (const listName in lists) {
       if (Object.prototype.hasOwnProperty.call(lists, listName)) {
         const list = lists[listName];
-        // console.log(list);
-        // console.log("listName", listName);
-        list.forEach((item) => {
+
+        // Проверяем, есть ли в newProps соответствующие данные для этого списка
+        const listNewProps = newProps[listName];
+
+        if (!listNewProps) {
+          console.warn(`Пропсы для списка "${listName}" не найдены`);
+          continue;
+        }
+
+        if (!list.length && Array.isArray(listNewProps) && listNewProps.length) {
+          console.log(listNewProps[0]);
+          list.push(...listNewProps);
+          this.lists[listName] = list;
+          // this.lists[listName].forEach((item: Block) => (item.setProps ? item.setProps(item.props) : null));
+          return;
+        }
+        list.forEach((item, index) => {
           if (item && typeof item.setProps === "function") {
-            const listNewProps = newProps[listName] as Record<string, unknown>;
-            // console.log("item", item);
-            // console.log("item.props", item.props);
-            // console.log("newProps", newProps);
-            deepUpdateProps(item.props, listNewProps);
+            console.log(`Элемент ${index} списка "${listName}"`, item);
+
+            let propsToApply: Record<string, unknown>;
+
+            // Если данные — массив, берем соответствующий элемент по индексу
+            if (Array.isArray(listNewProps)) {
+              propsToApply = listNewProps[index] || {};
+            } else {
+              // Если данные — объект, применяем его ко всем элементам
+              propsToApply = listNewProps as Record<string, unknown>;
+            }
+
+            console.log(`Пропсы для элемента ${index}:`, propsToApply);
+
+            deepUpdateProps(item.props, propsToApply);
             item.setProps(item.props);
           }
         });
@@ -344,6 +332,7 @@ export default class Block<P extends BlockProps = {}> {
 
     Object.entries(this.lists).forEach(([, list]) => {
       const listCont = this._createDocumentElement("template");
+      console.log(this, list);
       list.forEach((item) => {
         if (item instanceof Block) {
           listCont.content.append(item.getContent());

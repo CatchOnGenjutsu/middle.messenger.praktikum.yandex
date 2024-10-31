@@ -4,7 +4,7 @@ import { connect } from "./globalClasses/HOCupdated";
 
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
-import ChatPage from "./pages/chatPage/ChatPage";
+import ChatPage, { ChatPageProps } from "./pages/chatPage/ChatPage";
 import ProfilePage, { ProfilePageProps } from "./pages/profilePage/ProfilePage";
 import ErrorPage from "./pages/errorPage/ErrorPage";
 
@@ -15,7 +15,7 @@ export default class App {
   constructor() {
     const loginPage = connect(() => ({}))(Login);
     const registrationPage = connect(() => ({}))(Registration);
-    const chatPage = connect((state) => ({ ...state.ChatPage }))(ChatPage);
+    const chatPage = connect<ChatPageProps>((state) => ({ ...state.ChatPage }))(ChatPage);
     const profilePage = connect<ProfilePageProps>((state) => ({ ...state.ProfilePageState }))(ProfilePage);
     const router = Router.getInstance("app");
 

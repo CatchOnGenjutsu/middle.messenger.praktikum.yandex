@@ -1,4 +1,4 @@
-import Block from "../../globalClasses/Block";
+import Block, { BlockProps } from "../../globalClasses/Block";
 import StoreUpdated from "../../globalClasses/StoreUpdated";
 import chatsApi from "../../api/chatsApi";
 
@@ -16,17 +16,19 @@ import {
 
 import "./chatPage.scss";
 import Button from "../../components/button/Button";
-import { ChatItem, ChatItemProps } from "./partials/chatItem/ChatItem";
+import { ChatItemProps } from "./partials/chatItem/ChatItem";
+import ChatList from "./modules/chatList/ChatList";
+import { isEqual } from "../../utils";
 // import { ChatItemProps } from "./partials/chatItem/ChatItem";
 
-interface ChatPageProps {
-  overlaySettings: Record<string, unknown>;
-  chats: ChatItemProps[] | [];
+export interface ChatPageProps extends BlockProps {
+  overlaySettings?: Record<string, unknown>;
+  chats?: ChatItemProps[] | [];
 }
 
 export default class ChatPage extends Block {
   constructor(props: ChatPageProps) {
-    console.log(props);
+    // console.log("Проверка props:", props.chats);
     super({
       ...props,
       ProfileLink: new ProfileLink({ ...profileLinkSettings }),
@@ -45,17 +47,7 @@ export default class ChatPage extends Block {
         },
       }),
       SearchInput: new SearchInput(),
-      ChatList: [
-        ...props.chats.map(
-          (chat: ChatItemProps) =>
-            new ChatItem({
-              ...chat,
-              events: {
-                click: () => this.handleItemClick(chat.id),
-              },
-            }),
-        ),
-      ],
+      ChatsList: new ChatList(ChatPage.getChatsProps(props)),
       CurrentChat: new CurrentChat({ ...chatPageOpenSettings }),
       OverlayWithModalWindow: new Overlay({
         ...modalWindowAddChatSettings,
@@ -105,7 +97,6 @@ export default class ChatPage extends Block {
                 elemModal.setProps({
                   title: "Чат не создан",
                 });
-                // const reason = JSON.parse(request.response).reason;
               }
             }
           },
@@ -137,38 +128,24 @@ export default class ChatPage extends Block {
       const request = await chatsApi.getChats();
       if (request.status === 200) {
         const data = JSON.parse(request.response);
+        this.setProps({ chats: data });
         StoreUpdated.set("ChatPage.chats", data);
       }
     } catch (error) {
       console.error("Ошибка при получении информации о чатах:", error);
     }
   }
-
-  // static getChatListsProps(props: any) {
-  //   return {
-  //     chats: props.chats,
-  //   };
-  // }
-
-  private handleItemClick(chatId: number) {
-    this.setProps({ activeChatId: chatId });
+  static getChatsProps(props: any) {
+    // console.log("getChatsProps", props.chats);
+    return {
+      chats: props.chats || [],
+    };
   }
 
-  componentDidUpdate(oldProps: any, newProps: any): boolean {
-    if (oldProps.chats !== newProps.chats) {
-      // debugger;
-      console.log("Чаты обновлены:", newProps.chats);
-      this.lists.ChatList =
-        newProps.chats!.map(
-          (chat: ChatItemProps) =>
-            new ChatItem({
-              ...chat,
-              events: {
-                click: () => this.handleItemClick(chat.id),
-              },
-            }),
-        ) || [];
-      this.setProps({});
+  protected componentDidUpdate(oldProps: any, newProps: any): boolean {
+    if (!isEqual(oldProps.chats || [], newProps.chats)) {
+      // console.log("Чаты обновлены:", newProps.chats);
+      this.children.ChatsList.setProps(ChatPage.getChatsProps(newProps));
       return true;
     }
     return true;
@@ -181,12 +158,7 @@ export default class ChatPage extends Block {
         {{{ ProfileLink }}}
         {{{ CreateChatBtn }}}
         {{{ SearchInput }}}
-        {{{ ChatList }}}
-        <ul class="chat-list">
-          {{#each lists.ChatList}}
-            <li>{{{this}}}</li>
-          {{/each}}
-        </ul>
+        {{{ ChatsList }}}
       </aside>
       <main>
         {{{ CurrentChat }}}

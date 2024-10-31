@@ -1,5 +1,6 @@
 import { OverlayProps } from "../../components/overlay/Overlay";
 import Router from "../../globalClasses/Router";
+import { ChatItemProps } from "./partials/chatItem/ChatItem";
 import { ProfileLinkProps } from "./partials/profileLink/profileLink";
 
 export const profileLinkSettings: ProfileLinkProps = {
@@ -66,3 +67,30 @@ export const createChatButtonSettings = {
     },
   },
 };
+
+export const mockChatsData: ChatItemProps[] = [
+  {
+    id: 1,
+    avatar: "/icons/profile_icon.png",
+    created_by: 1,
+    last_message: "Привет, как дела?",
+    title: "Chat 1",
+    unread_count: 0,
+  },
+  {
+    id: 2,
+    avatar: "/icons/profile_icon.png",
+    created_by: 1,
+    last_message: "Привет, как дела?",
+    title: "Chat 2",
+    unread_count: 0,
+  },
+  {
+    id: 3,
+    avatar: "/icons/profile_icon.png",
+    created_by: 1,
+    last_message: "Привет, как дела?",
+    title: "Chat 3",
+    unread_count: 0,
+  },
+];

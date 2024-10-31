@@ -51,7 +51,7 @@ export default class ProfileFormBlock extends Block {
 
     // Используем this.lists для доступа к InputsGroup
     const inputsGroup = this.lists.InputsGroup;
-
+    console.log(inputsGroup);
     if (Array.isArray(inputsGroup)) {
       inputsGroup.forEach((inputGroup: Block, index: number) => {
         const newInputOption = inputOptions[index];
@@ -68,6 +68,9 @@ export default class ProfileFormBlock extends Block {
     const oldProfileProps = oldProps as unknown as ProfileFormBlockProps;
     const newProfileProps = newProps as unknown as ProfileFormBlockProps;
 
+    console.log(oldProfileProps);
+    console.log(newProfileProps);
+    console.log(this.lists.InputsGroup);
     if (
       oldProfileProps.inputOptions !== newProfileProps.inputOptions ||
       oldProfileProps.isEditData !== newProfileProps.isEditData
