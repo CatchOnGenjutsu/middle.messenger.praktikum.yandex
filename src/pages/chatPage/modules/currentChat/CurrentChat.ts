@@ -1,4 +1,6 @@
 import Block from "../../../../globalClasses/Block";
+import { UserInterface } from "../../../../globalClasses/StoreUpdated";
+
 import { CurrentChatHeader } from "../currentChatHeader/CurrentChatHeader";
 import { MessagesBlock } from "../messagesBlock/MessagesBlock";
 import { CurrentChatFooter } from "../currentChatFooter/CurrentChatFooter";
@@ -31,6 +33,8 @@ interface CurrentChatProps {
   isEmpty?: boolean;
   events?: Record<string, (event: Event) => void>;
   webSocketInstance?: WebSocket | null;
+  activeChatId?: number | null;
+  userInfo?: UserInterface;
 }
 
 export default class CurrentChat extends Block {
@@ -51,8 +55,6 @@ export default class CurrentChat extends Block {
               const message = formData.get("message")?.toString();
 
               const webSocketInstance = (this.props as CurrentChatProps).webSocketInstance;
-              console.log(message);
-              console.log(webSocketInstance);
               if (message && webSocketInstance) {
                 console.log(message);
                 webSocketInstance.send(
@@ -71,20 +73,21 @@ export default class CurrentChat extends Block {
 
   init(): void {
     super.init();
-    this.setProps({
-      isEmpty: !Object.values(this.props).length,
-    });
+    console.log(this.props);
+    // this.setProps({
+    //   isEmpty: !Object.values(this.props).length,
+    // });
   }
 
   protected render(): string {
     return ` 
     <div class="current-chat-container">
-      {{#if isEmpty}}
-        <p class="current-chat_empty">Выберите чат чтобы отправить сообщение</p>
-      {{else}}
+      {{#if activeChatId}}
         <header>{{{ Header }}}</header>
         <main>{{{ MessageBlock }}}</main>
         <footer>{{{ Footer }}}</footer>
+      {{else}}
+        <p class="current-chat_empty">Выберите чат чтобы отправить сообщение</p>
       {{/if}}
     </div>
     `;

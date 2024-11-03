@@ -177,6 +177,8 @@ export const modalWindowSettings = {
     id: "submit-btn",
     name: "submit-btn",
   },
+  events: {}, // Добавить пустые обработчики событий или конкретные функции, если нужно
+  overlayEvents: {},
 };
 
 export const chatsData: ChatItemProps[] = [

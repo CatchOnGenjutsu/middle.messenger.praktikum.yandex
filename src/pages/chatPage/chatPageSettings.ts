@@ -94,3 +94,59 @@ export const mockChatsData: ChatItemProps[] = [
     unread_count: 0,
   },
 ];
+
+export const modalWindowAddUserSettings1 = {
+  title: "Добавить пользователя",
+  inputOptions: {
+    labelName: "Логин",
+    labelFor: "login",
+    inputId: "login",
+    inputName: "login",
+    inputType: "text",
+    inputPlaceholder: "Введите логин",
+    errorText: "",
+  },
+  buttonOptions: {
+    value: "Добавить",
+    type: "submit",
+    class: "submit-button",
+    id: "submit-btn",
+    name: "submit-btn",
+  },
+  events: {}, // Добавить пустые обработчики событий или конкретные функции, если нужно
+  overlayEvents: {},
+};
+
+export const modalWindowAddUserSettings: OverlayProps = {
+  title: "Добавить пользователя",
+  inputOptions: {
+    isFile: false,
+    labelName: "Логин",
+    labelFor: "login",
+    inputId: "login",
+    inputName: "login",
+    inputType: "input",
+    inputPlaceholder: "Введите логин",
+    errorText: "",
+    fileName: "",
+    validation: (value: string) => (!value ? "Введите логин" : null),
+    events: {},
+  },
+  buttonOptions: {
+    value: "Добавить",
+    type: "submit",
+    class: "submit-button",
+    id: "change-btn",
+    name: "submit-btn",
+  },
+  events: {
+    submit: (event: Event) => {
+      event.preventDefault();
+    },
+  },
+  overlayEvents: {
+    click: (event: Event) => {
+      event.stopPropagation();
+    },
+  },
+};

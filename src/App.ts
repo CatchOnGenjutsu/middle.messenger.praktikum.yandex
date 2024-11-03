@@ -20,7 +20,6 @@ export default class App {
     const chatPage = connect((state) => ({ ...state.ChatPage, userInfo: state.userInfo }))(ChatPage);
     const profilePage = connect<ProfilePageProps>((state) => ({ ...state.ProfilePageState }))(ProfilePage);
     const router = Router.getInstance("app");
-    this.getUser();
 
     router
       .use("/", loginPage)
@@ -29,6 +28,10 @@ export default class App {
       .use("/settings", profilePage)
       .setNotFoundPage(ErrorPage) // Устанавливаем страницу 404
       .start();
+    this.getUser();
+    if (localStorage.getItem("auth")) {
+      router.go("/messenger");
+    }
   }
 
   async getUser(): Promise<void> {

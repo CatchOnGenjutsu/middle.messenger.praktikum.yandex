@@ -9,13 +9,24 @@ class ChatsApi {
 
   createChat(title: string) {
     return chatsGetChatsAPIInstance.post("", {
-      // headers: { "Content-Type": "application/json", withCredentials: "true" },
+      headers: { "Content-Type": "application/json", withCredentials: "true" },
       data: { title },
     });
   }
 
   getChatToken(chatId: number) {
     return chatsGetChatsAPIInstance.post(`/token/${chatId}`);
+  }
+
+  getChatUsers(chatId: number) {
+    return chatsGetChatsAPIInstance.get(`/${chatId}/users`);
+  }
+
+  addUserToChat(userId: number, chatId: number) {
+    return chatsGetChatsAPIInstance.put(`/users`, {
+      data: { users: [userId], chatId },
+      headers: { "Content-Type": "application/json", withCredentials: "true" },
+    });
   }
 }
 

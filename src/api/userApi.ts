@@ -1,11 +1,19 @@
 import { HTTPTransport } from "../globalClasses/api";
 
-const userAPIInstance = new HTTPTransport("auth/");
+const authAPIInstance = new HTTPTransport("auth/");
+const userAPIInstance = new HTTPTransport("user/");
 
-class ProfilePageApi {
+class userApi {
   request(): Promise<XMLHttpRequest> {
-    return userAPIInstance.get("user");
+    return authAPIInstance.get("user");
+  }
+
+  findUserByLogin(login: string): Promise<XMLHttpRequest> {
+    return userAPIInstance.post(`search`, {
+      data: { login },
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
-export default new ProfilePageApi();
+export default new userApi();

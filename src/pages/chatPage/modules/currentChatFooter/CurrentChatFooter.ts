@@ -42,30 +42,6 @@ export class CurrentChatFooter extends Block {
         popupOpen: props.popupOpen,
         isBottomLeft: true,
       }),
-      events: {
-        submit: (event: Event) => {
-          event.preventDefault();
-          const elem = event.target as HTMLFormElement;
-          console.log(elem);
-          if (elem && elem.tagName === "FORM") {
-            const formData = new FormData(event.target as HTMLFormElement);
-            const message = formData.get("message")?.toString();
-
-            const webSocketInstance = (this.props as CurrentChatFooterProps).webSocketInstance;
-            console.log(message);
-            console.log(webSocketInstance);
-            if (message && webSocketInstance) {
-              console.log(message);
-              webSocketInstance.send(
-                JSON.stringify({
-                  content: message,
-                  type: "message",
-                }),
-              );
-            }
-          }
-        },
-      },
     });
   }
 

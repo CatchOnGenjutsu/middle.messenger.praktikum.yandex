@@ -3,11 +3,18 @@ import StoreUpdated, { UserInterface } from "../../globalClasses/StoreUpdated";
 import chatsApi from "../../api/chatsApi";
 
 import CurrentChat from "./modules/currentChat/CurrentChat";
-import { Overlay } from "../../components/overlay/Overlay";
+import ChatList from "./modules/chatList/ChatList";
 import SearchInput from "./partials/searchInput/SearchInput";
+
+import { Overlay } from "../../components/overlay/Overlay";
 import { ProfileLink } from "./partials/profileLink/profileLink";
 
+import { ChatItemProps } from "./partials/chatItem/ChatItem";
+
+import webSocketTransport from "../../globalClasses/websocket";
+
 import { chatPageOpenSettings } from "./mockData";
+
 import {
   createChatButtonSettings,
   modalWindowAddChatSettings,
@@ -16,20 +23,17 @@ import {
 
 import "./chatPage.scss";
 import Button from "../../components/button/Button";
-import { ChatItemProps } from "./partials/chatItem/ChatItem";
-import ChatList from "./modules/chatList/ChatList";
+
 import { isEqual } from "../../utils";
-import webSocketTransport from "../../globalClasses/websoket";
-// import { ChatItemProps } from "./partials/chatItem/ChatItem";
 
 export interface ChatPageProps extends BlockProps {
   overlaySettings?: Record<string, unknown>;
   chats?: ChatItemProps[] | [];
-  activeChatId?: number;
+  activeChatId?: number | null;
   userInfo: UserInterface;
 }
 
-export default class ChatPage extends Block {
+export default class ChatPage extends Block<ChatPageProps> {
   private webSocketInstance: WebSocket | null = null;
   constructor(props: ChatPageProps) {
     // console.log("Проверка props:", props);
@@ -76,7 +80,6 @@ export default class ChatPage extends Block {
                   });
                 }
               }
-              // StoreUpdated.set("ProfilePageState.newAvatar", null);
             },
           },
         },
@@ -92,16 +95,10 @@ export default class ChatPage extends Block {
               const request = await chatsApi.createChat(inputElement.value);
               const elemModal = this.children.OverlayWithModalWindow.children.ModalWindow;
 
-              if (request.status === 200) {
-                elemModal.setProps({
-                  title: "Чат успешно создан",
-                });
-                this.getChats();
-              } else {
-                elemModal.setProps({
-                  title: "Чат не создан",
-                });
-              }
+              elemModal.setProps({
+                title: request.status === 200 ? "Чат успешно создан" : "Чат не создан",
+              });
+              if (request.status === 200) this.getChats();
             }
           },
         },
@@ -118,6 +115,7 @@ export default class ChatPage extends Block {
                   errorText: "",
                 },
               });
+              elemModal.children.FormField.setProps({ errorText: "" });
               elemModal.getContent().querySelector("form")?.reset();
             }
           },
@@ -127,6 +125,21 @@ export default class ChatPage extends Block {
     this.getChats();
   }
 
+  private onMessage = (event: MessageEvent) => {
+    // console.log("Получены данные", event.data);
+    const data = JSON.parse(event.data);
+    StoreUpdated.set("", {
+      messages: [...StoreUpdated.getState().messages, ...(Array.isArray(data) ? data.reverse() : [data])],
+    });
+  };
+
+  private onClose = (event: CloseEvent) => {
+    console.log("Соединение закрыто", event.wasClean ? "чисто" : "с ошибкой");
+  };
+
+  private onError = () => {
+    console.error("Ошибка WebSocket соединения");
+  };
   async getChats(): Promise<void> {
     try {
       const request = await chatsApi.getChats();
@@ -160,6 +173,28 @@ export default class ChatPage extends Block {
     };
   }
 
+  private setupWebSocketEvents(instance: WebSocket) {
+    instance.addEventListener("message", this.onMessage);
+    instance.addEventListener("close", this.onClose);
+    instance.addEventListener("error", this.onError);
+
+    this.children.CurrentChat.setProps({
+      webSocketInstance: instance,
+      activeChatId: this.props.activeChatId,
+      userInfo: this.props.userInfo,
+    });
+  }
+
+  private closeWebSocketInstance() {
+    if (this.webSocketInstance) {
+      this.webSocketInstance.removeEventListener("message", this.onMessage);
+      this.webSocketInstance.removeEventListener("close", this.onClose);
+      this.webSocketInstance.removeEventListener("error", this.onError);
+      this.webSocketInstance.close();
+      this.webSocketInstance = null;
+    }
+  }
+
   protected componentDidUpdate(oldProps: any, newProps: any): boolean {
     // console.log("ChatPage componentDidUpdate", oldProps, newProps);
     if (!isEqual(oldProps.chats || [], newProps.chats || [])) {
@@ -168,17 +203,31 @@ export default class ChatPage extends Block {
       return true;
     }
     if (oldProps.activeChatId !== newProps.activeChatId && newProps.activeChatId) {
-      // console.log("activeChatId обновлен:", newProps.activeChatId);
+      // Проверка на активное соединение
+      if (this.webSocketInstance && this.webSocketInstance.readyState === WebSocket.OPEN) {
+        const customWebSocket = this.webSocketInstance as any; // Приведение типа
+
+        if (customWebSocket.activeChatId === newProps.activeChatId) {
+          return false; // Нет необходимости переподключаться
+        }
+
+        // Закрываем предыдущее соединение, если оно для другого чата
+        this.closeWebSocketInstance();
+      }
+
+      // Инициализация нового соединения
       webSocketTransport(newProps.activeChatId, newProps.userInfo)
         .then((instance) => {
-          this.webSocketInstance = instance;
-          console.log(instance);
-          console.log(this.webSocketInstance);
-          this.children.CurrentChat.setProps({ webSocketInstance: this.webSocketInstance });
+          if (instance) {
+            this.webSocketInstance = instance;
+            this.setupWebSocketEvents(this.webSocketInstance);
+          } else {
+            console.error("Не удалось установить WebSocket соединение, возвращен null.");
+          }
         })
         .catch((error) => console.error("Ошибка при установке WebSocket:", error));
-      return true;
-      // this.children.CurrentChat.setProps({activeChatId: newProps.activeChatId});
+
+      return true; // Возвращаем true, чтобы показать, что обновление произошло
     }
     return true;
   }

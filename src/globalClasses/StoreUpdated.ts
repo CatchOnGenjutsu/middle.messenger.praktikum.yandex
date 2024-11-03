@@ -46,6 +46,7 @@ export default new StoreUpdated({
   },
   ChatPage: {
     overlaySettings: modalWindowAddChatSettings,
+    activeChatId: null,
   },
   userInfo: {
     avatar: null,

@@ -74,20 +74,6 @@ export default class Login extends Block {
           }
         },
       },
-      // events: {
-      //   submit: (event: Event) => {
-      //     event.preventDefault();
-      //     const elem = event.target as HTMLFormElement;
-      //     if (elem && elem.tagName === "FORM") {
-      //       const formData = new FormData(event.target as HTMLFormElement);
-      //       const data: Record<string, string> = {};
-      //       formData.forEach((value, key) => {
-      //         data[key] = value.toString();
-      //       });
-      //       console.log(data);
-      //     }
-      //   },
-      // },
     });
   }
   private validateField(inputId: string, value: string): boolean {
