@@ -90,14 +90,14 @@ export class ButtonsPopup extends Block {
                       errorText: "",
                     });
                     const userIdByLogin = JSON.parse(request.response)[0].id;
-                    console.log(userIdByLogin);
+
                     const activeChatId = StoreUpdated.getState().ChatPage!.activeChatId;
                     if (!activeChatId) return;
                     const requestUsers = await chatsApi.getChatUsers(activeChatId);
                     if (requestUsers.status === 200) {
                       const usersInChat = JSON.parse(requestUsers.response);
                       const usersInChatIds = usersInChat.map((user: Record<string, unknown>) => user.id);
-                      console.log(usersInChatIds);
+
                       if (!usersInChatIds.includes(userIdByLogin)) {
                         const requestAddUser = await chatsApi.addUserToChat(userIdByLogin, activeChatId);
                         if (requestAddUser.status === 200) {

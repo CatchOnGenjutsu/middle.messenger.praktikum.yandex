@@ -29,9 +29,6 @@ export default class App {
       .setNotFoundPage(ErrorPage) // Устанавливаем страницу 404
       .start();
     this.getUser();
-    if (localStorage.getItem("auth")) {
-      router.go("/messenger");
-    }
   }
 
   async getUser(): Promise<void> {
@@ -40,9 +37,17 @@ export default class App {
       if (request.status === 200) {
         const data = JSON.parse(request.response);
         StoreUpdated.set("userInfo", data);
+      } else throw new Error(`${request.status}`);
+      if (localStorage.getItem("auth")) {
+        const router = Router.getInstance("app");
+        router.go("/messenger");
       }
     } catch (error) {
-      console.error(error);
+      if ((error as Error).message && ((error as Error).message as string).includes("401")) {
+        localStorage.removeItem("auth");
+        const router = Router.getInstance("app");
+        router.go("/");
+      }
     }
   }
 

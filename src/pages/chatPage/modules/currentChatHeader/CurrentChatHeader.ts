@@ -5,22 +5,15 @@ import { ButtonsPopup } from "../buttonsPopup/ButtonsPopup";
 import { burgerActionButtonsSettings } from "../../mockData";
 
 import "./currentChatHeader.scss";
+import StoreUpdated from "../../../../globalClasses/StoreUpdated";
+import { CurrentChatProps } from "../currentChat/CurrentChat";
 
-interface CurrentChatProps {
-  id: number;
-  avatar?: string;
-  chatName: string;
-  initials?: string;
-  active: boolean;
-  activeChatId?: number | null;
-  popupOpen: boolean;
-}
 export class CurrentChatHeader extends Block {
   constructor(props: CurrentChatProps) {
     super({
       ...props,
       burgerButton: new BurgerButton({
-        popupsOpen: props.popupOpen,
+        popupsOpen: props.popupOpen || false,
         events: {
           click: (event: Event) => {
             const target = event.target as HTMLElement;
@@ -37,7 +30,7 @@ export class CurrentChatHeader extends Block {
       ButtonsPopup: new ButtonsPopup({
         ...props,
         buttons: burgerActionButtonsSettings,
-        popupOpen: props.popupOpen,
+        popupOpen: props.popupOpen || false,
         isTopRight: true,
       }),
     });
@@ -54,7 +47,7 @@ export class CurrentChatHeader extends Block {
           {{/if}}
         </div>
         <div class="current-chat-header__info">
-          <div class="current-chat-header__info__chat-name">{{chatName}}</div>
+          <div class="current-chat-header__info__chat-name">{{title}}</div>
         </div>
         <div class="current-chat-header__settings">
           {{{ burgerButton }}}

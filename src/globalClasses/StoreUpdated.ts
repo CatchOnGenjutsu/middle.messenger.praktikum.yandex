@@ -46,7 +46,9 @@ export default new StoreUpdated({
   },
   ChatPage: {
     overlaySettings: modalWindowAddChatSettings,
-    activeChatId: null,
+    // activeChatId: null,
+    currentChat: {},
+    messages: [],
   },
   userInfo: {
     avatar: null,
@@ -58,5 +60,4 @@ export default new StoreUpdated({
     phone: null,
     second_name: null,
   },
-  messages: [],
 });

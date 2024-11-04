@@ -1,55 +1,51 @@
-import Block from "../../../../globalClasses/Block";
+import Block, { BlockProps } from "../../../../globalClasses/Block";
 import { UserInterface } from "../../../../globalClasses/StoreUpdated";
 
 import { CurrentChatHeader } from "../currentChatHeader/CurrentChatHeader";
 import { MessagesBlock } from "../messagesBlock/MessagesBlock";
 import { CurrentChatFooter } from "../currentChatFooter/CurrentChatFooter";
 
+import { IMessageProps } from "../../partials/messageItem/MessageItem";
+
+import { isEqual } from "../../../../utils";
+
 import "./currentChat.scss";
 
-interface IMessageProps {
-  id: number;
-  content: string;
-  incoming: boolean;
-  isImage: boolean;
-  messageTime?: string;
-  type: string;
-  isRead?: boolean;
-}
+// interface IMessageGroup {
+//   date: string;
+//   messages: IMessageProps[];
+// }
 
-interface IMessageGroup {
-  date: string;
-  messages: IMessageProps[];
-}
-
-interface CurrentChatProps {
-  id: number;
+export interface CurrentChatProps {
+  id?: number;
   avatar?: string;
-  chatName: string;
+  title?: string;
   initials?: string;
-  active: boolean;
-  allMessages: IMessageGroup[];
-  popupOpen: boolean;
+  active?: boolean;
+  allMessages?: any[];
+  popupOpen?: boolean;
   isEmpty?: boolean;
   events?: Record<string, (event: Event) => void>;
   webSocketInstance?: WebSocket | null;
   activeChatId?: number | null;
   userInfo?: UserInterface;
+  currentChat?: any;
+  messages?: IMessageProps[];
 }
 
 export default class CurrentChat extends Block {
   constructor(props?: CurrentChatProps) {
+    console.log(props);
     if (props) {
       super({
         ...props,
         Header: new CurrentChatHeader({ ...props }),
-        MessageBlock: new MessagesBlock({ ...props, allMessages: props.allMessages }),
-        Footer: new CurrentChatFooter({ ...props, popupOpen: props.popupOpen }),
+        MessageBlock: new MessagesBlock({ messages: props.messages }),
+        // Footer: new CurrentChatFooter({ ...props, popupOpen: props.popupOpen }),
         events: {
           submit: (event: Event) => {
             event.preventDefault();
             const elem = event.target as HTMLFormElement;
-            console.log(elem);
             if (elem && elem.tagName === "FORM") {
               const formData = new FormData(event.target as HTMLFormElement);
               const message = formData.get("message")?.toString();
@@ -71,12 +67,10 @@ export default class CurrentChat extends Block {
     } else super({});
   }
 
-  init(): void {
-    super.init();
-    console.log(this.props);
-    // this.setProps({
-    //   isEmpty: !Object.values(this.props).length,
-    // });
+  componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    if (!isEqual(oldProps, newProps)) {
+      this.children.Header.setProps({ ...newProps });
+    }
   }
 
   protected render(): string {

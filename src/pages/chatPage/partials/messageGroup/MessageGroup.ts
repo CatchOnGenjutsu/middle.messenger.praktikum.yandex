@@ -1,19 +1,11 @@
 import Block from "../../../../globalClasses/Block";
-import { MessageItem } from "../messageItem/MessageItem";
+import { IMessageProps, MessageItem } from "../messageItem/MessageItem";
 
 import "./messageGroup.scss";
 
 interface IMessageGroupProps {
   date: string;
-  messages: {
-    id: number;
-    content: string;
-    incoming: boolean;
-    isImage: boolean;
-    messageTime?: string;
-    type: string;
-    isRead?: boolean;
-  }[];
+  messages: IMessageProps[];
 }
 
 export class MessageGroup extends Block {

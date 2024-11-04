@@ -1,5 +1,7 @@
+import chatsApi from "../../../../api/chatsApi";
 import Block, { BlockProps } from "../../../../globalClasses/Block";
-import StoreUpdated from "../../../../globalClasses/StoreUpdated";
+import StoreUpdated, { UserInterface } from "../../../../globalClasses/StoreUpdated";
+import webSocketTransport from "../../../../globalClasses/websocket";
 import ChatItem, { ChatItemProps } from "../../partials/chatItem/ChatItem";
 
 import "./chatList.scss";
@@ -27,7 +29,6 @@ export default class ChatList extends Block {
     });
   }
 
-  // Создаем элемент чата с передачей обработчика клика
   private _createChatItem(chat: ChatItemProps): ChatItem {
     return new ChatItem({
       ...chat,
@@ -40,7 +41,7 @@ export default class ChatList extends Block {
   // Метод обновления списка чатов
   private _updateChatList(newChats: ChatItemProps[] = []) {
     const chatList = newChats.map((chat) => this._createChatItem(chat));
-    this.setProps({ chatList }); // Обновляем chatList в пропсах компонента
+    this.setProps({ chatList });
   }
 
   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
@@ -50,22 +51,38 @@ export default class ChatList extends Block {
     }
     return false;
   }
+  async getChatToken(chatId: number): Promise<string | null> {
+    try {
+      const request = await chatsApi.getChatToken(chatId);
+      if (request.status === 200) {
+        const data = JSON.parse(request.response);
+        return data.token;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Ошибка при получении информации о чатах:", error);
+      return null;
+    }
+  }
 
-  // Обработчик клика по элементу чата
-  private handleItemClick(chatId: number) {
+  private async handleItemClick(chatId: number) {
     this.lists.chatList.map((chat) => chat.setProps({ active: chat.props.id === chatId }));
-    // debugger;
+    const response = await this.getChatToken(chatId);
+    if (response) {
+      const token = response;
+      webSocketTransport(chatId, StoreUpdated.getState().userInfo as unknown as UserInterface, token);
+    }
+
     StoreUpdated.set("ChatPage.activeChatId", chatId);
     const chats = (this.props as ChatListProps).chats;
     if (chats?.length) {
       const currentChat = chats.find((chat: ChatItemProps) => chat.id === chatId);
 
       if (currentChat) {
-        console.log(currentChat);
         StoreUpdated.set("ChatPage.currentChat", currentChat);
       }
     }
-    // this.setProps({ activeChatId: chatId }); // Устанавливаем активный чат
   }
 
   render() {

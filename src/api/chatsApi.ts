@@ -14,9 +14,9 @@ class ChatsApi {
     });
   }
 
-  getChatToken(chatId: number) {
+  getChatToken = async function (chatId: number) {
     return chatsGetChatsAPIInstance.post(`/token/${chatId}`);
-  }
+  };
 
   getChatUsers(chatId: number) {
     return chatsGetChatsAPIInstance.get(`/${chatId}/users`);
