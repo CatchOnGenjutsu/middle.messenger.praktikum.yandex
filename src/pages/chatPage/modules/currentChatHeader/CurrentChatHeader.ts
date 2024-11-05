@@ -3,13 +3,13 @@ import { BurgerButton } from "../../partials/burgerButton/BurgerButton";
 import { ButtonsPopup } from "../buttonsPopup/ButtonsPopup";
 
 import { burgerActionButtonsSettings } from "../../mockData";
+import { CurrentChatProps } from "../currentChat/CurrentChat";
 
 import "./currentChatHeader.scss";
-import StoreUpdated from "../../../../globalClasses/StoreUpdated";
-import { CurrentChatProps } from "../currentChat/CurrentChat";
 
 export class CurrentChatHeader extends Block {
   constructor(props: CurrentChatProps) {
+    console.log(props);
     super({
       ...props,
       burgerButton: new BurgerButton({
@@ -40,14 +40,14 @@ export class CurrentChatHeader extends Block {
     return `
       <div class="current-chat-header">
         <div class="current-chat-header__avatar">
-          {{#if avatar}}
-            <img class="current-chat-header__avatar__avatar-img" src="{{avatar}}" alt="avatar">
+          {{#if currentChat.avatar}}
+            <img class="current-chat-header__avatar__avatar-img" src="{{currentChat.avatar}}" alt="avatar">
           {{else}}
-            <div class="current-chat-header__avatar__avatar-placeholder">{{initials}}</div>
+            <div class="current-chat-header__avatar__avatar-placeholder">{{currentChat.initials}}</div>
           {{/if}}
         </div>
         <div class="current-chat-header__info">
-          <div class="current-chat-header__info__chat-name">{{title}}</div>
+          <div class="current-chat-header__info__chat-name">{{currentChat.title}}</div>
         </div>
         <div class="current-chat-header__settings">
           {{{ burgerButton }}}

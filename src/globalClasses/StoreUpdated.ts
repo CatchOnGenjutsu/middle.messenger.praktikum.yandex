@@ -49,6 +49,7 @@ export default new StoreUpdated({
     // activeChatId: null,
     currentChat: {},
     messages: [],
+    socket: null,
   },
   userInfo: {
     avatar: null,

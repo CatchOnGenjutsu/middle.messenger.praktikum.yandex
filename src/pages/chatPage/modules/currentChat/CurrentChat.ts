@@ -35,7 +35,6 @@ export interface CurrentChatProps {
 
 export default class CurrentChat extends Block {
   constructor(props?: CurrentChatProps) {
-    console.log(props);
     if (props) {
       super({
         ...props,
@@ -68,15 +67,17 @@ export default class CurrentChat extends Block {
   }
 
   componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    console.log(oldProps, newProps);
     if (!isEqual(oldProps, newProps)) {
       this.children.Header.setProps({ ...newProps });
+      this.children.MessageBlock.setProps({ messages: newProps.messages });
     }
   }
 
   protected render(): string {
     return ` 
     <div class="current-chat-container">
-      {{#if activeChatId}}
+      {{#if currentChat.id}}
         <header>{{{ Header }}}</header>
         <main>{{{ MessageBlock }}}</main>
         <footer>{{{ Footer }}}</footer>

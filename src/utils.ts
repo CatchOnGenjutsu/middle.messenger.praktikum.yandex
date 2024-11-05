@@ -18,29 +18,42 @@ function isPlainObject(value: unknown): value is PlainObject {
 function isArrayOrObject(value: unknown): value is [] | PlainObject {
   return isPlainObject(value) || isArray(value);
 }
-export function isEqual(lhs: PlainObject, rhs: PlainObject) {
-  // Сравнение количества ключей объектов и массивов
-  if (Object.keys(lhs).length !== Object.keys(rhs).length) {
-    return false;
+
+export function isEqual(lhs: unknown, rhs: unknown): boolean {
+  // Проверка на идентичность
+  if (lhs === rhs) {
+    return true;
   }
 
-  for (const [key, value] of Object.entries(lhs)) {
-    const rightValue = rhs[key];
-    if (isArrayOrObject(value) && isArrayOrObject(rightValue)) {
-      // Здесь value и rightValue может быть только массивом или объектом
-      // И TypeScript это обрабатывает
-      if (isEqual(value as PlainObject, rightValue as PlainObject)) {
-        continue;
+  // Проверяем, что оба значения — plain objects или массивы
+  if ((isPlainObject(lhs) && isPlainObject(rhs)) || (isArray(lhs) && isArray(rhs))) {
+    // Сравнение количества ключей объектов или длины массивов
+    const lhsKeys = Object.keys(lhs);
+    const rhsKeys = Object.keys(rhs);
+
+    if (lhsKeys.length !== rhsKeys.length) {
+      return false;
+    }
+
+    for (const key of lhsKeys) {
+      const lhsValue = (lhs as PlainObject)[key];
+      const rhsValue = (rhs as PlainObject)[key];
+
+      // Рекурсивная проверка вложенных объектов и массивов
+      if (isArrayOrObject(lhsValue) && isArrayOrObject(rhsValue)) {
+        if (!isEqual(lhsValue, rhsValue)) {
+          return false;
+        }
+      } else if (lhsValue !== rhsValue) {
+        return false;
       }
-      return false;
     }
 
-    if (value !== rightValue) {
-      return false;
-    }
+    return true;
   }
 
-  return true;
+  // Если значения не являются plain objects или массивами, считаем их неравными
+  return false;
 }
 
 export function deepCopy<T>(object: T, seen = new WeakMap()): T {
@@ -110,4 +123,13 @@ export function set(obj: Record<string, any>, path: string, value: unknown) {
 
   // Устанавливаем значение в конечный ключ
   current[keys[keys.length - 1]] = value;
+}
+
+export function isValidJSON(data: string): boolean {
+  try {
+    JSON.parse(data);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

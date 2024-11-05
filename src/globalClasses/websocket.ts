@@ -1,5 +1,8 @@
 import chatsApi from "../api/chatsApi.js";
+
 import StoreUpdated, { UserInterface } from "./StoreUpdated.js";
+
+import { isValidJSON } from "../utils.js";
 
 const PING_INTERVAL = 10001; // Отправка пинга каждые 10 секунд
 let pingIntervalId: number | null = null;
@@ -36,7 +39,7 @@ const webSocketTransport = async (
 
     // Установка соединения
     socket.addEventListener("open", () => {
-      StoreUpdated.set("ChatPage", { messages: [] });
+      StoreUpdated.set("ChatPage.messages", []);
       setupPing();
       socket.send(
         JSON.stringify({
@@ -61,17 +64,17 @@ const webSocketTransport = async (
     // Обработка сообщений
     socket.addEventListener("message", (event) => {
       try {
-        const data = JSON.parse(event.data);
-
-        if (data.type !== "pong") {
-          StoreUpdated.set("ChatPage", {
-            messages: [
+        console.log("Сообщение", event);
+        if (isValidJSON(event.data)) {
+          const data = JSON.parse(event.data);
+          if (data.type !== "pong") {
+            StoreUpdated.set("ChatPage.messages", [
               ...StoreUpdated.getState().ChatPage.messages,
               ...(Array.isArray(data) ? data.reverse() : [data]),
-            ],
-          });
-          const zone = document.getElementById("message_chat");
-          if (zone) zone.scrollTop = zone.scrollHeight + 30;
+            ]);
+            const zone = document.getElementById("message_chat");
+            if (zone) zone.scrollTop = zone.scrollHeight + 30;
+          }
         }
       } catch (e) {
         console.error("Ошибка обработки сообщения", e);
