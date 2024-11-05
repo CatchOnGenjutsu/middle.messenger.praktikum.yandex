@@ -16,25 +16,26 @@ export class MessageGroup extends Block {
 
     super({
       ...props,
-      messages, // Используем обработанный массив сообщений или пустой массив
+      messages: messages, // Используем обработанный массив сообщений или пустой массив
     });
   }
 
-  // protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
-  //   if (!isEqual(oldProps.messages, newProps.messages)) {
-  //     const messages = newProps.messages
-  //       ? (newProps.messages as IMessageProps[]).map((message) => new MessageItem({ ...message }))
-  //       : [];
+  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
+    console.log(oldProps.lists, newProps.lists);
+    if (!isEqual(oldProps.lists, newProps.lists)) {
+      const newMessages = newProps.messages
+        ? (newProps.messages as IMessageProps[]).map((message) => new MessageItem({ ...message }))
+        : [];
 
-  //     // Проверяем, отличается ли массив сообщений от нового
-  //     console.log(!isEqual(this.lists.messages, messages));
-  //     if (!isEqual(this.lists.messages, messages)) {
-  //       this.setProps({ messages });
-  //     }
-  //     return true;
-  //   }
-  //   return false;
-  // }
+      // Проверяем, отличается ли массив сообщений от нового
+      console.log(!isEqual(this.lists.messages, newMessages));
+      if (!isEqual(this.lists.messages, newMessages)) {
+        this.setProps({ messages: newMessages });
+      }
+      return true;
+    }
+    return false;
+  }
 
   protected render(): string {
     return `

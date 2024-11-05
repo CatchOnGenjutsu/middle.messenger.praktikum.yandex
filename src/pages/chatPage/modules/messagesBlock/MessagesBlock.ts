@@ -48,7 +48,9 @@ export class MessagesBlock extends Block {
         const groupedMessages = groupMessagesByDate(newProps.messages as IMessageProps[]);
 
         const newMessageGroups = groupedMessages.map((group) => new MessageGroup({ ...group }));
-        if (!isEqual(this.children.messagesGroups, newMessageGroups)) {
+        console.log("newMessageGroups", newMessageGroups);
+        if (!isEqual(this.lists.messagesGroups, newMessageGroups)) {
+          console.log("tut");
           this.setProps({ messagesGroups: newMessageGroups });
         }
       }
