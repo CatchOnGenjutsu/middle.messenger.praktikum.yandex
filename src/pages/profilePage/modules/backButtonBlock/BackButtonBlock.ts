@@ -1,24 +1,31 @@
 import Block from "../../../../globalClasses/Block";
+
 import { ArrowButton } from "../../../../components/arrowButton/ArrowButton";
 
 import "./backButtonBlock.scss";
 
+interface BackButtonBlockProps {
+  onClick: () => void;
+}
+
 export default class BackButtonBlock extends Block {
-  constructor() {
+  constructor(props: BackButtonBlockProps) {
     super({
       ArrowButton: new ArrowButton({
         rightBtn: false,
         events: {
           click: (event: Event) => {
             event.preventDefault();
-            window.history.back();
+            event.stopPropagation();
+            props.onClick();
           },
         },
       }),
       events: {
         click: (event: Event) => {
           event.preventDefault();
-          window.history.back();
+          event.stopPropagation();
+          props.onClick();
         },
       },
     });

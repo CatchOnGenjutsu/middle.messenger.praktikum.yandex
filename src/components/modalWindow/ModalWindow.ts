@@ -1,10 +1,11 @@
 import Block from "../../globalClasses/Block";
 import Button from "../button/Button";
-import { FormField } from "../formField/FormField";
+import FormField from "../formField/FormField";
+import FileInputGroup from "../fileInputGroup/FileInputGroup";
 
 import "./modalWindow.scss";
 
-interface ModalWindowProps {
+export interface ModalWindowProps {
   title: string;
   inputOptions: {
     isFile?: boolean;
@@ -15,6 +16,12 @@ interface ModalWindowProps {
     inputId: string;
     inputPlaceholder: string;
     errorText: string;
+    fileName: string;
+    validation?: (value: string) => string | null;
+    events: {
+      blur?: (event: Event) => void;
+      change?: (event: Event) => void;
+    };
   };
   buttonOptions: {
     value: string;
@@ -23,30 +30,22 @@ interface ModalWindowProps {
     id: string;
     name: string;
   };
+  events: {
+    submit: (event: Event) => void;
+  };
 }
 
 export class ModalWindow extends Block {
   constructor(props: ModalWindowProps) {
     super({
       ...props,
+      FileInputGroup: new FileInputGroup({
+        ...props.inputOptions,
+      }),
       FormField: new FormField({ ...props.inputOptions }),
       Button: new Button({
         ...props.buttonOptions,
       }),
-      events: {
-        submit: (event: Event) => {
-          event.preventDefault();
-          const elem = event.target as HTMLFormElement;
-          if (elem && elem.tagName === "FORM") {
-            const formData = new FormData(event.target as HTMLFormElement);
-            const data: Record<string, string> = {};
-            formData.forEach((value, key) => {
-              data[key] = value.toString();
-            });
-            console.log(data);
-          }
-        },
-      },
     });
   }
 
@@ -58,11 +57,7 @@ export class ModalWindow extends Block {
           <form class="modal__form">
             <div class="modal__form__input">
               {{#if inputOptions.isFile}}
-                <input type="file" id="avatar" name="avatar" accept="image/*" class="file-input">
-                <label for="avatar" class="file-input__label">{{inputOptions.labelName}}</label>
-                {{#if inputOptions.errorMessage}}
-                  <span class="file-input__error">{{inputOptions.errorMessage}}</span>
-                {{/if}}
+                {{{FileInputGroup}}}
               {{else}}
                 {{{ FormField }}}
               {{/if}}

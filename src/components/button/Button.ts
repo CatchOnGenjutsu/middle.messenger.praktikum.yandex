@@ -1,12 +1,13 @@
 import Block from "../../globalClasses/Block";
 import "./button.scss";
 
-interface ButtonProps {
+export interface ButtonProps {
   class?: string;
   id?: string;
   name?: string;
   type?: string;
   value?: string;
+  modifierClass?: string;
   events?: Record<string, (event: Event) => void>;
 }
 export default class Button extends Block {
@@ -16,7 +17,7 @@ export default class Button extends Block {
 
   render() {
     return `
-      <button class="{{class}}" id="{{id}}" type="{{type}}">{{value}}</button>
+      <button class="{{class}} {{modifierClass}}" id="{{id}}" type="{{type}}">{{value}}</button>
     `;
   }
 }

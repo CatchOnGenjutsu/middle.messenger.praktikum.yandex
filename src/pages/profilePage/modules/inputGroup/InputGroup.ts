@@ -1,43 +1,35 @@
-import { Error } from "../../../../components/error/Error";
-import Block from "../../../../globalClasses/Block";
+import Block, { BlockProps } from "../../../../globalClasses/Block";
 import DisplayValue from "../../partials/displayValue/DisplayValue";
 import ProfileInput from "../../partials/profileInput/ProfileInput";
 import ProfileLabel from "../../partials/profileLabel/ProfileLabel";
+import { Error } from "../../../../components/error/Error";
+
+import { FormFieldConfig } from "../../profilePageSettings";
 
 import "./inputGroup.scss";
 
-interface InputGroupProps {
+export interface InputGroupProps extends BlockProps {
   isEditData: boolean;
-  inputOption: Record<string, string | boolean | null | Record<string, (event: Event) => void>>;
+  inputOption: FormFieldConfig & {
+    events?: Record<string, (event: Event) => void>;
+  };
   isLast: boolean;
-  // events?: Record<string, (event: Event) => void>;
 }
 
 export default class InputGroup extends Block {
   constructor(props: InputGroupProps) {
-    console.log(props);
     super({
       ...props,
       ProfileLabel: new ProfileLabel({
-        labelName: props.inputOption.labelName as string,
-        labelFor: props.inputOption.labelFor as string,
+        ...props,
       }),
       ProfileInput: new ProfileInput({
-        inputId: props.inputOption.inputId as string,
-        inputName: props.inputOption.inputName as string,
-        inputType: props.inputOption.inputType as string,
-        inputPlaceholder: props.inputOption.inputPlaceholder as string,
-        value: props.inputOption.value as string,
-        events: props.inputOption.events as Record<string, (event: Event) => void>,
-        isEditData: props.isEditData,
+        ...props,
       }),
       DisplayValue: new DisplayValue({
-        value: props.inputOption.value as string,
-        isEditData: props.isEditData,
+        ...props,
       }),
-      Error: new Error({
-        errorText: props.inputOption.errorText as string,
-      }),
+      Error: new Error({}),
     });
   }
 

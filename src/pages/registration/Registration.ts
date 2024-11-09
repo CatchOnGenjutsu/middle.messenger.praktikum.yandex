@@ -1,248 +1,67 @@
 import Block from "../../globalClasses/Block";
-import { FormField } from "../../components/formField/FormField";
+import Router from "../../globalClasses/Router";
+
+import FormField from "../../components/formField/FormField";
+import Link from "../../components/link/Link";
 import Button from "../../components/button/Button";
+
+import { formFieldsConfig, buttonSettings, linkSettings, FormFieldConfig } from "./registrationPageSettings";
+
+import registrationApi from "../../api/registrationApi";
 
 import "./registration.scss";
 
 export default class Registration extends Block {
   constructor() {
     super({
-      Fields: [
-        new FormField({
-          labelName: "Почта",
-          labelFor: "email",
-          inputName: "email",
-          inputType: "email",
-          inputId: "email",
-          inputPlaceholder: "Введите почту",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
+      Fields: formFieldsConfig.map(
+        (config: FormFieldConfig) =>
+          new FormField({
+            ...config,
+            errorText: null,
+            events: {
+              blur: (event: Event) => {
+                if (!event) return;
 
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^[a-zA-Z0-9._-]+@[a-zA-Z]+(\.[a-zA-Z]+)+$/.test(value)) {
-                  elem.children.error.setProps({
-                    errorText: "Неправильно введена почта. Почта должна содержать символы @ и .",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
+                const target = event.target as HTMLInputElement;
+                const value = target.value;
+                const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
+
+                if (elem) {
+                  const errorMessage = config.validation(value, this.lists.Fields as FormField[]);
+                  elem.children.error.setProps({ errorText: errorMessage });
                 }
-              }
+              },
             },
-          },
-        }),
-        new FormField({
-          labelName: "Логин",
-          labelFor: "login",
-          inputName: "login",
-          inputType: "text",
-          inputId: "login",
-          inputPlaceholder: "Введите логин",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^(?=.*[A-Za-z])[A-Za-z0-9_-]{3,20}$/.test(value)) {
-                  elem.children.error.setProps({
-                    errorText:
-                      "Логин должен содержать от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание).",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
-        }),
-        new FormField({
-          labelName: "Имя",
-          labelFor: "first_name",
-          inputName: "first_name",
-          inputType: "text",
-          inputId: "first_name",
-          inputPlaceholder: "Введите имя",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)) {
-                  elem.children.error.setProps({
-                    errorText:
-                      "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
-        }),
-
-        new FormField({
-          labelName: "Фамилия",
-          labelFor: "second_name",
-          inputName: "second_name",
-          inputType: "text",
-          inputId: "second_name",
-          inputPlaceholder: "Введите фамилию",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^[A-ZА-Я][a-zа-яA-ZА-Я0-9-]*$/u.test(value)) {
-                  elem.children.error.setProps({
-                    errorText:
-                      "Допускается латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов (допустим только дефис)",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
-        }),
-
-        new FormField({
-          labelName: "Телефон",
-          labelFor: "phone",
-          inputName: "phone",
-          inputType: "tel",
-          inputId: "phone",
-          inputPlaceholder: "Введите телефон",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^\+?\d{10,15}$/u.test(value)) {
-                  elem.children.error.setProps({
-                    errorText: "Должен содержать от 10 до 15 цифр, может начинается с плюса",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
-        }),
-        new FormField({
-          labelName: "Пароль",
-          labelFor: "password",
-          inputName: "password",
-          inputType: "password",
-          inputId: "password",
-          inputPlaceholder: "Введите пароль",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-              if (elem) {
-                if (value && !/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/.test(value)) {
-                  elem.children.error.setProps({
-                    errorText:
-                      "Пароль должен содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
-        }),
-
-        new FormField({
-          labelName: "Пароля",
-          labelFor: "passwordRepeat",
-          inputName: "passwordRepeat",
-          inputType: "password",
-          inputId: "passwordRepeat",
-          inputPlaceholder: "Повторите пароль",
-          errorText: null,
-          events: {
-            blur: (event: Event) => {
-              if (!event) return;
-
-              const target = event.target as HTMLInputElement;
-              const value = target.value;
-              const elem = this.lists.Fields.find((item) => item.props.inputId === target.id);
-
-              const passwordField = this.lists.Fields.find((item) => item.props.inputId === "password");
-              const passwordValue =
-                passwordField?.props.inputId && passwordField?.getContent().querySelector("input")?.value;
-              if (elem) {
-                if (value && value !== passwordValue) {
-                  elem.children.error.setProps({
-                    errorText: "Пароли должны совпадать.",
-                  });
-                } else {
-                  elem.children.error.setProps({
-                    errorText: null,
-                  });
-                }
-              }
-            },
-          },
-        }),
-      ],
+          }),
+      ),
       Button: new Button({
-        class: "submit-button",
-        value: "Зарегистрироваться",
-        type: "submit",
-        id: "submit-btn",
-        name: "submit-btn",
+        ...buttonSettings,
+      }),
+      Link: new Link({
+        ...linkSettings,
       }),
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
           event.preventDefault();
           const isValid = this.validateForm();
           if (isValid) {
             const elem = event.target as HTMLFormElement;
             if (elem && elem.tagName === "FORM") {
-              const formData = new FormData(event.target as HTMLFormElement);
+              const formData = new FormData(elem);
               const data: Record<string, string> = {};
               formData.forEach((value, key) => {
                 data[key] = value.toString();
               });
-              console.log(data);
+              const response = await registrationApi.create(data);
+              if (response?.status === 200) {
+                localStorage.setItem("auth", "true");
+                const router = Router.getInstance("app");
+                router.go("/messenger");
+              } else {
+                const errorMessage = JSON.parse(response?.response).reason;
+                alert(errorMessage);
+              }
             }
           }
         },
@@ -282,7 +101,7 @@ export default class Registration extends Block {
         case "phone":
           isValid = /^\+?\d{10,15}$/u.test(value);
           field.setProps({
-            errorText: isValid ? null : "Должен содержать от 10 до 15 цифр, может начинается с плюса.",
+            errorText: isValid ? null : "Должен содержать от 10 до 15 цифр, может начинаться с плюса.",
           });
           break;
         case "password":
@@ -308,7 +127,6 @@ export default class Registration extends Block {
     return isValid;
   }
 
-  // Валидация всей формы
   private validateForm(): boolean {
     let isFormValid = true;
 
@@ -335,7 +153,7 @@ export default class Registration extends Block {
               {{{Fields}}}
               {{{Button}}}
           </form>
-          <a class="registration-container__link" href="/login">Войти</a>
+          {{{Link}}}
         </div>
       </main>
     `;
