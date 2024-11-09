@@ -56,13 +56,12 @@ const webSocketTransport = async (
 
     socket.addEventListener("message", (event) => {
       try {
-        console.log("Сообщение", event);
+        // console.log("Сообщение", event);
         if (isValidJSON(event.data)) {
           const data = JSON.parse(event.data);
           if (data.type !== "pong" && data.type !== "user connected") {
             const existingMessages = StoreUpdated.getState().ChatPage.messages || [];
             const newMessages = Array.isArray(data) ? data.reverse() : [data];
-            console.log([...existingMessages, ...newMessages]);
             StoreUpdated.set("ChatPage.messages", [...existingMessages, ...newMessages]);
             const zone = document.getElementById("message_chat");
             if (zone) zone.scrollTop = zone.scrollHeight + 30;

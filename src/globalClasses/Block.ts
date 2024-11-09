@@ -106,7 +106,6 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-    console.log("componentDidUpdate", oldProps, newProps);
     // Логика обновления при изменении пропсов
   }
 
