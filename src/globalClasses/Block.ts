@@ -13,7 +13,7 @@ interface Children {
   [key: string]: Block<any>;
 }
 
-interface Lists {
+export interface Lists {
   [key: string]: Block<any>[];
 }
 
@@ -43,7 +43,6 @@ export default class Block<P extends BlockProps = {}> {
     this.props = this._makePropsProxy<P>({ ...props } as P);
     this.children = children;
     this.lists = lists;
-    // this.lists = this._makePropsProxy<Lists>({ ...lists });
     this.eventBus = () => eventBus;
     this._registerEvents(eventBus);
     eventBus.emit(Block.EVENTS.INIT);
@@ -51,7 +50,6 @@ export default class Block<P extends BlockProps = {}> {
 
   private _addEvents(): void {
     const { events } = this.props;
-    // console.log(this._element, events);
     if (events) {
       Object.keys(events).forEach((eventName) => {
         if (this._element) {
@@ -96,11 +94,9 @@ export default class Block<P extends BlockProps = {}> {
   // }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-    // debugger;
     this.componentDidUpdate(oldProps, newProps);
 
     if (this._propsHaveChanged(oldProps, newProps)) {
-      // console.log(this);
       this._updateChildrenProps(this.children, newProps);
       if (Object.values(this.lists).length) {
         this._updateListsProps(this.lists, newProps);
@@ -110,6 +106,7 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    console.log("componentDidUpdate", oldProps, newProps);
     // Логика обновления при изменении пропсов
   }
 
@@ -123,7 +120,6 @@ export default class Block<P extends BlockProps = {}> {
         return obj1 !== obj2;
       }
 
-      // Проверка на циклическую ссылку
       if (seen.has(obj1) || seen.has(obj2)) {
         return false;
       }
@@ -156,9 +152,7 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _updateChildrenProps(children: Record<string, unknown>, newProps: Record<string, unknown>): void {
-    // debugger
     function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): boolean {
-      // debugger
       let hasChanged = false;
 
       for (const key in target) {
@@ -184,7 +178,6 @@ export default class Block<P extends BlockProps = {}> {
     }
 
     for (const childName in children) {
-      // debugger
       if (Object.prototype.hasOwnProperty.call(children, childName)) {
         const child = children[childName] as {
           props: Record<string, unknown>;
@@ -193,7 +186,6 @@ export default class Block<P extends BlockProps = {}> {
 
         if (child && typeof child.setProps === "function") {
           const currentProps = deepCopy(child.props);
-          // console.log(currentProps);
 
           const relevantProps = Object.keys(currentProps).reduce((acc, key) => {
             if (key in newProps) {
@@ -202,11 +194,9 @@ export default class Block<P extends BlockProps = {}> {
             return acc;
           }, {} as Record<string, unknown>);
 
-          // Проверяем, есть ли изменения
           const hasChanged = deepUpdateProps(currentProps, relevantProps);
 
           if (hasChanged) {
-            // Вызываем setProps с обновлёнными пропсами
             child.setProps(currentProps);
           }
         }
@@ -215,61 +205,61 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _updateListsProps(lists: Lists, newProps: Record<string, unknown>): void {
-    // console.log(lists);
-    function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
-      for (const key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          if (
-            typeof source[key] === "object" &&
-            source[key] !== null &&
-            typeof target[key] === "object" &&
-            target[key] !== null
-          ) {
-            deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
-          } else {
-            target[key] = source[key];
-          }
-        }
-      }
-    }
+    // function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
+    //   for (const key in source) {
+    //     if (Object.prototype.hasOwnProperty.call(source, key)) {
+    //       if (
+    //         typeof source[key] === "object" &&
+    //         source[key] !== null &&
+    //         typeof target[key] === "object" &&
+    //         target[key] !== null
+    //       ) {
+    //         deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+    //       } else {
+    //         target[key] = source[key];
+    //       }
+    //     }
+    //   }
+    // }
     for (const listName in lists) {
       if (Object.prototype.hasOwnProperty.call(lists, listName)) {
-        const list = lists[listName];
+        // const list = lists[listName];
 
-        // Проверяем, есть ли в newProps соответствующие данные для этого списка
         const listNewProps = newProps[listName];
 
         if (!listNewProps) {
-          // console.warn(`Пропсы для списка "${listName}" не найдены`);
           continue;
         }
 
-        if (!list.length && Array.isArray(listNewProps) && listNewProps.length) {
-          list.push(...listNewProps);
-          this.lists[listName] = list;
-          // this.lists[listName].forEach((item: Block) => (item.setProps ? item.setProps(item.props) : null));
-          return;
-        }
-        list.forEach((item, index) => {
-          if (item && typeof item.setProps === "function") {
-            // console.log(`Элемент ${index} списка "${listName}"`, item);
+        // if (!list.length && Array.isArray(listNewProps) && listNewProps.length) {
+        const newList = Array.isArray(listNewProps) ? listNewProps : [listNewProps];
+        this.lists[listName] = newList;
+        // list.push(...listNewProps);
+        // this.lists[listName] = list;
+        // this.lists[listName].forEach((item: Block) => (item.setProps ? item.setProps(item.props) : null));
+        //   return;
+        // }
 
-            let propsToApply: Record<string, unknown>;
+        // list.forEach((item, index) => {
+        //   if (item && typeof item.setProps === "function") {
+        //     // console.log(`Элемент ${index} списка "${listName}"`, item);
 
-            // Если данные — массив, берем соответствующий элемент по индексу
-            if (Array.isArray(listNewProps)) {
-              propsToApply = listNewProps[index] || {};
-            } else {
-              // Если данные — объект, применяем его ко всем элементам
-              propsToApply = listNewProps as Record<string, unknown>;
-            }
+        //     let propsToApply: Record<string, unknown>;
 
-            // console.log(`Пропсы для элемента ${index}:`, propsToApply);
+        //     // Если данные — массив, берем соответствующий элемент по индексу
+        //     if (Array.isArray(listNewProps)) {
+        //       propsToApply = listNewProps[index] || {};
+        //     } else {
+        //       // Если данные — объект, применяем его ко всем элементам
+        //       propsToApply = listNewProps as Record<string, unknown>;
+        //     }
 
-            deepUpdateProps(item.props, propsToApply);
-            item.setProps(item.props);
-          }
-        });
+        //     // console.log(`Пропсы для элемента ${index}:`, propsToApply);
+
+        //     deepUpdateProps(item.props, propsToApply);
+        //     item.setProps(item.props);
+        //   }
+        // });
       }
     }
   }

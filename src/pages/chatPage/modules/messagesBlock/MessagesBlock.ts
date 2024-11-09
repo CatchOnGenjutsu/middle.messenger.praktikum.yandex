@@ -11,7 +11,7 @@ interface IMessageGroup {
 }
 
 interface IMessageBlockProps {
-  messages?: IMessageProps[];
+  messages: IMessageProps[];
   allMessages?: IMessageGroup[];
 }
 
@@ -31,79 +31,84 @@ function groupMessagesByDate(messages: IMessageProps[]): IMessageGroup[] {
   }, []);
 }
 
-export class MessagesBlock extends Block {
-  constructor(props: IMessageBlockProps) {
-    const groupedMessages = props.messages ? groupMessagesByDate(props.messages) : [];
-
-    super({
-      ...props,
-      allMessages: groupedMessages,
-      messagesGroups: groupedMessages.map((group) => new MessageGroup({ ...group })),
-    });
-  }
-
-  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
-    if (!isEqual(oldProps.messages, newProps.messages)) {
-      if (newProps.messages) {
-        const groupedMessages = groupMessagesByDate(newProps.messages as IMessageProps[]);
-
-        const newMessageGroups = groupedMessages.map((group) => new MessageGroup({ ...group }));
-        console.log("newMessageGroups", newMessageGroups);
-        if (!isEqual(this.lists.messagesGroups, newMessageGroups)) {
-          console.log("tut");
-          this.setProps({ messagesGroups: newMessageGroups });
-        }
-      }
-      return true;
-    }
-    return false;
-  }
-
-  protected render(): string {
-    return `
-    <div class="messages-block-container">
-      {{{ messagesGroups }}}
-    </div>
-    `;
-  }
-}
 // export class MessagesBlock extends Block {
 //   constructor(props: IMessageBlockProps) {
-//     if (props.messages) {
-//       const groupedMessages = groupMessagesByDate(props.messages);
+//     const groupedMessages = props.messages ? groupMessagesByDate(props.messages) : [];
 
-//       super({
-//         ...props,
-//         allMessages: groupedMessages,
-//         messagesGroups: [...groupedMessages.map((group) => new MessageGroup({ ...group }))],
-//       });
-//     } else {
-//       super({ ...props });
-//     }
+//     super({
+//       ...props,
+//       allMessages: groupedMessages,
+//       messagesGroups: groupedMessages.map((group) => new MessageGroup({ ...group })),
+//     });
 //   }
 
-//   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
-//     if (!isEqual(oldProps, newProps)) {
-//       console.log("Messages обновлен", newProps.messages);
+//   private _createMessageGroup(group: IMessageGroup): MessageGroup {
+//     return new MessageGroup({ ...group });
+//   }
 
+//   // Метод обновления групп сообщений
+//   private _updateMessageGroups(newMessages: IMessageProps[] = []) {
+//     const groupedMessages = groupMessagesByDate(newMessages);
+//     const newMessageGroups = groupedMessages.map((group) => this._createMessageGroup(group));
+//     this.setProps({ messagesGroups: newMessageGroups });
+//   }
+
+//   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
+//     if (!isEqual(oldProps.messages, newProps.messages)) {
 //       if (newProps.messages) {
-//         const groupedMessages = groupMessagesByDate(newProps.messages as IMessageProps[]);
-//         console.log("groupedMessages", groupedMessages);
-//         console.log(this.children.messagesGroups);
-//         if (this.children.messagesGroups) {
-//           this.children.messagesGroups.setProps({
-//             ...groupedMessages.map((group) => new MessageGroup({ ...group })),
-//           });
-//         }
+//         this._updateMessageGroups(newProps.messages as IMessageProps[]);
+//         return true;
 //       }
 //     }
+//     return false;
 //   }
 
 //   protected render(): string {
 //     return `
-//     <div class="messages-block-container">
-//       {{{ messagesGroups }}}
-//     </div>
+//       <div class="messages-block-container">
+//         {{{ messagesGroups }}}
+//       </div>
 //     `;
 //   }
 // }
+
+export class MessagesBlock extends Block {
+  constructor(props: IMessageBlockProps) {
+    super({
+      ...props,
+      allMessages: [],
+      messagesGroups: [],
+    });
+
+    if (props.messages) {
+      this._updateMessageGroups(props.messages);
+    }
+  }
+
+  private _createMessageGroup(group: IMessageGroup): MessageGroup {
+    return new MessageGroup({ ...group });
+  }
+
+  // Метод обновления групп сообщений
+  private _updateMessageGroups(newMessages: IMessageProps[] = []) {
+    const groupedMessages = groupMessagesByDate(newMessages);
+    const newMessageGroups = groupedMessages.map((group) => this._createMessageGroup(group));
+    this.setProps({ messagesGroups: newMessageGroups });
+  }
+
+  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
+    if (!isEqual(oldProps.messages, newProps.messages)) {
+      this._updateMessageGroups(newProps.messages as IMessageProps[]);
+      return true;
+    }
+    return false;
+  }
+  // {{{ messagesGroups }}}
+  protected render(): string {
+    return `
+      <div class="messages-block-container">
+        {{{messagesGroups}}}
+      </div>
+    `;
+  }
+}

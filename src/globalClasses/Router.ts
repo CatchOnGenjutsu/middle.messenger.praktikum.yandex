@@ -45,7 +45,7 @@ class Route {
 
   render(force = false) {
     if (!this._block || force) {
-      this._block = new this._blockClass(); // Создаём новый экземпляр блока
+      this._block = new this._blockClass();
       render(this._props.rootQuery, this._block);
     } else {
       this._block.show();

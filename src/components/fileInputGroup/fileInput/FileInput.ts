@@ -12,7 +12,6 @@ interface FileInputProps {
   inputPlaceholder: string;
   errorText: string;
   events: {
-    // focus?: (event: Event) => void;
     blur?: (event: Event) => void;
     change?: (event: Event) => void;
   };

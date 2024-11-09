@@ -28,6 +28,13 @@ class ChatsApi {
       headers: { "Content-Type": "application/json", withCredentials: "true" },
     });
   }
+
+  deleteUserFromChat(userId: number, chatId: number) {
+    return chatsGetChatsAPIInstance.delete(`/users`, {
+      data: { users: [userId], chatId },
+      headers: { "Content-Type": "application/json", withCredentials: "true" },
+    });
+  }
 }
 
 export default new ChatsApi();

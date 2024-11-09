@@ -1,9 +1,9 @@
-import Block from "../../globalClasses/Block";
+import Block, { BlockProps } from "../../globalClasses/Block";
 import { ModalWindow } from "../modalWindow/ModalWindow";
 
 import "./overlay.scss";
 
-export interface OverlayProps {
+export interface OverlayProps extends Partial<BlockProps> {
   title: string;
   inputOptions: {
     isFile?: boolean;
@@ -15,7 +15,7 @@ export interface OverlayProps {
     inputPlaceholder: string;
     errorText: string;
     fileName: string;
-    validation?: (value: string) => string | null;
+    validation?: (value: string) => string;
     events: {
       blur?: (event: Event) => void;
       change?: (event: Event) => void;
@@ -38,6 +38,7 @@ export interface OverlayProps {
 
 export class Overlay extends Block {
   constructor(props: OverlayProps) {
+    console.log(props);
     super({
       ...props,
       ModalWindow: new ModalWindow({

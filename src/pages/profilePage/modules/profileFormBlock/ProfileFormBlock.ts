@@ -49,7 +49,6 @@ export default class ProfileFormBlock extends Block {
   private _updateInputGroups(newProps: ProfileFormBlockProps) {
     const { inputOptions, isEditData } = newProps;
 
-    // Используем this.lists для доступа к InputsGroup
     const inputsGroup = this.lists.InputsGroup;
     console.log(inputsGroup);
     if (Array.isArray(inputsGroup)) {

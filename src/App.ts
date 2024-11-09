@@ -1,18 +1,14 @@
 import Router from "./globalClasses/Router";
-// import { connect } from "./globalClasses/HOC";
 import { connect } from "./globalClasses/HOCupdated";
 
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
-import ChatPage, { ChatPageProps } from "./pages/chatPage/ChatPage";
+import ChatPage from "./pages/chatPage/ChatPage";
 import ProfilePage, { ProfilePageProps } from "./pages/profilePage/ProfilePage";
 import ErrorPage from "./pages/errorPage/ErrorPage";
 import userApi from "./api/userApi";
 import StoreUpdated from "./globalClasses/StoreUpdated";
 
-// interface AppState {
-//   currentPage: string;
-// }
 export default class App {
   constructor() {
     const loginPage = connect(() => ({}))(Login);
@@ -26,7 +22,7 @@ export default class App {
       .use("/sign-up", registrationPage)
       .use("/messenger", chatPage)
       .use("/settings", profilePage)
-      .setNotFoundPage(ErrorPage) // Устанавливаем страницу 404
+      .setNotFoundPage(ErrorPage)
       .start();
     this.getUser();
   }

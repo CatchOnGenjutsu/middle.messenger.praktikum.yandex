@@ -1,10 +1,8 @@
-import chatsApi from "../api/chatsApi.js";
-
 import StoreUpdated, { UserInterface } from "./StoreUpdated.js";
 
 import { isValidJSON } from "../utils.js";
 
-const PING_INTERVAL = 10001; // Отправка пинга каждые 10 секунд
+const PING_INTERVAL = 10001;
 let pingIntervalId: number | null = null;
 
 const activeSockets: { [chatId: number]: WebSocket } = {};
@@ -14,20 +12,15 @@ const webSocketTransport = async (
   user: UserInterface,
   token: string,
 ): Promise<WebSocket | null> => {
-  // debugger;
-  // Проверка на уже существующее соединение для этого chatId
   if (activeSockets[chatId] && activeSockets[chatId].readyState === WebSocket.OPEN) {
-    return activeSockets[chatId]; // Возвращаем уже существующий WebSocket
+    return activeSockets[chatId];
   }
 
   const connectWebSocket = async (): Promise<WebSocket | null> => {
-    // debugger;
-
     const socket = new WebSocket(`wss://ya-praktikum.tech/ws/chats/${user.id}/${chatId}/${token}`);
 
-    // Обработчик для отправки сообщений (включая пинг)
     const setupPing = () => {
-      if (pingIntervalId !== null) clearInterval(pingIntervalId); // Очистка предыдущего интервала
+      if (pingIntervalId !== null) clearInterval(pingIntervalId);
       pingIntervalId = setInterval(() => {
         socket.send(
           JSON.stringify({
@@ -37,9 +30,11 @@ const webSocketTransport = async (
       }, PING_INTERVAL);
     };
 
-    // Установка соединения
     socket.addEventListener("open", () => {
-      StoreUpdated.set("ChatPage.messages", []);
+      const existingMessages = StoreUpdated.getState().ChatPage.messages || [];
+      if (existingMessages.length > 0) {
+        StoreUpdated.set("ChatPage.messages", []);
+      }
       setupPing();
       socket.send(
         JSON.stringify({
@@ -49,29 +44,26 @@ const webSocketTransport = async (
       );
     });
 
-    // Обработка закрытия
     socket.addEventListener("close", async (event) => {
-      if (pingIntervalId !== null) clearInterval(pingIntervalId); // Остановка пинга при закрытии
-      delete activeSockets[chatId]; // Удаляем запись при закрытии соединения
+      if (pingIntervalId !== null) clearInterval(pingIntervalId);
+      delete activeSockets[chatId];
 
-      // if (!event.wasClean && event.code === 1006) {
-      //   // Выполняем переподключение при обрыве
-      //   // const newSocket = await connectWebSocket();
-      //   if (newSocket) activeSockets[chatId] = newSocket;
-      // }
+      if (!event.wasClean && event.code === 1006) {
+        const newSocket = await connectWebSocket();
+        if (newSocket) activeSockets[chatId] = newSocket;
+      }
     });
 
-    // Обработка сообщений
     socket.addEventListener("message", (event) => {
       try {
         console.log("Сообщение", event);
         if (isValidJSON(event.data)) {
           const data = JSON.parse(event.data);
-          if (data.type !== "pong") {
-            StoreUpdated.set("ChatPage.messages", [
-              ...StoreUpdated.getState().ChatPage.messages,
-              ...(Array.isArray(data) ? data.reverse() : [data]),
-            ]);
+          if (data.type !== "pong" && data.type !== "user connected") {
+            const existingMessages = StoreUpdated.getState().ChatPage.messages || [];
+            const newMessages = Array.isArray(data) ? data.reverse() : [data];
+            console.log([...existingMessages, ...newMessages]);
+            StoreUpdated.set("ChatPage.messages", [...existingMessages, ...newMessages]);
             const zone = document.getElementById("message_chat");
             if (zone) zone.scrollTop = zone.scrollHeight + 30;
           }
@@ -81,12 +73,11 @@ const webSocketTransport = async (
       }
     });
 
-    // Обработка ошибок
     socket.addEventListener("error", () => {
       console.error("Ошибка WebSocket соединения");
     });
 
-    activeSockets[chatId] = socket; // Сохраняем WebSocket в объекте
+    activeSockets[chatId] = socket;
 
     return socket;
   };

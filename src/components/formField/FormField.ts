@@ -14,7 +14,6 @@ export interface FormFieldProps {
   inputPlaceholder: string;
   inputClassName?: string;
   events: {
-    // focus?: (event: Event) => void;
     blur?: (event: Event) => void;
   };
   errorText?: string | null;

@@ -8,7 +8,6 @@ interface Store<State, Action> {
 
 export interface StoreState {
   userInfo: Record<string, string | null>;
-  // RegistrationPageSettings: FormFieldConfig[];
 }
 
 interface SetTextAction {
@@ -17,7 +16,6 @@ interface SetTextAction {
 }
 interface SetFormFieldsAction {
   type: "SET_FORM_FIELDS";
-  // fields: FormFieldConfig[];
 }
 interface SetUserInfoAction {
   type: "SET_USER_INFO";
@@ -86,9 +84,7 @@ const reducer = (state: StoreState, action: Action): StoreState => {
 
   switch (action.type) {
     case "SET_USER_INFO":
-      // console.log(action.userInfo);
       newState.userInfo = { ...action.userInfo };
-      // console.log(newState.userInfo);
       break;
     case "LOGOUT":
       return newState;

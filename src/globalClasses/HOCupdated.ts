@@ -17,7 +17,6 @@ export function connect<P extends BlockProps>(mapStateToProps: (state: Record<st
           const newState = mapStateToProps(store.getState());
 
           if (!isEqual(this.state, newState)) {
-            // console.log("Component props:", this.props);
             this.setProps(newState);
           }
 

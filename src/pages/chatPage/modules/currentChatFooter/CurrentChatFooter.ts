@@ -4,13 +4,15 @@ import { WriteMessageInput } from "../../partials/writeMessageInput/WriteMessage
 import { ArrowButton } from "../../../../components/arrowButton/ArrowButton";
 import { ButtonsPopup } from "../buttonsPopup/ButtonsPopup";
 
-import { addAppsActionButtonsSettings } from "../../mockData";
+import { addAppsActionButtonsSettings } from "../../chatPageSettings";
 
 import "./currentChatFooter.scss";
 
 interface CurrentChatFooterProps {
-  popupOpen: boolean;
+  popupOpen?: boolean;
   webSocketInstance?: WebSocket | null;
+  activeChatId?: number | null;
+  events?: Record<string, (event: Event) => void>;
 }
 
 export class CurrentChatFooter extends Block {

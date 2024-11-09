@@ -9,25 +9,28 @@ export interface IMessageProps {
   file: File | null;
   id: number;
   is_read: boolean;
-  time: string; // Формат времени ISO 8601
-  type: unknown; // или другие возможные типы, если есть
+  time: string;
+  type: unknown;
   user_id: number;
+  incoming?: boolean;
 }
+
 export class MessageItem extends Block {
   constructor(props: IMessageProps) {
+    const incoming = props.user_id !== StoreUpdated.getState().userInfo.id;
     super({
       ...props,
-      incoming: props.user_id === StoreUpdated.getState().userInfo.id ? false : true,
-      time: props.time.slice(11, 16),
+      incoming,
+      time: props.time && props.time.slice(11, 16),
     });
   }
 
-  render() {
+  protected render(): string {
     return `
       {{#if incoming}}
         <div class="message-item message-item_incoming">
-          {{#if file}}
-            <img class="message-item__image" src="{{file}}" alt="image">
+          {{#if isImage}}
+            <img class="message-item__image" src="{{content}}" alt="image">
             {{else}}
             <div class="message-item__text">{{content}}</div>
           {{/if}}
@@ -37,8 +40,8 @@ export class MessageItem extends Block {
         </div>
       {{else}}
         <div class="message-item message-item_outgoing {{#if is_read}}message-item_outgoing_read{{/if}}">
-          {{#if file}}
-            <img class="message-item__image" src="{{file}}" alt="image">
+          {{#if isImage}}
+            <img class="message-item__image" src="{{content}}" alt="image">
             {{else}}
             <div class="message-item__text">{{content}}</div>
           {{/if}}
@@ -49,7 +52,6 @@ export class MessageItem extends Block {
               <span class="message-time">{{time}}</span>
           </div>
         </div>
-      {{/if}}
-    `;
+      {{/if}}`;
   }
 }

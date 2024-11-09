@@ -1,6 +1,5 @@
-import { OverlayProps } from "../../components/overlay/Overlay";
 import Router from "../../globalClasses/Router";
-import { ChatItemProps } from "./partials/chatItem/ChatItem";
+import { OverlayProps } from "../../components/overlay/Overlay";
 import { ProfileLinkProps } from "./partials/profileLink/profileLink";
 
 export const profileLinkSettings: ProfileLinkProps = {
@@ -28,7 +27,7 @@ export const modalWindowAddChatSettings: OverlayProps = {
     inputPlaceholder: "Введите имя чата",
     errorText: "",
     fileName: "",
-    validation: (value: string) => (!value ? "Введите имя чата" : null),
+    validation: (value: string) => (!value ? "Введите имя чата" : ""),
     events: {},
   },
   buttonOptions: {
@@ -59,62 +58,10 @@ export const createChatButtonSettings = {
   name: "create-btn",
   events: {
     click: (event: Event) => {
-      console.log("click");
-      // const router = Router.getInstance("app");
-      // router.go("/dialogues");
       event.preventDefault();
       event.stopPropagation();
     },
   },
-};
-
-export const mockChatsData: ChatItemProps[] = [
-  {
-    id: 1,
-    avatar: "/icons/profile_icon.png",
-    created_by: 1,
-    last_message: "Привет, как дела?",
-    title: "Chat 1",
-    unread_count: 0,
-  },
-  {
-    id: 2,
-    avatar: "/icons/profile_icon.png",
-    created_by: 1,
-    last_message: "Привет, как дела?",
-    title: "Chat 2",
-    unread_count: 0,
-  },
-  {
-    id: 3,
-    avatar: "/icons/profile_icon.png",
-    created_by: 1,
-    last_message: "Привет, как дела?",
-    title: "Chat 3",
-    unread_count: 0,
-  },
-];
-
-export const modalWindowAddUserSettings1 = {
-  title: "Добавить пользователя",
-  inputOptions: {
-    labelName: "Логин",
-    labelFor: "login",
-    inputId: "login",
-    inputName: "login",
-    inputType: "text",
-    inputPlaceholder: "Введите логин",
-    errorText: "",
-  },
-  buttonOptions: {
-    value: "Добавить",
-    type: "submit",
-    class: "submit-button",
-    id: "submit-btn",
-    name: "submit-btn",
-  },
-  events: {}, // Добавить пустые обработчики событий или конкретные функции, если нужно
-  overlayEvents: {},
 };
 
 export const modalWindowAddUserSettings: OverlayProps = {
@@ -129,7 +76,7 @@ export const modalWindowAddUserSettings: OverlayProps = {
     inputPlaceholder: "Введите логин",
     errorText: "",
     fileName: "",
-    validation: (value: string) => (!value ? "Введите логин" : null),
+    validation: (value: string) => (!value ? "Введите логин" : ""),
     events: {},
   },
   buttonOptions: {
@@ -150,3 +97,75 @@ export const modalWindowAddUserSettings: OverlayProps = {
     },
   },
 };
+
+export const modalWindowDeleteUserSettings: OverlayProps = {
+  title: "Удалить пользователя",
+  inputOptions: {
+    isFile: false,
+    labelName: "Логин",
+    labelFor: "login",
+    inputId: "login",
+    inputName: "login",
+    inputType: "input",
+    inputPlaceholder: "Введите логин",
+    errorText: "",
+    fileName: "",
+    validation: (value: string) => (!value ? "Введите логин" : ""),
+    events: {},
+  },
+  buttonOptions: {
+    value: "Удалить",
+    type: "submit",
+    class: "submit-button",
+    id: "change-btn",
+    name: "submit-btn",
+  },
+  events: {
+    submit: (event: Event) => {
+      event.preventDefault();
+    },
+  },
+  overlayEvents: {
+    click: (event: Event) => {
+      event.stopPropagation();
+    },
+  },
+};
+
+export const burgerActionButtonsSettings = [
+  {
+    label: "Добавить пользователя",
+    alt: "Добавить пользователя",
+    id: "add-user",
+    icon: "/icons/add_user_icon.png",
+  },
+  {
+    label: "Удалить пользователя",
+    alt: "Удалить пользователя",
+    id: "delete-user",
+    icon: "/icons/delete_user_icon.png",
+  },
+  {
+    label: "Удалить чат",
+    alt: "Удалить чат",
+    icon: "/icons/trashcan_icon.png",
+  },
+];
+
+export const addAppsActionButtonsSettings = [
+  {
+    label: "Фото или Видео",
+    alt: "Фото или Видео",
+    icon: "/icons/add_image_icon.png",
+  },
+  {
+    label: "Файл",
+    alt: "Файл",
+    icon: "/icons/add_file_icon.png",
+  },
+  {
+    label: "Локация",
+    alt: "Локация",
+    icon: "/icons/add_location_icon.png",
+  },
+];

@@ -6,6 +6,7 @@ interface ActionButtonProps {
   icon: string;
   alt: string;
   label: string;
+  id?: string;
   events?: Record<string, (event: Event) => void>;
 }
 
@@ -16,7 +17,7 @@ export class ActionButton extends Block {
 
   protected render(): string {
     return `
-      <button class="action-button" type="button">
+      <button class="action-button" type="button" id="{{id}}">
         <img class="action-button__icon" src="{{icon}}" alt="{{alt}}">{{label}}
       </button>
       `;

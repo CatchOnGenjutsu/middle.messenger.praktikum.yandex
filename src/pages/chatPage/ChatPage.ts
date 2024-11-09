@@ -2,16 +2,16 @@ import Block, { BlockProps } from "../../globalClasses/Block";
 import StoreUpdated, { UserInterface } from "../../globalClasses/StoreUpdated";
 import chatsApi from "../../api/chatsApi";
 
-import CurrentChat, { CurrentChatProps } from "./modules/currentChat/CurrentChat";
+import CurrentChat from "./modules/currentChat/CurrentChat";
 import ChatList from "./modules/chatList/ChatList";
 import SearchInput from "./partials/searchInput/SearchInput";
+import Button from "../../components/button/Button";
 
 import { Overlay } from "../../components/overlay/Overlay";
 import { ProfileLink } from "./partials/profileLink/profileLink";
 
 import { ChatItemProps } from "./partials/chatItem/ChatItem";
-
-// import webSocketTransport from "../../globalClasses/websocket";
+import { IMessageBlockTestProps } from "./modules/messageBlockTest/messageBlockTest";
 
 import {
   createChatButtonSettings,
@@ -19,22 +19,20 @@ import {
   profileLinkSettings,
 } from "./chatPageSettings";
 
-import "./chatPage.scss";
-import Button from "../../components/button/Button";
-
 import { isEqual } from "../../utils";
+
+import "./chatPage.scss";
 
 export interface ChatPageProps extends BlockProps {
   overlaySettings?: Record<string, unknown>;
   chats?: ChatItemProps[] | [];
   activeChatId?: number | undefined;
   userInfo: UserInterface;
+  messages?: IMessageBlockTestProps | [];
 }
 
 export default class ChatPage extends Block<ChatPageProps> {
-  // private webSocketInstance: WebSocket | null = null;
   constructor(props: ChatPageProps) {
-    // console.log("Проверка props:", props);
     super({
       ...props,
       ProfileLink: new ProfileLink({ ...profileLinkSettings }),
@@ -46,7 +44,6 @@ export default class ChatPage extends Block<ChatPageProps> {
             event.stopPropagation();
             const elem = this.children.OverlayWithModalWindow;
             if (elem) {
-              // StoreUpdated.set("ChatPageState.OverlayWithModalWindow", elem);
               elem.getContent().classList.toggle("hidden");
             }
           },
@@ -55,7 +52,8 @@ export default class ChatPage extends Block<ChatPageProps> {
       SearchInput: new SearchInput(),
       ChatsList: new ChatList(ChatPage.getChatsProps(props)),
       CurrentChat: new CurrentChat({
-        currentChat: StoreUpdated.getState().ChatPage.currentChat as CurrentChatProps,
+        currentChat: StoreUpdated.getState().ChatPage.currentChat as Record<string, unknown>,
+        messages: ChatPage.getMessagesProps(props),
       }),
       OverlayWithModalWindow: new Overlay({
         ...modalWindowAddChatSettings,
@@ -139,29 +137,38 @@ export default class ChatPage extends Block<ChatPageProps> {
   }
 
   static getChatsProps(props: any) {
-    // console.log("getChatsProps", props.chats);
     return {
       chats: props.chats,
     };
   }
 
+  static getMessagesProps(props: any): IMessageBlockTestProps {
+    return {
+      messages: props.messages,
+    };
+  }
+
   protected componentDidUpdate(oldProps: any, newProps: any): boolean {
-    if (!isEqual(oldProps.currentChat, newProps.currentChat)) {
-      this.children.CurrentChat.setProps({ currentChat: newProps.currentChat });
+    const { currentChat, messages, chats, socket } = newProps;
+
+    if (
+      !isEqual(oldProps.currentChat, currentChat) ||
+      !isEqual(oldProps.messages, messages) ||
+      !isEqual(oldProps.socket, socket)
+    ) {
+      this.children.CurrentChat.setProps({
+        currentChat,
+        messages: ChatPage.getMessagesProps(newProps),
+      });
       return true;
     }
-    if (!isEqual(oldProps.chats || [], newProps.chats || [])) {
+
+    if (!isEqual(oldProps.chats, chats)) {
       this.children.ChatsList.setProps(ChatPage.getChatsProps(newProps));
+      return true;
     }
 
-    if (!isEqual(oldProps.currentChat, newProps.currentChat)) {
-      this.children.CurrentChat.setProps({ ...newProps.currentChat });
-    }
-    if (!isEqual(oldProps.messages || [], newProps.messages || [])) {
-      this.children.CurrentChat.setProps({ messages: newProps.messages });
-    }
-
-    return true;
+    return false;
   }
 
   protected render(): string {

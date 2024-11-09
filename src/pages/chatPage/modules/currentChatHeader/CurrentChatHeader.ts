@@ -1,8 +1,8 @@
 import Block from "../../../../globalClasses/Block";
+import { burgerActionButtonsSettings } from "../../chatPageSettings";
 import { BurgerButton } from "../../partials/burgerButton/BurgerButton";
 import { ButtonsPopup } from "../buttonsPopup/ButtonsPopup";
 
-import { burgerActionButtonsSettings } from "../../mockData";
 import { CurrentChatProps } from "../currentChat/CurrentChat";
 
 import "./currentChatHeader.scss";
@@ -35,7 +35,7 @@ export class CurrentChatHeader extends Block {
       }),
     });
   }
-  // {{> ButtonsPopup buttons=burgerButtons isActive=currentChat.popupsOpen isTopRight=true}}
+
   protected render(): string {
     return `
       <div class="current-chat-header">

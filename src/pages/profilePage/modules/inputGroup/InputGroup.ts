@@ -29,9 +29,7 @@ export default class InputGroup extends Block {
       DisplayValue: new DisplayValue({
         ...props,
       }),
-      Error: new Error({
-        // errorText: props.inputOption.errorText as string,
-      }),
+      Error: new Error({}),
     });
   }
 

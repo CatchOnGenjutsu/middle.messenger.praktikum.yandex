@@ -1,5 +1,4 @@
 import Block from "../../../../globalClasses/Block";
-import Router from "../../../../globalClasses/Router";
 
 import { ArrowButton } from "../../../../components/arrowButton/ArrowButton";
 
@@ -16,8 +15,6 @@ export default class BackButtonBlock extends Block {
         rightBtn: false,
         events: {
           click: (event: Event) => {
-            // const router = Router.getInstance("app");
-            // router.back();
             event.preventDefault();
             event.stopPropagation();
             props.onClick();
@@ -26,8 +23,6 @@ export default class BackButtonBlock extends Block {
       }),
       events: {
         click: (event: Event) => {
-          // const router = Router.getInstance("app");
-          // router.back();
           event.preventDefault();
           event.stopPropagation();
           props.onClick();

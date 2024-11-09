@@ -63,7 +63,7 @@ export class HTTPTransport {
   }
 
   delete(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    return this.request(path, { ...options, method: METHODS.DELETE }, options.timeout);
+    return this.request(`${this.basePath}${path}`, { ...options, method: METHODS.DELETE }, options.timeout);
   }
 
   private request(

@@ -27,32 +27,8 @@ export interface ProfilePageProps extends BlockProps {
   isEditData: boolean;
   editMainData: boolean;
   newAvatar: File | null;
-  // avatarUrl: string;
-  // buttonOptions: Record<string, string>;
-  // actionsButtons: Record<string, Record<string, string>>;
-  // inputOptions: Record<string, Record<string, string | boolean | null>>;
-  // modalWindowSettings: {
-  //   title: string;
-  //   inputOptions: {
-  //     isFile?: boolean;
-  //     labelName: string;
-  //     labelFor: string;
-  //     inputName: string;
-  //     inputType: string;
-  //     inputId: string;
-  //     inputPlaceholder: string;
-  //     errorText: string;
-  //   };
-  //   buttonOptions: {
-  //     value: string;
-  //     type: string;
-  //     class: string;
-  //     id: string;
-  //     name: string;
-  //     events?: Record<string, (event: Event) => void>;
-  //   };
-  // };
 }
+
 export default class ProfilePage extends Block<ProfilePageProps> {
   constructor(props: ProfilePageProps) {
     console.log(props);

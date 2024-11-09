@@ -8,7 +8,6 @@ interface InputProps {
   inputPlaceholder: string;
   inputClassName?: string;
   events: {
-    // focus: (event: Event) => void;
     blur?: (event: Event) => void;
   };
 }

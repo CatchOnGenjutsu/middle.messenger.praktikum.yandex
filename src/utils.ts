@@ -20,14 +20,11 @@ function isArrayOrObject(value: unknown): value is [] | PlainObject {
 }
 
 export function isEqual(lhs: unknown, rhs: unknown): boolean {
-  // Проверка на идентичность
   if (lhs === rhs) {
     return true;
   }
 
-  // Проверяем, что оба значения — plain objects или массивы
   if ((isPlainObject(lhs) && isPlainObject(rhs)) || (isArray(lhs) && isArray(rhs))) {
-    // Сравнение количества ключей объектов или длины массивов
     const lhsKeys = Object.keys(lhs);
     const rhsKeys = Object.keys(rhs);
 
@@ -39,7 +36,6 @@ export function isEqual(lhs: unknown, rhs: unknown): boolean {
       const lhsValue = (lhs as PlainObject)[key];
       const rhsValue = (rhs as PlainObject)[key];
 
-      // Рекурсивная проверка вложенных объектов и массивов
       if (isArrayOrObject(lhsValue) && isArrayOrObject(rhsValue)) {
         if (!isEqual(lhsValue, rhsValue)) {
           return false;
@@ -52,7 +48,6 @@ export function isEqual(lhs: unknown, rhs: unknown): boolean {
     return true;
   }
 
-  // Если значения не являются plain objects или массивами, считаем их неравными
   return false;
 }
 
@@ -109,19 +104,17 @@ export function deepCopy<T>(object: T, seen = new WeakMap()): T {
 }
 
 export function set(obj: Record<string, any>, path: string, value: unknown) {
-  const keys = path.split("."); // Разбиваем строку пути на массив ключей
+  const keys = path.split(".");
   let current = obj;
 
-  // Идем по ключам, создавая объекты на каждом уровне, если их нет
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
     if (!(key in current)) {
-      current[key] = {}; // Создаем пустой объект, если ключа нет
+      current[key] = {};
     }
     current = current[key];
   }
 
-  // Устанавливаем значение в конечный ключ
   current[keys[keys.length - 1]] = value;
 }
 
@@ -130,6 +123,7 @@ export function isValidJSON(data: string): boolean {
     JSON.parse(data);
     return true;
   } catch (error) {
+    console.error(error);
     return false;
   }
 }

@@ -19,7 +19,6 @@ export interface ModalWindowProps {
     fileName: string;
     validation?: (value: string) => string | null;
     events: {
-      // focus?: (event: Event) => void;
       blur?: (event: Event) => void;
       change?: (event: Event) => void;
     };
