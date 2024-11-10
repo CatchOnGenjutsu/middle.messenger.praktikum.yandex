@@ -21,7 +21,7 @@ const webSocketTransport = async (
 
     const setupPing = () => {
       if (pingIntervalId !== null) clearInterval(pingIntervalId);
-      pingIntervalId = setInterval(() => {
+      pingIntervalId = window.setInterval(() => {
         socket.send(
           JSON.stringify({
             type: "ping",
