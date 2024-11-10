@@ -4,9 +4,9 @@ interface QueryStringifyData {
   [key: string]: string | number | boolean | QueryStringifyData | Array<string | number>;
 }
 
-interface RequestOptions {
+export interface RequestOptions {
   headers?: Record<string, string>;
-  data?: any;
+  data?: unknown;
   timeout?: number;
 }
 
@@ -21,8 +21,8 @@ const METHODS: Record<string, HttpMethod> = {
   DELETE: "DELETE",
 };
 
-function queryStringify(data: QueryStringifyData): string {
-  if (!data) {
+export function queryStringify(data: QueryStringifyData | null | undefined): string {
+  if (!data || Object.keys(data).length === 0) {
     return "";
   }
 
@@ -46,7 +46,7 @@ export class HTTPTransport {
     this.basePath = this.baseURL + pathForPage;
   }
   get(path: string, options: RequestOptions = {}): Promise<XMLHttpRequest> {
-    const queryString = options.data ? queryStringify(options.data) : "";
+    const queryString = options.data ? queryStringify(options.data as QueryStringifyData) : "";
     return this.request(
       `${this.basePath}${path}${queryString}`,
       { ...options, method: METHODS.GET },

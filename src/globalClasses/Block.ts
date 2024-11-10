@@ -1,7 +1,7 @@
-import EventBus, { EventCallback } from "./EventBus";
+import EventBus, { EventCallback } from "./EventBus.ts";
 import Handlebars from "handlebars";
 
-import { deepCopy } from "../utils";
+import { deepCopy } from "../utils.ts";
 
 export interface BlockProps {
   [key: string]: unknown;
@@ -205,61 +205,16 @@ export default class Block<P extends BlockProps = {}> {
   }
 
   private _updateListsProps(lists: Lists, newProps: Record<string, unknown>): void {
-    // function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
-    //   for (const key in source) {
-    //     if (Object.prototype.hasOwnProperty.call(source, key)) {
-    //       if (
-    //         typeof source[key] === "object" &&
-    //         source[key] !== null &&
-    //         typeof target[key] === "object" &&
-    //         target[key] !== null
-    //       ) {
-    //         deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
-    //       } else {
-    //         target[key] = source[key];
-    //       }
-    //     }
-    //   }
-    // }
     for (const listName in lists) {
       if (Object.prototype.hasOwnProperty.call(lists, listName)) {
-        // const list = lists[listName];
-
         const listNewProps = newProps[listName];
 
         if (!listNewProps) {
           continue;
         }
 
-        // if (!list.length && Array.isArray(listNewProps) && listNewProps.length) {
         const newList = Array.isArray(listNewProps) ? listNewProps : [listNewProps];
         this.lists[listName] = newList;
-        // list.push(...listNewProps);
-        // this.lists[listName] = list;
-        // this.lists[listName].forEach((item: Block) => (item.setProps ? item.setProps(item.props) : null));
-        //   return;
-        // }
-
-        // list.forEach((item, index) => {
-        //   if (item && typeof item.setProps === "function") {
-        //     // console.log(`Элемент ${index} списка "${listName}"`, item);
-
-        //     let propsToApply: Record<string, unknown>;
-
-        //     // Если данные — массив, берем соответствующий элемент по индексу
-        //     if (Array.isArray(listNewProps)) {
-        //       propsToApply = listNewProps[index] || {};
-        //     } else {
-        //       // Если данные — объект, применяем его ко всем элементам
-        //       propsToApply = listNewProps as Record<string, unknown>;
-        //     }
-
-        //     // console.log(`Пропсы для элемента ${index}:`, propsToApply);
-
-        //     deepUpdateProps(item.props, propsToApply);
-        //     item.setProps(item.props);
-        //   }
-        // });
       }
     }
   }
@@ -399,5 +354,10 @@ export default class Block<P extends BlockProps = {}> {
     if (content) {
       content.style.display = "none";
     }
+  }
+
+  public getEventBus(): EventBus {
+    // Реализация метода getEventBus
+    return new EventBus();
   }
 }
