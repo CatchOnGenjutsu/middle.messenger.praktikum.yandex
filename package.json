@@ -13,8 +13,7 @@
     "tsc": "tsc --noEmit",
     "test": "mocha",
     "lint:all": "npm-run-all lint:style lint:eslint",
-    "prepare": "husky install",
-    "postinstall": "npx husky install && cp .husky/pre-commit .git/hooks/pre-commit"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/chai": "^5.0.1",
