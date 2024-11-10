@@ -2,28 +2,21 @@ import { expect } from "chai";
 import Router from "./Router.ts";
 import Block from "./Block.ts";
 
-// Заглушка для класса Block
 class MockBlock extends Block {
   constructor(props: any = {}) {
     super(props);
   }
 
-  // Переопределяем метод getContent для теста
   getContent(): HTMLElement {
     const div = document.createElement("div");
     div.innerHTML = "Mock block content";
     return div;
   }
 
-  hide(): void {
-    // Заглушка метода hide
-  }
+  hide(): void {}
 
-  show(): void {
-    // Заглушка метода show
-  }
+  show(): void {}
 
-  // Метод для рендера контента, если нужно
   render(): string {
     return "<div>Mock block content</div>";
   }
@@ -33,17 +26,14 @@ describe("Router", () => {
   let router: Router;
 
   beforeEach(() => {
-    // Создаем элемент root перед каждым тестом
     const root = document.createElement("div");
     root.id = "root";
     document.body.appendChild(root);
 
-    // Инициализация Router с селектором без '#'
     router = Router.getInstance("root");
   });
 
   afterEach(() => {
-    // Удаляем элемент root после каждого теста
     const root = document.getElementById("root");
     if (root) {
       root.remove();
@@ -75,7 +65,7 @@ describe("Router", () => {
     router.use("/home", MockBlock);
     const route = router["routes"][0];
     router.go("/home");
-    // Проверяем, что роутер корректно вызвал метод render()
+
     expect(route["_block"]).to.exist;
     expect(route["_block"] instanceof MockBlock).to.be.true;
   });
