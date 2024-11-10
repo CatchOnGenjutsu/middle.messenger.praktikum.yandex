@@ -10,19 +10,36 @@
     "start": "npm run build && npm run preview",
     "lint": "eslint src/**/*.{js,mjs,cjs,ts,jsx,tsx}",
     "lint:style": "stylelint src/**/*.{css,scss,sass,html}",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "test": "mocha",
+    "lint": "npm-run-all --parallel lint:*"
   },
   "devDependencies": {
+    "@types/chai": "^5.0.1",
+    "@types/mocha": "^10.0.9",
+    "@types/sinon": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
+    "chai": "^5.1.2",
     "eslint": "^9.11.1",
+    "husky": "^9.1.6",
+    "jsdom": "^25.0.1",
+    "mocha": "^10.8.2",
+    "npm-run-all": "^4.1.5",
     "sass": "^1.78.0",
+    "sinon": "^19.0.2",
     "stylelint": "^16.9.0",
     "stylelint-config-standard": "^36.0.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.1",
     "vite-plugin-sass": "^0.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm-run-all test lint:all"
+    }
   },
   "dependencies": {
     "handlebars": "^4.7.8"
