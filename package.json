@@ -12,8 +12,7 @@
     "lint:style": "stylelint src/**/*.{css,scss,sass,html}",
     "tsc": "tsc --noEmit",
     "test": "mocha",
-    "lint:all": "npm-run-all lint:style lint:eslint",
-    "prepare": "husky"
+    "lint:all": "npm-run-all lint:style lint:eslint"
   },
   "devDependencies": {
     "@types/chai": "^5.0.1",
@@ -36,14 +35,8 @@
     "vite": "^5.4.1",
     "vite-plugin-sass": "^0.1.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run test && npm run lint:all"
-    }
-  },
   "dependencies": {
-    "handlebars": "^4.7.8",
-    "husky": "^8.0.3"
+    "handlebars": "^4.7.8"
   },
   "engines": {
     "node": ">=17.0.0"
