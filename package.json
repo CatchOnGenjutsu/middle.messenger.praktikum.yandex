@@ -12,7 +12,8 @@
     "lint:style": "stylelint src/**/*.{css,scss,sass,html}",
     "tsc": "tsc --noEmit",
     "test": "mocha",
-    "lint:all": "npm-run-all lint:style lint:eslint"
+    "lint:all": "npm-run-all lint:style lint:eslint",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/chai": "^5.0.1",
