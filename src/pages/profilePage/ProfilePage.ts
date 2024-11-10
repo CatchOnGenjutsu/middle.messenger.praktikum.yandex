@@ -159,7 +159,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
                 data[key] = value.toString();
               });
 
-              let request: XMLHttpRequest = this.props.editMainData
+              const request: XMLHttpRequest = this.props.editMainData
                 ? await profilePageApi.changeUserInfo(data)
                 : await profilePageApi.changeUserPassword(data);
 
@@ -196,7 +196,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
     }
   }
 
-  static getProfileFormProps(props: any) {
+  static getProfileFormProps(props: ProfilePageProps) {
     return {
       isEditData: props.isEditData,
       inputOptions: profilePageMainDataSettings.inputOptions.map((item) => ({
@@ -207,7 +207,7 @@ export default class ProfilePage extends Block<ProfilePageProps> {
     };
   }
 
-  static getProfileFormPropsPassword(props: any) {
+  static getProfileFormPropsPassword(props: ProfilePageProps) {
     return {
       isEditData: props.isEditData,
       inputOptions: profilePagePasswordSettings.inputOptions,

@@ -87,7 +87,6 @@ export default class Login extends Block {
           });
           break;
         case "password":
-          value;
           field.setProps({
             errorText: value ? null : "Введите пароль",
           });

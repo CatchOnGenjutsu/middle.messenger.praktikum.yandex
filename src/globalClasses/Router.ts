@@ -154,7 +154,9 @@ export default class Router {
 }
 
 function render(query: string, block: Block): void {
-  const root = document.getElementById(query);
+  const root = query.startsWith("#")
+    ? document.getElementById(query.slice(1))
+    : document.getElementById(query);
   if (!root) {
     throw new Error(`Root element with selector "${query}" not found`);
   }

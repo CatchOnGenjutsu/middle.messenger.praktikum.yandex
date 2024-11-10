@@ -34,7 +34,7 @@ export default class App {
         const data = JSON.parse(request.response);
         StoreUpdated.set("userInfo", data);
       } else throw new Error(`${request.status}`);
-      if (localStorage.getItem("auth")) {
+      if (localStorage.getItem("auth") && window.location.pathname === "/") {
         const router = Router.getInstance("app");
         router.go("/messenger");
       }

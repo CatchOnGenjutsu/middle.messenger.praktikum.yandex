@@ -38,7 +38,6 @@ export interface OverlayProps extends Partial<BlockProps> {
 
 export class Overlay extends Block {
   constructor(props: OverlayProps) {
-    console.log(props);
     super({
       ...props,
       ModalWindow: new ModalWindow({

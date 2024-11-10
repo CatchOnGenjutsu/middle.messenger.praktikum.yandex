@@ -9,7 +9,6 @@ import "./currentChatHeader.scss";
 
 export class CurrentChatHeader extends Block {
   constructor(props: CurrentChatProps) {
-    console.log(props);
     super({
       ...props,
       burgerButton: new BurgerButton({
