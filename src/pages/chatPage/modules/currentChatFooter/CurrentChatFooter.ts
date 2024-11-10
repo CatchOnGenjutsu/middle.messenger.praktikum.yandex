@@ -4,12 +4,15 @@ import { WriteMessageInput } from "../../partials/writeMessageInput/WriteMessage
 import { ArrowButton } from "../../../../components/arrowButton/ArrowButton";
 import { ButtonsPopup } from "../buttonsPopup/ButtonsPopup";
 
-import { addAppsActionButtonsSettings } from "../../mockData";
+import { addAppsActionButtonsSettings } from "../../chatPageSettings";
 
 import "./currentChatFooter.scss";
 
 interface CurrentChatFooterProps {
-  popupOpen: boolean;
+  popupOpen?: boolean;
+  webSocketInstance?: WebSocket | null;
+  activeChatId?: number | null;
+  events?: Record<string, (event: Event) => void>;
 }
 
 export class CurrentChatFooter extends Block {
@@ -41,20 +44,6 @@ export class CurrentChatFooter extends Block {
         popupOpen: props.popupOpen,
         isBottomLeft: true,
       }),
-      events: {
-        submit: (event: Event) => {
-          event.preventDefault();
-          const elem = event.target as HTMLFormElement;
-          if (elem && elem.tagName === "FORM") {
-            const formData = new FormData(event.target as HTMLFormElement);
-            const data: Record<string, string> = {};
-            formData.forEach((value, key) => {
-              data[key] = value.toString();
-            });
-            console.log(data);
-          }
-        },
-      },
     });
   }
 

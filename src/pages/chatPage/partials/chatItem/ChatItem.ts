@@ -1,28 +1,22 @@
 import Block from "../../../../globalClasses/Block";
 import "./chatItem.scss";
 
-interface ChatItemProps {
+export interface ChatItemProps {
   id: number;
-  avatar?: string;
-  chatName: string;
-  lastMessage: string;
-  lastMessageTime: string;
-  initials?: string;
-  incoming?: boolean;
-  active?: boolean;
-  unreadMessagesCount?: number;
-  activeChatId?: number | null;
+  avatar: string | null;
+  created_by: number;
+  last_message: string | null;
+  title: string;
+  unread_count: number;
+
   events?: {
     click: (event: Event) => void;
   };
 }
 
-export class ChatItem extends Block {
+export default class ChatItem extends Block {
   constructor(props: ChatItemProps) {
     super({ ...props });
-    this.setProps({
-      active: this.props.id === this.props.activeChatId,
-    });
   }
 
   render() {
@@ -32,16 +26,16 @@ export class ChatItem extends Block {
           {{#if avatar}}
             <img class="chat-item__avatar__avatar-img" src="{{avatar}}" alt="avatar">
           {{else}}
-            <div class="chat-item__avatar__avatar-placeholder">{{initials}}</div>
+            <div class="chat-item__avatar__avatar-placeholder"></div>
           {{/if}}
         </div>
         <div class="chat-item__info">
-          <div class="chat-item__info__name">{{chatName}}</div>
+          <div class="chat-item__info__name">{{title}}</div>
           <div class="chat-item__info__last-message">{{#if incoming}}<span>Вы: </span>{{/if}}{{lastMessage}}</div>
         </div>
         <div class="chat-item__chat-settings">
           <div class="chat-item__chat-settings__time">{{lastMessageTime}}</div>
-          {{#if unreadMessagesCount}}<div class="chat-item__chat-settings__unread-messages">{{unreadMessagesCount}}</div>{{/if}}
+          {{#if unread_count}}<div class="chat-item__chat-settings__unread-messages">{{unread_count}}</div>{{/if}}
         </div>
       </li>
     `;

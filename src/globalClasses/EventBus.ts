@@ -11,24 +11,20 @@ export default class EventBus {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
-
     this.listeners[event].push(callback);
   }
 
   public off(event: string, callback: EventCallback): void {
-    if (!this.listeners[event]) {
-      throw new Error(`No event: ${event}`);
-    }
+    if (!this.listeners[event]) return;
 
     this.listeners[event] = this.listeners[event].filter((listener) => listener !== callback);
   }
 
   public emit(event: string, ...args: unknown[]): void {
-    if (!this.listeners[event]) {
-      throw new Error(`No event: ${event}`);
-    }
+    const eventListeners = this.listeners[event];
+    if (!eventListeners || eventListeners.length === 0) return;
 
-    this.listeners[event].forEach((listener) => {
+    eventListeners.forEach((listener) => {
       listener(...args);
     });
   }

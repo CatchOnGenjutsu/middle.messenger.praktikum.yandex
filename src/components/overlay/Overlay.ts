@@ -1,9 +1,9 @@
-import Block from "../../globalClasses/Block";
+import Block, { BlockProps } from "../../globalClasses/Block";
 import { ModalWindow } from "../modalWindow/ModalWindow";
 
 import "./overlay.scss";
 
-interface OverlayProps {
+export interface OverlayProps extends Partial<BlockProps> {
   title: string;
   inputOptions: {
     isFile?: boolean;
@@ -14,6 +14,12 @@ interface OverlayProps {
     inputId: string;
     inputPlaceholder: string;
     errorText: string;
+    fileName: string;
+    validation?: (value: string) => string;
+    events: {
+      blur?: (event: Event) => void;
+      change?: (event: Event) => void;
+    };
   };
   buttonOptions: {
     value: string;
@@ -21,6 +27,12 @@ interface OverlayProps {
     class: string;
     id: string;
     name: string;
+  };
+  events: {
+    submit: (event: Event) => void;
+  };
+  overlayEvents: {
+    click: (event: Event) => void;
   };
 }
 
@@ -31,14 +43,7 @@ export class Overlay extends Block {
       ModalWindow: new ModalWindow({
         ...props,
       }),
-      events: {
-        click: (event: Event) => {
-          const target = event.target as HTMLElement;
-          if (target?.id === "modalOverlay") {
-            this.getContent().classList.toggle("hidden");
-          }
-        },
-      },
+      events: { ...props.overlayEvents },
     });
   }
 

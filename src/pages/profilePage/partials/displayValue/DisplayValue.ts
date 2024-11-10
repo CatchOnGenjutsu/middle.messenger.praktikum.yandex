@@ -1,22 +1,18 @@
 import Block from "../../../../globalClasses/Block";
+import { InputGroupProps } from "../../modules/inputGroup/InputGroup";
 
 import "./displayValue.scss";
 
-interface DisplayValueProps {
-  value: string;
-  isEditData: boolean;
-}
 export default class DisplayValue extends Block {
-  constructor(props: DisplayValueProps) {
-    console.log(props);
+  constructor(props: InputGroupProps) {
     super({
       ...props,
     });
   }
-  // {{#if isEditData}}showed{{/if}}
-  protected render(): string {
+
+  override render(): string {
     return `
-      <div class="input-field display-value">{{value}}</div>
+      <div class="input-field display-value">{{inputOption.value}}</div>
     `;
   }
 }

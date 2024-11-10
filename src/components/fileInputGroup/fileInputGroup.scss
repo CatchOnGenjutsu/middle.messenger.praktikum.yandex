@@ -1,0 +1,28 @@
+@import "../../assets/styles/variables.scss";
+
+.file-input-group {
+  margin-bottom: 10px;
+
+  .file-input__file-name {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .file-input__label {
+    font-size: 16px;
+    cursor: pointer;
+    color: $color-blue-primary;
+    text-decoration: underline;
+    margin-bottom: 10px;
+
+    &:hover {
+      color: darken($color-blue-primary, 10%);
+    }
+  }
+
+  .file-input__error {
+    color: $color-danger;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+}

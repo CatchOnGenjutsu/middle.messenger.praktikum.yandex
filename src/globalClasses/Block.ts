@@ -1,21 +1,23 @@
 import EventBus, { EventCallback } from "./EventBus";
 import Handlebars from "handlebars";
 
-interface BlockProps {
+import { deepCopy } from "../utils";
+
+export interface BlockProps {
   [key: string]: unknown;
   events?: Record<string, EventListener>;
   attr?: Record<string, string>;
 }
 
 interface Children {
-  [key: string]: Block;
+  [key: string]: Block<any>;
 }
 
-interface Lists {
-  [key: string]: Block[];
+export interface Lists {
+  [key: string]: Block<any>[];
 }
 
-export default class Block {
+export default class Block<P extends BlockProps = {}> {
   static EVENTS = {
     INIT: "init",
     FLOW_CDM: "flow:component-did-mount",
@@ -27,7 +29,7 @@ export default class Block {
 
   protected _id: number = Math.floor(100000 + Math.random() * 900000);
 
-  props: BlockProps;
+  props: P;
 
   children: Children;
 
@@ -35,10 +37,10 @@ export default class Block {
 
   protected eventBus: () => EventBus;
 
-  constructor(propsWithChildren: BlockProps = {}) {
+  constructor(propsWithChildren: P = {} as P) {
     const eventBus = new EventBus();
     const { props, children, lists } = this._getChildrenPropsAndProps(propsWithChildren);
-    this.props = this._makePropsProxy({ ...props });
+    this.props = this._makePropsProxy<P>({ ...props } as P);
     this.children = children;
     this.lists = lists;
     this.eventBus = () => eventBus;
@@ -48,7 +50,6 @@ export default class Block {
 
   private _addEvents(): void {
     const { events } = this.props;
-    // console.log(this._element, events);
     if (events) {
       Object.keys(events).forEach((eventName) => {
         if (this._element) {
@@ -81,29 +82,49 @@ export default class Block {
 
   private _componentDidMount(): void {
     this.componentDidMount();
-    Object.values(this.children).forEach((child) => {
-      child.dispatchComponentDidMount();
-    });
+    // Object.values(this.children).forEach((child) => {
+    //   child.dispatchComponentDidMount();
+    // });
   }
 
   protected componentDidMount(): void {}
 
-  public dispatchComponentDidMount(): void {
-    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
-  }
+  // public dispatchComponentDidMount(): void {
+  //   this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+  // }
 
   private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    this.componentDidUpdate(oldProps, newProps);
+
     if (this._propsHaveChanged(oldProps, newProps)) {
       this._updateChildrenProps(this.children, newProps);
+      if (Object.values(this.lists).length) {
+        this._updateListsProps(this.lists, newProps);
+      }
       this._render();
     }
   }
 
+  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+    console.log("componentDidUpdate", oldProps, newProps);
+    // Логика обновления при изменении пропсов
+  }
+
   private _propsHaveChanged(oldProps: Record<string, unknown>, newProps: Record<string, unknown>): boolean {
-    function deepCompare(obj1: unknown, obj2: unknown): boolean {
+    function deepCompare(
+      obj1: unknown,
+      obj2: unknown,
+      seen: WeakMap<object, boolean> = new WeakMap(),
+    ): boolean {
       if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
         return obj1 !== obj2;
       }
+
+      if (seen.has(obj1) || seen.has(obj2)) {
+        return false;
+      }
+      seen.set(obj1 as object, true);
+      seen.set(obj2 as object, true);
 
       const obj1Record = obj1 as Record<string, unknown>;
       const obj2Record = obj2 as Record<string, unknown>;
@@ -119,8 +140,7 @@ export default class Block {
         if (!keys2.includes(key)) {
           return true;
         }
-
-        if (deepCompare(obj1Record[key], obj2Record[key])) {
+        if (deepCompare(obj1Record[key], obj2Record[key], seen)) {
           return true;
         }
       }
@@ -132,8 +152,10 @@ export default class Block {
   }
 
   private _updateChildrenProps(children: Record<string, unknown>, newProps: Record<string, unknown>): void {
-    function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
-      for (const key in source) {
+    function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): boolean {
+      let hasChanged = false;
+
+      for (const key in target) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           if (
             typeof source[key] === "object" &&
@@ -141,12 +163,18 @@ export default class Block {
             typeof target[key] === "object" &&
             target[key] !== null
           ) {
-            deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
-          } else {
+            const changed = deepUpdateProps(
+              target[key] as Record<string, unknown>,
+              source[key] as Record<string, unknown>,
+            );
+            if (changed) hasChanged = true;
+          } else if (target[key] !== source[key]) {
             target[key] = source[key];
+            hasChanged = true;
           }
         }
       }
+      return hasChanged;
     }
 
     for (const childName in children) {
@@ -155,11 +183,83 @@ export default class Block {
           props: Record<string, unknown>;
           setProps?: (props: Record<string, unknown>) => void;
         };
+
         if (child && typeof child.setProps === "function") {
-          const childNewProps = (newProps[childName] || {}) as Record<string, unknown>;
-          deepUpdateProps(child.props, childNewProps);
-          child.setProps(child.props);
+          const currentProps = deepCopy(child.props);
+
+          const relevantProps = Object.keys(currentProps).reduce((acc, key) => {
+            if (key in newProps) {
+              acc[key] = newProps[key];
+            }
+            return acc;
+          }, {} as Record<string, unknown>);
+
+          const hasChanged = deepUpdateProps(currentProps, relevantProps);
+
+          if (hasChanged) {
+            child.setProps(currentProps);
+          }
         }
+      }
+    }
+  }
+
+  private _updateListsProps(lists: Lists, newProps: Record<string, unknown>): void {
+    // function deepUpdateProps(target: Record<string, unknown>, source: Record<string, unknown>): void {
+    //   for (const key in source) {
+    //     if (Object.prototype.hasOwnProperty.call(source, key)) {
+    //       if (
+    //         typeof source[key] === "object" &&
+    //         source[key] !== null &&
+    //         typeof target[key] === "object" &&
+    //         target[key] !== null
+    //       ) {
+    //         deepUpdateProps(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+    //       } else {
+    //         target[key] = source[key];
+    //       }
+    //     }
+    //   }
+    // }
+    for (const listName in lists) {
+      if (Object.prototype.hasOwnProperty.call(lists, listName)) {
+        // const list = lists[listName];
+
+        const listNewProps = newProps[listName];
+
+        if (!listNewProps) {
+          continue;
+        }
+
+        // if (!list.length && Array.isArray(listNewProps) && listNewProps.length) {
+        const newList = Array.isArray(listNewProps) ? listNewProps : [listNewProps];
+        this.lists[listName] = newList;
+        // list.push(...listNewProps);
+        // this.lists[listName] = list;
+        // this.lists[listName].forEach((item: Block) => (item.setProps ? item.setProps(item.props) : null));
+        //   return;
+        // }
+
+        // list.forEach((item, index) => {
+        //   if (item && typeof item.setProps === "function") {
+        //     // console.log(`Элемент ${index} списка "${listName}"`, item);
+
+        //     let propsToApply: Record<string, unknown>;
+
+        //     // Если данные — массив, берем соответствующий элемент по индексу
+        //     if (Array.isArray(listNewProps)) {
+        //       propsToApply = listNewProps[index] || {};
+        //     } else {
+        //       // Если данные — объект, применяем его ко всем элементам
+        //       propsToApply = listNewProps as Record<string, unknown>;
+        //     }
+
+        //     // console.log(`Пропсы для элемента ${index}:`, propsToApply);
+
+        //     deepUpdateProps(item.props, propsToApply);
+        //     item.setProps(item.props);
+        //   }
+        // });
       }
     }
   }
@@ -212,11 +312,11 @@ export default class Block {
     const propsAndStubs = { ...this.props };
     const _tmpId = Math.floor(100000 + Math.random() * 900000);
     Object.entries(this.children).forEach(([key, child]) => {
-      propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
+      (propsAndStubs as Record<string, unknown>)[key] = `<div data-id="${child._id}"></div>`;
     });
 
     Object.entries(this.lists).forEach(([key]) => {
-      propsAndStubs[key] = `<div data-id="__l_${_tmpId}"></div>`;
+      (propsAndStubs as Record<string, unknown>)[key] = `<div data-id="__l_${_tmpId}"></div>`;
     });
 
     const fragment = this._createDocumentElement("template");
@@ -265,15 +365,15 @@ export default class Block {
     return this._element;
   }
 
-  private _makePropsProxy(props: BlockProps): BlockProps {
+  private _makePropsProxy<T extends object>(props: T): T {
     return new Proxy(props, {
-      get: (target: BlockProps, prop: string) => {
-        const value = target[prop];
+      get: (target: T, prop: string) => {
+        const value = target[prop as keyof T];
         return typeof value === "function" ? value.bind(target) : value;
       },
-      set: (target: BlockProps, prop: string, value: unknown) => {
+      set: (target: T, prop: string, value: unknown) => {
         const oldTarget = { ...target };
-        target[prop] = value;
+        (target as any)[prop] = value;
         this.eventBus().emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
         return true;
       },

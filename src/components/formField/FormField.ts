@@ -5,7 +5,7 @@ import { Error } from "../../components/error/Error";
 
 import "./formField.scss";
 
-interface FormFieldProps {
+export interface FormFieldProps {
   labelName: string;
   labelFor: string;
   inputName: string;
@@ -13,15 +13,13 @@ interface FormFieldProps {
   inputId: string;
   inputPlaceholder: string;
   inputClassName?: string;
-  events?: {
-    // focus?: (event: Event) => void;
-    blur: (event: Event) => void;
-    // input?: (event: Event) => void;
+  events: {
+    blur?: (event: Event) => void;
   };
   errorText?: string | null;
 }
 
-export class FormField extends Block {
+export default class FormField extends Block {
   constructor(props: FormFieldProps) {
     super({
       ...props,

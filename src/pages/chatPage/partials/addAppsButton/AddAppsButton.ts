@@ -3,7 +3,7 @@ import Block from "../../../../globalClasses/Block";
 import "./addAppsButton.scss";
 
 interface AddAppsButtonProps {
-  popupOpen: boolean;
+  popupOpen?: boolean;
   events?: {
     click: (event: Event) => void;
   };
