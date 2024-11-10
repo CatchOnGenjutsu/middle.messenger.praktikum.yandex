@@ -9,7 +9,7 @@ describe("HTTPTransport", function () {
   beforeEach(() => {
     httpTransport = new HTTPTransport("testPath");
     xhrMock = sinon.useFakeXMLHttpRequest();
-    global.XMLHttpRequest = xhrMock as any;
+    global.XMLHttpRequest = xhrMock as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {

@@ -65,7 +65,7 @@ export function deepCopy<T>(object: T, seen = new WeakMap()): T {
   }
 
   if (Array.isArray(object)) {
-    const copy: any[] = [];
+    const copy: unknown[] = [];
     seen.set(object, copy);
     for (const item of object) {
       copy.push(deepCopy(item, seen));
@@ -91,12 +91,12 @@ export function deepCopy<T>(object: T, seen = new WeakMap()): T {
     return copy as T;
   }
 
-  const copy: { [key: string]: any } = {};
+  const copy: { [key: string]: unknown } = {};
   seen.set(object, copy);
 
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
-      copy[key] = deepCopy((object as { [key: string]: any })[key], seen);
+      copy[key] = deepCopy((object as { [key: string]: unknown })[key], seen);
     }
   }
 

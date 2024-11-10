@@ -8,11 +8,12 @@
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "start": "npm run build && npm run preview",
-    "lint": "eslint src/**/*.{js,mjs,cjs,ts,jsx,tsx}",
+    "lint:eslint": "eslint src/**/*.{js,mjs,cjs,ts,jsx,tsx}",
     "lint:style": "stylelint src/**/*.{css,scss,sass,html}",
     "tsc": "tsc --noEmit",
     "test": "mocha",
-    "lint:all": "npm-run-all --parallel lint:*"
+    "lint:all": "npm-run-all lint:style lint:eslint",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/chai": "^5.0.1",
@@ -35,11 +36,6 @@
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.1",
     "vite-plugin-sass": "^0.1.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm-run-all test lint:all"
-    }
   },
   "dependencies": {
     "handlebars": "^4.7.8"

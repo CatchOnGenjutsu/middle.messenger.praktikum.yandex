@@ -53,7 +53,7 @@ export default class CurrentChat extends Block {
     });
   }
 
-  static getMessagesProps(props: any): IMessageBlockTestProps {
+  static getMessagesProps(props: CurrentChatProps): IMessageBlockTestProps {
     return { ...props.messages };
   }
 
@@ -63,7 +63,7 @@ export default class CurrentChat extends Block {
     }
 
     if (!isEqual(oldProps.messages, newProps.messages)) {
-      this.children.MessageBlockTest.setProps(CurrentChat.getMessagesProps(newProps));
+      this.children.MessageBlockTest.setProps(CurrentChat.getMessagesProps(newProps as CurrentChatProps));
     }
   }
 

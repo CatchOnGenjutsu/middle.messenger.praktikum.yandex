@@ -136,7 +136,7 @@ export default class ChatPage extends Block<ChatPageProps> {
     }
   }
 
-  static getChatsProps(props: any) {
+  static getChatsProps(props: ChatPageProps) {
     return {
       chats: props.chats,
     };
@@ -148,7 +148,7 @@ export default class ChatPage extends Block<ChatPageProps> {
     };
   }
 
-  protected componentDidUpdate(oldProps: any, newProps: any): boolean {
+  protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
     const { currentChat, messages, chats, socket } = newProps;
 
     if (
@@ -164,7 +164,7 @@ export default class ChatPage extends Block<ChatPageProps> {
     }
 
     if (!isEqual(oldProps.chats, chats)) {
-      this.children.ChatsList.setProps(ChatPage.getChatsProps(newProps));
+      this.children.ChatsList.setProps(ChatPage.getChatsProps(newProps as ChatPageProps));
       return true;
     }
 
