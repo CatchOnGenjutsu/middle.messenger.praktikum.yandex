@@ -12,7 +12,7 @@
     "lint:style": "stylelint src/**/*.{css,scss,sass,html}",
     "tsc": "tsc --noEmit",
     "test": "mocha",
-    "lint": "npm-run-all --parallel lint:*"
+    "lint:all": "npm-run-all --parallel lint:*"
   },
   "devDependencies": {
     "@types/chai": "^5.0.1",
