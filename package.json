@@ -37,6 +37,11 @@
     "vite": "^5.4.1",
     "vite-plugin-sass": "^0.1.0"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:all"
+    }
+  },
   "dependencies": {
     "handlebars": "^4.7.8"
   },
